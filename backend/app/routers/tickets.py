@@ -16,7 +16,7 @@ router = APIRouter()
 def create_ticket(
     ticket_in: schemas.TicketCreate,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user),
+    current_user: models.User = Depends(require_role("Utilisateur")),
 ):
     """Créer un nouveau ticket"""
     # Générer le numéro de ticket automatiquement
@@ -317,7 +317,7 @@ def escalate_ticket(
     ticket_id: UUID,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(
-        require_role("Secrétaire DSI", "Adjoint DSI", "DSI", "Admin")
+        require_role("Adjoint DSI", "DSI", "Admin")
     ),
 ):
     """Escalader un ticket (augmenter la priorité)"""
@@ -387,8 +387,8 @@ def update_ticket_status(
     
     # Vérifier les permissions selon le statut
     if status_update.status == models.TicketStatus.RESOLU:
-        # Seul le technicien assigné ou DSI/Admin peut marquer comme résolu
-        if ticket.technician_id != current_user.id and (not current_user.role or current_user.role.name not in ["DSI", "Admin"]):
+        # Seul le technicien assigné peut marquer comme résolu
+        if ticket.technician_id != current_user.id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Only assigned technician can mark as resolved"

@@ -53,6 +53,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [showNotifications, setShowNotifications] = useState<boolean>(false);
+  const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false);
   
   // Mettre à jour le token si le prop change
   useEffect(() => {
@@ -155,6 +156,18 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
     } catch (err) {
       console.error("Erreur lors du marquage de la notification comme lue:", err);
     }
+  }
+
+  function handleLogout() {
+    try {
+      localStorage.removeItem("token");
+      localStorage.removeItem("userRole");
+    } catch (e) {
+      console.error("Erreur lors de la suppression des informations de session:", e);
+    }
+    setShowProfileMenu(false);
+    setActualToken("");
+    window.location.href = "/";
   }
 
   useEffect(() => {
@@ -368,8 +381,16 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
         gap: "20px"
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "30px" }}>
-          <div style={{ fontSize: "24px", cursor: "pointer" }}>☰</div>
-          <div style={{ fontSize: "18px", fontWeight: "600" }}>Tableau de bord</div>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <div style={{ width: "24px", height: "24px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path d="M4 7L12 3L20 7V17L12 21L4 17V7Z" stroke="#3b82f6" strokeWidth="2" strokeLinejoin="round" />
+                <path d="M4 7L12 11L20 7" stroke="#3b82f6" strokeWidth="2" strokeLinejoin="round" />
+                <path d="M12 11V21" stroke="#3b82f6" strokeWidth="2" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <div style={{ fontSize: "18px", fontWeight: "600" }}>Gestion d'Incidents</div>
+          </div>
         </div>
         <div 
           onClick={() => setActiveSection("dashboard")}
@@ -383,14 +404,25 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
             cursor: "pointer"
           }}
         >
-          <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>📊</div>
-          <div>Dashboard</div>
+          <div style={{ width: "24px", height: "24px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <rect x="4" y="11" width="3" height="7" rx="1.5" fill="none" stroke="white" strokeWidth="1.8" />
+              <rect x="10.5" y="8" width="3" height="10" rx="1.5" fill="none" stroke="white" strokeWidth="1.8" />
+              <rect x="17" y="5" width="3" height="13" rx="1.5" fill="none" stroke="white" strokeWidth="1.8" />
+            </svg>
+          </div>
+          <div>Tableau de Bord</div>
         </div>
         <div 
           onClick={() => setShowCreateModal(true)}
           style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px", cursor: "pointer" }}
         >
-          <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>➕</div>
+          <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: "rgba(129,140,248,0.25)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="8" fill="#6366f1" />
+              <path d="M12 9v6M9 12h6" stroke="white" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </div>
           <div>Créer un ticket</div>
         </div>
         <div 
@@ -411,7 +443,13 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
             cursor: "pointer"
           }}
         >
-          <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>📋</div>
+          <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: "rgba(148,163,184,0.25)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <rect x="7" y="5" width="10" height="14" rx="2" stroke="#e5e7eb" strokeWidth="1.8" />
+              <path d="M10 3h4a1 1 0 0 1 1 1v1H9V4a1 1 0 0 1 1-1z" stroke="#e5e7eb" strokeWidth="1.8" fill="none" />
+              <path d="M10 10h4M10 13h4M10 16h3" stroke="#e5e7eb" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </div>
           <div>Mes tickets</div>
         </div>
       </div>
@@ -420,13 +458,13 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         {/* Barre de navigation en haut */}
         <div style={{
-          background: "#374151",
+          background: "#1e293b",
           padding: "16px 30px",
           display: "flex",
           alignItems: "center",
           justifyContent: "flex-end",
           gap: "24px",
-          borderBottom: "1px solid #4b5563"
+          borderBottom: "1px solid #0f172a"
         }}>
           <div style={{ 
             cursor: "pointer", 
@@ -507,12 +545,16 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
             display: "flex", 
             alignItems: "center", 
             gap: "12px",
-            color: "white"
+            color: "white",
+            position: "relative"
           }}>
             <span style={{ fontSize: "14px", fontWeight: "500" }}>
               {userInfo?.full_name || "Utilisateur"}
             </span>
-            <div style={{ position: "relative" }}>
+            <div 
+              style={{ position: "relative", cursor: "pointer" }}
+              onClick={() => setShowProfileMenu(!showProfileMenu)}
+            >
               <div style={{
                 width: "36px",
                 height: "36px",
@@ -539,6 +581,43 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                 border: "2px solid #374151"
               }}></div>
             </div>
+            {showProfileMenu && (
+              <div
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: "48px",
+                  background: "white",
+                  borderRadius: "8px",
+                  boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
+                  padding: "8px 0",
+                  minWidth: "160px",
+                  zIndex: 50,
+                  color: "#111827"
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  style={{
+                    width: "100%",
+                    padding: "8px 16px",
+                    background: "transparent",
+                    border: "none",
+                    textAlign: "left",
+                    fontSize: "14px",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    color: "#111827"
+                  }}
+                >
+                  <span style={{ fontSize: "16px" }}>⎋</span>
+                  <span>Se déconnecter</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -566,7 +645,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
               flexDirection: "column",
               alignItems: "flex-start"
             }}>
-              <div style={{ fontSize: "64px", fontWeight: "bold", color: "#ff9800", lineHeight: "1", marginBottom: "8px" }}>
+              <div style={{ fontSize: "32px", fontWeight: "bold", color: "#ff9800", lineHeight: "1", marginBottom: "8px" }}>
                 {opened}
               </div>
               <div style={{ fontSize: "14px", color: "#666" }}>Tickets Ouverts</div>
@@ -581,7 +660,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
               flexDirection: "column",
               alignItems: "flex-start"
             }}>
-              <div style={{ fontSize: "64px", fontWeight: "bold", color: "#007bff", lineHeight: "1", marginBottom: "8px" }}>
+              <div style={{ fontSize: "32px", fontWeight: "bold", color: "#007bff", lineHeight: "1", marginBottom: "8px" }}>
                 {inProgress}
               </div>
               <div style={{ fontSize: "14px", color: "#666" }}>Tickets en cours</div>
@@ -596,7 +675,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
               flexDirection: "column",
               alignItems: "flex-start"
             }}>
-              <div style={{ fontSize: "64px", fontWeight: "bold", color: "#28a745", lineHeight: "1", marginBottom: "8px" }}>
+              <div style={{ fontSize: "32px", fontWeight: "bold", color: "#28a745", lineHeight: "1", marginBottom: "8px" }}>
                 {resolved}
               </div>
               <div style={{ fontSize: "14px", color: "#666" }}>Tickets Résolus</div>
