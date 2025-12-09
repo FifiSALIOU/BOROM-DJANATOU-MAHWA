@@ -399,8 +399,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
             width: "60px",
             height: "60px",
             borderRadius: "50%",
-            background: "transparent",
-            border: "2px solid rgba(255,255,255,0.3)",
+            background: "#9ca3af",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -409,7 +408,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
             fontWeight: "600",
             marginBottom: "12px"
           }}>
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               <circle cx="12" cy="7" r="4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
