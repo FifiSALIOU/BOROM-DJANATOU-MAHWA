@@ -80,6 +80,7 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
   const [userInfo, setUserInfo] = useState<UserRead | null>(null);
   const [ticketDetails, setTicketDetails] = useState<Ticket | null>(null);
   const [ticketHistory, setTicketHistory] = useState<TicketHistory[]>([]);
+  const [showTicketDetailsPage, setShowTicketDetailsPage] = useState<boolean>(false);
   const [activeSection, setActiveSection] = useState<string>("dashboard");
   const notificationsSectionRef = useRef<HTMLDivElement>(null);
   const [rejectionReasons, setRejectionReasons] = useState<Record<string, string>>({});

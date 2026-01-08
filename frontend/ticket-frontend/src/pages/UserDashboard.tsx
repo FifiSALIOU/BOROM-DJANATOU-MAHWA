@@ -1519,7 +1519,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                         style={{
                           padding: "10px 20px",
                           backgroundColor: isBlocked ? "#d1d5db" : "#3b82f6",
-                          color: "white",
+                          color: "black",
                           border: "none",
                           borderRadius: "6px",
                           cursor: isBlocked ? "not-allowed" : "pointer",
@@ -1559,7 +1559,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                         style={{
                           padding: "10px 20px",
                           backgroundColor: isBlocked ? "#d1d5db" : "#ef4444",
-                          color: "white",
+                          color: "black",
                           border: "none",
                           borderRadius: "6px",
                           cursor: isBlocked ? "not-allowed" : "pointer",
