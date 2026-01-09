@@ -4663,7 +4663,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
             <div style={{ width: "24px", height: "24px", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Users size={20} color={activeSection === "technicians" ? "white" : "rgba(180, 180, 180, 0.7)"} strokeWidth={2.5} />
             </div>
-            <div style={{ flex: 1, fontSize: "16px", fontFamily: "'Inter', system-ui, sans-serif", fontWeight: "500" }}>Techniciens</div>
+            <div style={{ flex: 1, fontSize: "16px", fontFamily: "'Inter', system-ui, sans-serif", fontWeight: "500" }}>Équipe</div>
           </div>
         )}
         {userRole === "Admin" && (
@@ -4708,7 +4708,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
             <div style={{ width: "24px", height: "24px", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <BarChart3 size={20} color={activeSection === "reports" ? "white" : "rgba(180, 180, 180, 0.7)"} strokeWidth={2.5} />
             </div>
-            <div style={{ flex: 1 }}>Rapports</div>
+            <div style={{ flex: 1 }}>Statistiques</div>
             <div style={{ width: "16px", height: "16px", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={activeSection === "reports" ? "white" : "rgba(180, 180, 180, 0.7)"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 {showReportsDropdown ? (
