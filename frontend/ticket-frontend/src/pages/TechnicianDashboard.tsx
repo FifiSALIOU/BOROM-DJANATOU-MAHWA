@@ -93,6 +93,17 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
   const [openActionsMenuFor, setOpenActionsMenuFor] = useState<string | null>(null);
   const [actionsMenuPosition, setActionsMenuPosition] = useState<{ top: number; left: number } | null>(null);
 
+  // Fonction pour obtenir le libellé d'une priorité
+  function getPriorityLabel(priority: string): string {
+    switch (priority) {
+      case "faible": return "Faible";
+      case "moyenne": return "Moyenne";
+      case "haute": return "Haute";
+      case "critique": return "Critique";
+      default: return priority;
+    }
+  }
+
   async function loadNotifications() {
     if (!token || token.trim() === "") {
       return;
@@ -1560,10 +1571,10 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                                 borderRadius: "12px",
                                 fontSize: "12px",
                                 fontWeight: "500",
-                                background: t.priority === "critique" ? "#fee2e2" : t.priority === "haute" ? "#fed7aa" : t.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : t.priority === "faible" ? "#fee2e2" : "#e5e7eb",
-                                color: t.priority === "critique" ? "#991b1b" : t.priority === "haute" ? "#92400e" : t.priority === "moyenne" ? "#0DADDB" : t.priority === "faible" ? "#991b1b" : "#374151"
+                                background: t.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : t.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : t.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : t.priority === "faible" ? "#fee2e2" : "#e5e7eb",
+                                color: t.priority === "critique" ? "#E53E3E" : t.priority === "haute" ? "#F59E0B" : t.priority === "moyenne" ? "#0DADDB" : t.priority === "faible" ? "#991b1b" : "#374151"
                               }}>
-                                {t.priority}
+                                {getPriorityLabel(t.priority)}
                               </span>
                             </td>
                             <td>
@@ -1747,10 +1758,10 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                                 borderRadius: "12px",
                                 fontSize: "12px",
                                 fontWeight: "500",
-                                background: t.priority === "critique" ? "#fee2e2" : t.priority === "haute" ? "#fed7aa" : t.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : t.priority === "faible" ? "#fee2e2" : "#e5e7eb",
-                                color: t.priority === "critique" ? "#991b1b" : t.priority === "haute" ? "#92400e" : t.priority === "moyenne" ? "#0DADDB" : t.priority === "faible" ? "#991b1b" : "#374151"
+                                background: t.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : t.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : t.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : t.priority === "faible" ? "#fee2e2" : "#e5e7eb",
+                                color: t.priority === "critique" ? "#E53E3E" : t.priority === "haute" ? "#F59E0B" : t.priority === "moyenne" ? "#0DADDB" : t.priority === "faible" ? "#991b1b" : "#374151"
                               }}>
-                                {t.priority}
+                                {getPriorityLabel(t.priority)}
                               </span>
                             </td>
                             <td>
@@ -1992,10 +2003,10 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                                 borderRadius: "12px",
                                 fontSize: "12px",
                                 fontWeight: "500",
-                                background: t.priority === "critique" ? "#fee2e2" : t.priority === "haute" ? "#fed7aa" : t.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : t.priority === "faible" ? "#fee2e2" : "#e5e7eb",
-                                color: t.priority === "critique" ? "#991b1b" : t.priority === "haute" ? "#92400e" : t.priority === "moyenne" ? "#0DADDB" : t.priority === "faible" ? "#991b1b" : "#374151"
+                                background: t.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : t.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : t.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : t.priority === "faible" ? "#fee2e2" : "#e5e7eb",
+                                color: t.priority === "critique" ? "#E53E3E" : t.priority === "haute" ? "#F59E0B" : t.priority === "moyenne" ? "#0DADDB" : t.priority === "faible" ? "#991b1b" : "#374151"
                               }}>
-                                {t.priority}
+                                {getPriorityLabel(t.priority)}
                               </span>
                             </td>
                             <td style={{ padding: "12px 16px" }}>
@@ -2077,8 +2088,8 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                                 borderRadius: "20px",
                                 fontSize: "12px",
                                 fontWeight: "500",
-                                background: t.status === "resolu" ? "#d4edda" : t.status === "cloture" ? "#e5e7eb" : "#6c757d",
-                                color: t.status === "resolu" ? "#155724" : t.status === "cloture" ? "#374151" : "white",
+                                background: t.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : t.status === "cloture" ? "#e5e7eb" : "#6c757d",
+                                color: t.status === "resolu" ? "#2F9E44" : t.status === "cloture" ? "#374151" : "white",
                                 whiteSpace: "nowrap",
                                 display: "inline-block"
                               }}>
@@ -2091,10 +2102,10 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                                 borderRadius: "12px",
                                 fontSize: "12px",
                                 fontWeight: "500",
-                                background: t.priority === "critique" ? "#fee2e2" : t.priority === "haute" ? "#fed7aa" : t.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : t.priority === "faible" ? "#fee2e2" : "#e5e7eb",
-                                color: t.priority === "critique" ? "#991b1b" : t.priority === "haute" ? "#92400e" : t.priority === "moyenne" ? "#0DADDB" : t.priority === "faible" ? "#991b1b" : "#374151"
+                                background: t.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : t.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : t.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : t.priority === "faible" ? "#fee2e2" : "#e5e7eb",
+                                color: t.priority === "critique" ? "#E53E3E" : t.priority === "haute" ? "#F59E0B" : t.priority === "moyenne" ? "#0DADDB" : t.priority === "faible" ? "#991b1b" : "#374151"
                               }}>
-                                {t.priority}
+                                {getPriorityLabel(t.priority)}
                               </span>
                             </td>
                             <td style={{ padding: "12px 16px" }}>
@@ -2193,10 +2204,10 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                                 borderRadius: "12px",
                                 fontSize: "12px",
                                 fontWeight: "500",
-                                background: t.priority === "critique" ? "#fee2e2" : t.priority === "haute" ? "#fed7aa" : t.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : t.priority === "faible" ? "#fee2e2" : "#e5e7eb",
-                                color: t.priority === "critique" ? "#991b1b" : t.priority === "haute" ? "#92400e" : t.priority === "moyenne" ? "#0DADDB" : t.priority === "faible" ? "#991b1b" : "#374151"
+                                background: t.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : t.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : t.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : t.priority === "faible" ? "#fee2e2" : "#e5e7eb",
+                                color: t.priority === "critique" ? "#E53E3E" : t.priority === "haute" ? "#F59E0B" : t.priority === "moyenne" ? "#0DADDB" : t.priority === "faible" ? "#991b1b" : "#374151"
                               }}>
-                                {t.priority}
+                                {getPriorityLabel(t.priority)}
                               </span>
                             </td>
                             <td style={{ padding: "12px 16px" }}>
@@ -2489,10 +2500,10 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                               borderRadius: "12px",
                               fontSize: "12px",
                               fontWeight: "500",
-                              background: selectedNotificationTicketDetails.priority === "critique" ? "#f44336" : selectedNotificationTicketDetails.priority === "haute" ? "#fed7aa" : selectedNotificationTicketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
-                              color: selectedNotificationTicketDetails.priority === "haute" ? "#92400e" : selectedNotificationTicketDetails.priority === "moyenne" ? "#0DADDB" : "white"
+                              background: selectedNotificationTicketDetails.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : selectedNotificationTicketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : selectedNotificationTicketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
+                              color: selectedNotificationTicketDetails.priority === "critique" ? "#E53E3E" : selectedNotificationTicketDetails.priority === "haute" ? "#F59E0B" : selectedNotificationTicketDetails.priority === "moyenne" ? "#0DADDB" : "white"
                             }}>
-                              {selectedNotificationTicketDetails.priority}
+                              {getPriorityLabel(selectedNotificationTicketDetails.priority)}
                             </span>
                           </div>
                           <div>
@@ -2820,10 +2831,10 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                   borderRadius: "12px",
                   fontSize: "12px",
                   fontWeight: "500",
-                  background: ticketDetails.priority === "critique" ? "#f44336" : ticketDetails.priority === "haute" ? "#fed7aa" : ticketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
-                  color: ticketDetails.priority === "haute" ? "#92400e" : ticketDetails.priority === "moyenne" ? "#0DADDB" : "white"
+                  background: ticketDetails.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : ticketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : ticketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
+                  color: ticketDetails.priority === "critique" ? "#E53E3E" : ticketDetails.priority === "haute" ? "#F59E0B" : ticketDetails.priority === "moyenne" ? "#0DADDB" : "white"
                 }}>
-                  {ticketDetails.priority}
+                  {getPriorityLabel(ticketDetails.priority)}
                 </span>
               </div>
               <div>
@@ -3341,8 +3352,8 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                           borderRadius: "12px",
                           fontSize: "12px",
                           fontWeight: "500",
-                          background: selectedNotificationTicketDetails.priority === "critique" ? "#f44336" : selectedNotificationTicketDetails.priority === "haute" ? "#fed7aa" : selectedNotificationTicketDetails.priority === "moyenne" ? "#dbeafe" : "#9e9e9e",
-                          color: selectedNotificationTicketDetails.priority === "haute" ? "#92400e" : selectedNotificationTicketDetails.priority === "moyenne" ? "#1e40af" : "white"
+                          background: selectedNotificationTicketDetails.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : selectedNotificationTicketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : selectedNotificationTicketDetails.priority === "moyenne" ? "#dbeafe" : "#9e9e9e",
+                          color: selectedNotificationTicketDetails.priority === "critique" ? "#E53E3E" : selectedNotificationTicketDetails.priority === "haute" ? "#F59E0B" : selectedNotificationTicketDetails.priority === "moyenne" ? "#1e40af" : "white"
                         }}>
                           {selectedNotificationTicketDetails.priority}
                         </span>

@@ -1439,10 +1439,10 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                     borderRadius: "4px",
                     fontSize: "12px",
                     fontWeight: "500",
-                    background: ticketDetails.priority === "critique" ? "#f44336" : ticketDetails.priority === "haute" ? "#fed7aa" : ticketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
-                    color: ticketDetails.priority === "haute" ? "#92400e" : "white"
+                    background: ticketDetails.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : ticketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : ticketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
+                    color: ticketDetails.priority === "critique" ? "#E53E3E" : ticketDetails.priority === "haute" ? "#F59E0B" : "white"
                   }}>
-                    {ticketDetails.priority}
+                    {getPriorityLabel(ticketDetails.priority)}
                   </span>
                 </div>
                 <div>
@@ -2139,8 +2139,8 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                             borderRadius: "12px",
                             fontSize: "12px",
                             fontWeight: "500",
-                            background: t.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : t.status === "assigne_technicien" ? "#f0f9ff" : t.status === "en_cours" ? "#fed7aa" : t.status === "resolu" ? "#d4edda" : t.status === "rejete" ? "#fee2e2" : "#e5e7eb",
-                            color: t.status === "en_attente_analyse" ? "#0DADDB" : t.status === "assigne_technicien" ? "#0c4a6e" : t.status === "en_cours" ? "#9a3412" : t.status === "resolu" ? "#155724" : t.status === "rejete" ? "#991b1b" : "#374151",
+                            background: t.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : t.status === "assigne_technicien" ? "#f0f9ff" : t.status === "en_cours" ? "#fed7aa" : t.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : t.status === "rejete" ? "#fee2e2" : "#e5e7eb",
+                            color: t.status === "en_attente_analyse" ? "#0DADDB" : t.status === "assigne_technicien" ? "#0c4a6e" : t.status === "en_cours" ? "#9a3412" : t.status === "resolu" ? "#2F9E44" : t.status === "rejete" ? "#991b1b" : "#374151",
                             display: "inline-flex",
                             alignItems: "center",
                             gap: "6px"
@@ -2165,10 +2165,10 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                             borderRadius: "12px",
                             fontSize: "12px",
                             fontWeight: "500",
-                            background: t.priority === "critique" ? "#fee2e2" : t.priority === "haute" ? "#fed7aa" : t.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : t.priority === "faible" ? "#fee2e2" : "#e5e7eb",
-                            color: t.priority === "critique" ? "#991b1b" : t.priority === "haute" ? "#92400e" : t.priority === "moyenne" ? "#0DADDB" : t.priority === "faible" ? "#991b1b" : "#374151"
+                            background: t.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : t.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : t.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : t.priority === "faible" ? "#fee2e2" : "#e5e7eb",
+                            color: t.priority === "critique" ? "#E53E3E" : t.priority === "haute" ? "#F59E0B" : t.priority === "moyenne" ? "#0DADDB" : t.priority === "faible" ? "#991b1b" : "#374151"
                           }}>
-                            {t.priority}
+                            {getPriorityLabel(t.priority)}
                           </span>
                         </td>
                         <td style={{ padding: "12px", fontSize: "14px", color: "#1e293b" }}>
@@ -2358,9 +2358,9 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                     };
 
                     // Couleur de la barre selon la priorité
-                    const borderColor = t.priority === "critique" ? "#991b1b" : 
-                                       t.priority === "haute" ? "#f97316" : 
-                                       "#3b82f6";
+                    const borderColor = t.priority === "critique" ? "#E53E3E" : 
+                                       t.priority === "haute" ? "#F59E0B" : 
+                                       "#0DADDB";
 
                     return (
                       <div
@@ -2413,8 +2413,8 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                               borderRadius: "20px",
                               fontSize: "10px",
                               fontWeight: "500",
-                        background: t.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : t.status === "assigne_technicien" ? "#f0f9ff" : t.status === "en_cours" ? "#fed7aa" : t.status === "resolu" ? "#d4edda" : t.status === "rejete" ? "#fee2e2" : t.status === "cloture" ? "#e5e7eb" : "#e5e7eb",
-                        color: t.status === "en_attente_analyse" ? "#0DADDB" : t.status === "assigne_technicien" ? "#0c4a6e" : t.status === "en_cours" ? "#9a3412" : t.status === "resolu" ? "#155724" : t.status === "rejete" ? "#991b1b" : t.status === "cloture" ? "#374151" : "#374151",
+                        background: t.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : t.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : t.status === "en_cours" ? "#fed7aa" : t.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : t.status === "rejete" ? "#fee2e2" : t.status === "cloture" ? "#e5e7eb" : "#e5e7eb",
+                        color: t.status === "en_attente_analyse" ? "#0DADDB" : t.status === "assigne_technicien" ? "#FF7A1B" : t.status === "en_cours" ? "#9a3412" : t.status === "resolu" ? "#2F9E44" : t.status === "rejete" ? "#991b1b" : t.status === "cloture" ? "#374151" : "#374151",
                         whiteSpace: "nowrap",
                       }}>
                         {t.status === "en_attente_analyse" ? "En attente d'assignation" :
@@ -2431,11 +2431,11 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                               borderRadius: "20px",
                               fontSize: "10px",
                               fontWeight: "500",
-                              background: t.priority === "critique" ? "#fee2e2" : t.priority === "haute" ? "#fed7aa" : t.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : t.priority === "faible" ? "#e5e7eb" : "#e5e7eb",
-                              color: t.priority === "critique" ? "#991b1b" : t.priority === "haute" ? "#92400e" : t.priority === "moyenne" ? "#0DADDB" : t.priority === "faible" ? "#374151" : "#374151",
+                              background: t.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : t.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : t.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : t.priority === "faible" ? "#e5e7eb" : "#e5e7eb",
+                              color: t.priority === "critique" ? "#E53E3E" : t.priority === "haute" ? "#F59E0B" : t.priority === "moyenne" ? "#0DADDB" : t.priority === "faible" ? "#374151" : "#374151",
                               whiteSpace: "nowrap",
                       }}>
-                        {t.priority}
+                        {getPriorityLabel(t.priority)}
                       </span>
 
                             {/* Badge Catégorie (si disponible) */}
@@ -2712,16 +2712,16 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                                 <span style={{ fontSize: "11px", color: "#9ca3af" }}>→</span>
                                 <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                                   <div style={{
-                                    width: "28px",
-                                    height: "28px",
+                                    width: "20px",
+                                    height: "20px",
                                     borderRadius: "50%",
-                                    background: "#fed7aa",
+                                    background: "rgba(255, 122, 27, 0.2)",
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    fontSize: "11px",
+                                    fontSize: "10px",
                                     fontWeight: "600",
-                                    color: "#92400e",
+                                    color: "#FF7A1B",
                                   }}>
                                     {getInitials(t.technician.full_name)}
                                   </div>
@@ -3025,10 +3025,10 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                         borderRadius: "4px",
                         fontSize: "12px",
                         fontWeight: "500",
-                        background: selectedNotificationTicketDetails.priority === "critique" ? "#f44336" : selectedNotificationTicketDetails.priority === "haute" ? "#fed7aa" : selectedNotificationTicketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
-                        color: selectedNotificationTicketDetails.priority === "haute" ? "#92400e" : "white"
+                        background: selectedNotificationTicketDetails.priority === "critique" ? "#f44336" : selectedNotificationTicketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : selectedNotificationTicketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
+                        color: selectedNotificationTicketDetails.priority === "haute" ? "#F59E0B" : "white"
                       }}>
-                        {selectedNotificationTicketDetails.priority}
+                        {getPriorityLabel(selectedNotificationTicketDetails.priority)}
                       </span>
                     </div>
                     <div>
@@ -3227,8 +3227,8 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                   borderRadius: "4px",
                   fontSize: "12px",
                   fontWeight: "500",
-                  background: ticketDetails.priority === "critique" ? "#f44336" : ticketDetails.priority === "haute" ? "#fed7aa" : ticketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
-                  color: ticketDetails.priority === "haute" ? "#92400e" : "white"
+                  background: ticketDetails.priority === "critique" ? "#f44336" : ticketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : ticketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
+                  color: ticketDetails.priority === "haute" ? "#F59E0B" : "white"
                 }}>
                   {ticketDetails.priority}
                 </span>
@@ -4120,8 +4120,8 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                             borderRadius: "4px",
                             fontSize: "12px",
                             fontWeight: "500",
-                            background: selectedNotificationTicketDetails.priority === "critique" ? "#f44336" : selectedNotificationTicketDetails.priority === "haute" ? "#fed7aa" : selectedNotificationTicketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
-                            color: selectedNotificationTicketDetails.priority === "haute" ? "#92400e" : "white"
+                            background: selectedNotificationTicketDetails.priority === "critique" ? "#f44336" : selectedNotificationTicketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : selectedNotificationTicketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
+                            color: selectedNotificationTicketDetails.priority === "haute" ? "#F59E0B" : "white"
                           }}>
                             {selectedNotificationTicketDetails.priority}
                           </span>

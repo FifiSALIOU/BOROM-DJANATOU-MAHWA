@@ -431,3 +431,4 @@ Base URL: `http://localhost:8000`
 
 5. **Timeout**: Les appels dans `LoginPage.tsx` utilisent un timeout de 10 secondes pour la connexion
 
+

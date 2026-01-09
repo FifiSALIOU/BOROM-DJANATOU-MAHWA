@@ -142,6 +142,17 @@ function SecretaryDashboard({ token }: SecretaryDashboardProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [openActionsMenuFor, setOpenActionsMenuFor] = useState<string | null>(null);
 
+  // Fonction pour obtenir le libellé d'une priorité
+  function getPriorityLabel(priority: string): string {
+    switch (priority) {
+      case "faible": return "Faible";
+      case "moyenne": return "Moyenne";
+      case "haute": return "Haute";
+      case "critique": return "Critique";
+      default: return priority;
+    }
+  }
+
   // Fonction pour charger les rapports récents
   async function loadRecentReports() {
     if (!token || token.trim() === "") {
@@ -3318,8 +3329,8 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                           borderRadius: "4px",
                           fontSize: "12px",
                           fontWeight: "500",
-                          background: selectedNotificationTicketDetails.priority === "critique" ? "#fee2e2" : selectedNotificationTicketDetails.priority === "haute" ? "#fed7aa" : selectedNotificationTicketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
-                          color: selectedNotificationTicketDetails.priority === "critique" ? "#991b1b" : selectedNotificationTicketDetails.priority === "haute" ? "#92400e" : "white"
+                          background: selectedNotificationTicketDetails.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : selectedNotificationTicketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : selectedNotificationTicketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
+                          color: selectedNotificationTicketDetails.priority === "critique" ? "#E53E3E" : selectedNotificationTicketDetails.priority === "haute" ? "#F59E0B" : "white"
                         }}>
                           {selectedNotificationTicketDetails.priority}
                         </span>
@@ -3477,10 +3488,10 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                       borderRadius: "4px",
                       fontSize: "12px",
                       fontWeight: "500",
-                      background: ticketDetails.priority === "critique" ? "#f44336" : ticketDetails.priority === "haute" ? "#fed7aa" : ticketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
-                      color: ticketDetails.priority === "haute" ? "#92400e" : "white"
+                      background: ticketDetails.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : ticketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : ticketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
+                      color: ticketDetails.priority === "critique" ? "#E53E3E" : ticketDetails.priority === "haute" ? "#F59E0B" : "white"
                     }}>
-                      {ticketDetails.priority}
+                      {getPriorityLabel(ticketDetails.priority)}
                     </span>
                   </div>
                   <div>
@@ -3946,10 +3957,10 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                     borderRadius: "20px",
                     fontSize: "12px",
                     fontWeight: "500",
-                    background: t.priority === "critique" ? "#fee2e2" : t.priority === "haute" ? "#fed7aa" : t.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : t.priority === "faible" ? "#fee2e2" : "#9e9e9e",
-                    color: t.priority === "critique" ? "#991b1b" : t.priority === "haute" ? "#92400e" : t.priority === "faible" ? "#991b1b" : t.priority === "moyenne" ? "#0DADDB" : "#374151"
+                    background: t.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : t.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : t.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : t.priority === "faible" ? "#fee2e2" : "#9e9e9e",
+                    color: t.priority === "critique" ? "#E53E3E" : t.priority === "haute" ? "#F59E0B" : t.priority === "faible" ? "#991b1b" : t.priority === "moyenne" ? "#0DADDB" : "#374151"
                   }}>
-                    {t.priority}
+                    {getPriorityLabel(t.priority)}
                   </span>
                 </td>
                 <td style={{ padding: "12px 16px" }}>
@@ -3959,12 +3970,12 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                     fontSize: "12px",
                     fontWeight: "500",
                     background: t.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : 
-                               t.status === "assigne_technicien" ? "#f0f9ff" : 
+                               t.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : 
                                t.status === "en_cours" ? "#FFDAB9" : 
-                               t.status === "resolu" ? "#d4edda" : 
+                               t.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : 
                                t.status === "cloture" ? "#e5e7eb" :
                                t.status === "rejete" ? "#fee2e2" : "#e0e0e0",
-                    color: t.status === "resolu" ? "#155724" : t.status === "en_attente_analyse" ? "#0DADDB" : t.status === "en_cours" ? "#8B4513" : t.status === "cloture" ? "#374151" : t.status === "rejete" ? "#991b1b" : t.status === "assigne_technicien" ? "#0c4a6e" : "white",
+                    color: t.status === "resolu" ? "#2F9E44" : t.status === "en_attente_analyse" ? "#0DADDB" : t.status === "en_cours" ? "#8B4513" : t.status === "cloture" ? "#374151" : t.status === "rejete" ? "#991b1b" : t.status === "assigne_technicien" ? "#FF7A1B" : "white",
                     whiteSpace: "nowrap",
                     display: "inline-block"
                   }}>
@@ -4976,8 +4987,8 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                             borderRadius: "20px",
                             fontSize: "12px",
                             fontWeight: "500",
-                            background: t.priority === "critique" ? "#fee2e2" : t.priority === "haute" ? "#fed7aa" : t.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : t.priority === "faible" ? "#fee2e2" : "#9e9e9e",
-                            color: t.priority === "critique" ? "#991b1b" : t.priority === "haute" ? "#92400e" : t.priority === "faible" ? "#991b1b" : t.priority === "moyenne" ? "#0DADDB" : "#374151"
+                            background: t.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : t.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : t.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : t.priority === "faible" ? "#fee2e2" : "#9e9e9e",
+                            color: t.priority === "critique" ? "#E53E3E" : t.priority === "haute" ? "#F59E0B" : t.priority === "faible" ? "#991b1b" : t.priority === "moyenne" ? "#0DADDB" : "#374151"
                           }}>
                             {t.priority}
                           </span>
@@ -5890,10 +5901,10 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                   borderRadius: "20px",
                   fontSize: "12px",
                   fontWeight: "500",
-                  background: ticketDetails.priority === "critique" ? "#fee2e2" : ticketDetails.priority === "haute" ? "#fed7aa" : ticketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : ticketDetails.priority === "faible" ? "#fee2e2" : "#9e9e9e",
-                  color: ticketDetails.priority === "critique" ? "#991b1b" : ticketDetails.priority === "haute" ? "#92400e" : ticketDetails.priority === "faible" ? "#991b1b" : ticketDetails.priority === "moyenne" ? "#0DADDB" : "#374151"
+                  background: ticketDetails.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : ticketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : ticketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : ticketDetails.priority === "faible" ? "#fee2e2" : "#9e9e9e",
+                  color: ticketDetails.priority === "critique" ? "#E53E3E" : ticketDetails.priority === "haute" ? "#F59E0B" : ticketDetails.priority === "faible" ? "#991b1b" : ticketDetails.priority === "moyenne" ? "#0DADDB" : "#374151"
                 }}>
-                  {ticketDetails.priority}
+                  {getPriorityLabel(ticketDetails.priority)}
                 </span>
               </div>
               <div>
@@ -8357,8 +8368,8 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                           borderRadius: "4px",
                           fontSize: "12px",
                           fontWeight: "500",
-                          background: selectedNotificationTicketDetails.priority === "critique" ? "#fee2e2" : selectedNotificationTicketDetails.priority === "haute" ? "#fed7aa" : selectedNotificationTicketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
-                          color: selectedNotificationTicketDetails.priority === "critique" ? "#991b1b" : selectedNotificationTicketDetails.priority === "haute" ? "#92400e" : "white"
+                          background: selectedNotificationTicketDetails.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : selectedNotificationTicketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : selectedNotificationTicketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
+                          color: selectedNotificationTicketDetails.priority === "critique" ? "#E53E3E" : selectedNotificationTicketDetails.priority === "haute" ? "#F59E0B" : "white"
                         }}>
                           {selectedNotificationTicketDetails.priority}
                         </span>
