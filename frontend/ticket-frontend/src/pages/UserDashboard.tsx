@@ -2373,6 +2373,48 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                 </select>
               </div>
             )}
+            {/* Compteur de tickets avec icône */}
+            {(activeSection === "dashboard" || activeSection === "tickets") && (() => {
+              const filteredTickets = tickets.filter((t) => {
+                const search = dashboardSearch.trim().toLowerCase();
+                const formattedNumber = formatTicketNumber(t.number).toLowerCase();
+                const matchesSearch = !search || 
+                  formattedNumber.includes(search) ||
+                  t.number.toString().includes(search) ||
+                  t.title.toLowerCase().includes(search) ||
+                  (t.description || "").toLowerCase().includes(search);
+                const matchesStatus = !dashboardStatusFilter || t.status === dashboardStatusFilter;
+                const matchesCategory = !dashboardCategoryFilter || (() => {
+                  const category = (t.category || "").toLowerCase();
+                  const isApplicatif = category.includes("logiciel") || 
+                                      category.includes("applicatif") ||
+                                      category.includes("application");
+                  const categoryType = isApplicatif ? "applicatif" : "materiel";
+                  return categoryType === dashboardCategoryFilter.toLowerCase();
+                })();
+                const matchesPriority = !dashboardPriorityFilter || t.priority === dashboardPriorityFilter;
+                return matchesSearch && matchesStatus && matchesCategory && matchesPriority;
+              });
+              const ticketCount = filteredTickets.length;
+              
+              return (
+                <div style={{ 
+                  display: "flex", 
+                  alignItems: "center", 
+                  gap: "8px",
+                  marginBottom: "16px"
+                }}>
+                  <Ticket size={20} color="#4b5563" />
+                  <span style={{ 
+                    fontSize: "14px", 
+                    fontWeight: "500", 
+                    color: "#4b5563"
+                  }}>
+                    {ticketCount} ticket(s) trouvé(s)
+                  </span>
+                </div>
+              );
+            })()}
             {/* Tickets Cards */}
             <div
               style={{
