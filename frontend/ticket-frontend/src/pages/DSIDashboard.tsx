@@ -6937,7 +6937,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
           </>
         )}
 
-          {activeSection === "tickets" && (
+          {activeSection === "tickets" && !showTicketDetailsPage && (
             <>
               <div style={{ 
                 display: "flex", 
