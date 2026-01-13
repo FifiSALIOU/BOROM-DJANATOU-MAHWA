@@ -976,7 +976,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
       case "assigne_technicien": return "Assigné au technicien";
       case "en_cours": return "En cours";
       case "resolu": return "Résolu";
-      case "rejete": return "Rejeté";
+      case "rejete": return "Relancé";
       case "cloture": return "Clôturé";
       default: return status;
     }
@@ -2333,7 +2333,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                              t.status === "assigne_technicien" ? "Assigné au technicien" :
                              t.status === "en_cours" ? "En cours" :
                              t.status === "resolu" ? "Résolu" :
-                             t.status === "rejete" ? "Rejeté" :
+                             t.status === "rejete" ? "Relancé" :
                              t.status === "cloture" ? "Clôturé" : t.status}
                           </span>
                         </td>
@@ -2479,7 +2479,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                     <option value="assigne_technicien">Assigné au technicien</option>
                     <option value="en_cours">En cours</option>
                     <option value="resolu">Résolu</option>
-                    <option value="rejete">Rejeté</option>
+                    <option value="rejete">Relancé</option>
                     <option value="cloture">Clôturé</option>
                   </select>
                   <select
@@ -2696,7 +2696,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                          t.status === "assigne_technicien" ? "Assigné au technicien" :
                          t.status === "en_cours" ? "En cours" :
                          t.status === "resolu" ? "Résolu" :
-                         t.status === "rejete" ? "Rejeté" :
+                         t.status === "rejete" ? "Relancé" :
                          t.status === "cloture" ? "Clôturé" : t.status}
                       </span>
 
@@ -3199,7 +3199,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                         color: "#991b1b",
                         border: "1px solid #fecaca"
                       }}>
-                        Rejeté
+                        Relancé
                       </span>
                     )}
                   </div>
@@ -4320,7 +4320,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                             color: "#991b1b",
                             border: "1px solid #fecaca"
                           }}>
-                            Rejeté
+                            Relancé
                           </span>
                         )}
                       </div>
