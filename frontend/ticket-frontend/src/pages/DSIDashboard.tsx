@@ -113,14 +113,19 @@ interface UserRead {
 }
 
 // Composant Label personnalisé pour les donut charts avec labels externes et lignes de connexion
-const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name, fill }: any) => {
+const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name, fill, value }: any) => {
+  // Ne pas afficher le label si la valeur est 0 ou le pourcentage est 0%
+  if (value === 0 || percent === 0 || Math.round(percent * 100) === 0) {
+    return null;
+  }
+  
   const RADIAN = Math.PI / 180;
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
   
-  // Position externe pour le label (outerRadius + 20px = 130px du centre)
-  const labelRadius = outerRadius + 20;
+  // Position externe pour le label (outerRadius + 25px pour plus d'espace)
+  const labelRadius = outerRadius + 25;
   const labelX = cx + labelRadius * Math.cos(-midAngle * RADIAN);
   const labelY = cy + labelRadius * Math.sin(-midAngle * RADIAN);
   
@@ -146,7 +151,7 @@ const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name
         fill={fill}
         textAnchor={labelX > cx ? "start" : "end"}
         dominantBaseline="central"
-        fontSize="13px"
+        fontSize="12px"
         fontWeight="500"
       >
         {name} ({Math.round(percent * 100)}%)
