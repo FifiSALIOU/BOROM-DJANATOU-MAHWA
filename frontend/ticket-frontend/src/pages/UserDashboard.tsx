@@ -3394,7 +3394,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
               </div>
               <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
                 <button type="submit" style={{ flex: 1, padding: "8px 16px", backgroundColor: "#FB7E06", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "13px", fontWeight: "500" }}>Enregistrer</button>
-                <button type="button" onClick={() => { setShowEditModal(false); setEditTicketId(null); }} style={{ flex: 1, padding: "8px 16px", backgroundColor: "#6b7280", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "13px", fontWeight: "500" }}>Annuler</button>
+                <button type="button" onClick={() => { setShowEditModal(false); setEditTicketId(null); }} style={{ flex: 1, padding: "8px 16px", backgroundColor: "white", color: "black", border: "none", borderRadius: "6px", cursor: "pointer", fontSize: "13px", fontWeight: "500" }}>Annuler</button>
               </div>
             </form>
           </div>
