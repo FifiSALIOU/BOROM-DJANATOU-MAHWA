@@ -5054,35 +5054,27 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                     // Pas d'action pour tickets clôturés - Afficher juste l'icône œil
                     <div style={{ position: "relative" }}>
                       <button
-                        onClick={(e) => { 
-                          e.stopPropagation(); 
+                        onClick={(e) => {
+                          e.stopPropagation();
                           loadTicketDetails(t.id);
                         }}
-                        disabled={loading}
-                        title="Voir détails"
-                        aria-label="Voir détails"
                         style={{
-                          width: 28,
-                          height: 28,
-                          display: "inline-flex",
+                          background: "#6b7280",
+                          border: "1px solid white",
+                          borderRadius: "6px",
+                          cursor: "pointer",
+                          padding: "6px 8px",
+                          display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          background: "#f3f4f6",
-                          border: "none",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                          color: "#475569",
+                          width: "32px",
+                          height: "32px"
                         }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = "#e5e7eb";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = "#f3f4f6";
-                        }}
+                        title="Voir les détails"
                       >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                          <circle cx="12" cy="12" r="3" />
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
                         </svg>
                       </button>
                     </div>
