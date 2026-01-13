@@ -1655,7 +1655,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                         disabled={loading || isBlocked}
                         style={{
                           padding: "10px 20px",
-                          backgroundColor: isBlocked ? "#d1d5db" : "#3b82f6",
+                          backgroundColor: isBlocked ? "#d1d5db" : "#e5e7eb",
                           color: "black",
                           border: "none",
                           borderRadius: "6px",
@@ -1665,10 +1665,10 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                           opacity: isBlocked ? 0.6 : 1
                         }}
                         onMouseEnter={(e) => {
-                          if (!isBlocked) e.currentTarget.style.backgroundColor = "#2563eb";
+                          if (!isBlocked) e.currentTarget.style.backgroundColor = "#d1d5db";
                         }}
                         onMouseLeave={(e) => {
-                          if (!isBlocked) e.currentTarget.style.backgroundColor = "#3b82f6";
+                          if (!isBlocked) e.currentTarget.style.backgroundColor = "#e5e7eb";
                         }}
                       >
                         Modifier
@@ -1695,7 +1695,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                         disabled={loading || isBlocked}
                         style={{
                           padding: "10px 20px",
-                          backgroundColor: isBlocked ? "#d1d5db" : "#ef4444",
+                          backgroundColor: isBlocked ? "#d1d5db" : "#e5e7eb",
                           color: "black",
                           border: "none",
                           borderRadius: "6px",
@@ -1705,10 +1705,10 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                           opacity: isBlocked ? 0.6 : 1
                         }}
                         onMouseEnter={(e) => {
-                          if (!isBlocked) e.currentTarget.style.backgroundColor = "#dc2626";
+                          if (!isBlocked) e.currentTarget.style.backgroundColor = "#d1d5db";
                         }}
                         onMouseLeave={(e) => {
-                          if (!isBlocked) e.currentTarget.style.backgroundColor = "#ef4444";
+                          if (!isBlocked) e.currentTarget.style.backgroundColor = "#e5e7eb";
                         }}
                       >
                         Supprimer
