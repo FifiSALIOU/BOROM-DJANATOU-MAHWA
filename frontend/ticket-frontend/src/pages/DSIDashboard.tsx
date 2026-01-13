@@ -2731,31 +2731,31 @@ function DSIDashboard({ token }: DSIDashboardProps) {
 
   // Fonction pour préparer les données du graphique "Répartition par statut"
   const prepareStatusData = () => {
-    // Tickets délégués (priorité sur les autres catégories)
-    const delegue = allTickets.filter(t => t.secretary_id !== null && t.secretary_id !== undefined).length;
+    // Tickets délégués par le DSI connecté (priorité sur les autres catégories)
+    const delegue = allTickets.filter(t => delegatedTicketsByMe.has(t.id)).length;
     
-    // Tickets en cours (excluant les délégués)
+    // Tickets en cours (excluant les délégués par le DSI connecté)
     const enCours = allTickets.filter(t => 
       (t.status === "en_cours" || t.status === "assigne_technicien") && 
-      (t.secretary_id === null || t.secretary_id === undefined)
+      !delegatedTicketsByMe.has(t.id)
     ).length;
     
-    // Tickets ouverts (excluant les délégués)
+    // Tickets ouverts (excluant les délégués par le DSI connecté)
     const ouvert = allTickets.filter(t => 
       (t.status === "ouvert" || t.status === "en_attente_analyse") && 
-      (t.secretary_id === null || t.secretary_id === undefined)
+      !delegatedTicketsByMe.has(t.id)
     ).length;
     
-    // Tickets relancés (excluant les délégués)
+    // Tickets relancés (excluant les délégués par le DSI connecté)
     const relance = allTickets.filter(t => 
       (t.status === "relance" || t.status === "relancé") && 
-      (t.secretary_id === null || t.secretary_id === undefined)
+      !delegatedTicketsByMe.has(t.id)
     ).length;
     
-    // Tickets résolus (excluant les délégués)
+    // Tickets résolus (excluant les délégués par le DSI connecté)
     const resolu = allTickets.filter(t => 
       t.status === "resolu" && 
-      (t.secretary_id === null || t.secretary_id === undefined)
+      !delegatedTicketsByMe.has(t.id)
     ).length;
     
     const total = allTickets.length;
