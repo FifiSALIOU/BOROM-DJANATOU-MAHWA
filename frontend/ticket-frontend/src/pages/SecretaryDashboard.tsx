@@ -3497,7 +3497,8 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
             width: "100%",
             height: "100vh",
             background: "white",
-            overflow: "hidden"
+            overflow: "hidden",
+            paddingLeft: "24px"
           }}>
             {/* Panneau gauche - Liste des tickets avec notifications */}
             <div style={{
