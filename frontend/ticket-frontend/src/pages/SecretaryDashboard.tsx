@@ -218,6 +218,7 @@ function SecretaryDashboard({ token }: SecretaryDashboardProps) {
     if (roleName !== "Adjoint DSI") {
       return activeSection;
     }
+    if (location.pathname === "/dashboard/adjoint/notifications") return "notifications";
     if (location.pathname === "/dashboard/adjoint/statistics") return "reports";
     if (location.pathname === "/dashboard/adjoint/technicians") return "technicians";
     if (location.pathname === "/dashboard/adjoint/tickets") return "tickets";
@@ -2603,7 +2604,11 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
     
     // Ouvrir la vue des tickets avec notifications dans le contenu principal
     setShowNotifications(false);
-    setActiveSection("notifications");
+    if (roleName === "Adjoint DSI") {
+      navigate("/dashboard/adjoint/notifications");
+    } else {
+      setActiveSection("notifications");
+    }
     setSelectedNotificationTicket(notification.ticket_id);
     
     // Charger les tickets avec notifications
@@ -3195,7 +3200,13 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
         <div style={{ marginTop: "auto" }}>
           {/* Bouton Notifications */}
           <div
-            onClick={() => setActiveSection("notifications")}
+            onClick={() => {
+              if (roleName === "Adjoint DSI") {
+                navigate("/dashboard/adjoint/notifications");
+              } else {
+                setActiveSection("notifications");
+              }
+            }}
             style={{
               display: "flex",
               alignItems: "center",
@@ -3514,7 +3525,11 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                 </h3>
                 <button
                   onClick={() => {
-                    setActiveSection("dashboard");
+                    if (roleName === "Adjoint DSI") {
+                      navigate("/dashboard/adjoint");
+                    } else {
+                      setActiveSection("dashboard");
+                    }
                     setSelectedNotificationTicket(null);
                     setSelectedNotificationTicketDetails(null);
                   }}
@@ -3600,7 +3615,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                               color: "#333",
                               lineHeight: "1.5"
                             }}>
-                              Ticket #{ticket.number}
+                              {formatTicketNumber(ticket.number)}
                             </p>
                             <p style={{
                               margin: "4px 0 0 0",
@@ -3669,7 +3684,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                     flexShrink: 0
                   }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "600", color: "#333" }}>Détails du ticket #{selectedNotificationTicketDetails.number}</h3>
+                      <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "600", color: "#333" }}>Détails du ticket {formatTicketNumber(selectedNotificationTicketDetails.number)}</h3>
                       {selectedNotificationTicketDetails.status === "rejete" && (
                         <span style={{
                           padding: "6px 10px",
@@ -9778,7 +9793,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                     flexShrink: 0
                   }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "600", color: "#333" }}>Détails du ticket #{selectedNotificationTicketDetails.number}</h3>
+                      <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "600", color: "#333" }}>Détails du ticket {formatTicketNumber(selectedNotificationTicketDetails.number)}</h3>
                     </div>
                   </div>
                   
