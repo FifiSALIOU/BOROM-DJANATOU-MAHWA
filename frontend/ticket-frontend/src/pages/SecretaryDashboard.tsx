@@ -6537,7 +6537,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                               alignItems: "center",
                               justifyContent: "center",
                               color: "hsl(25, 95%, 53%)",
-                              fontSize: "16px",
+                              fontSize: "14px",
                               fontWeight: 600,
                               flexShrink: 0
                             }}>
@@ -6547,7 +6547,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                             {/* Infos */}
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <div style={{
-                                fontSize: "15px",
+                                fontSize: "14px",
                                 fontWeight: 600,
                                 color: "#111827",
                                 marginBottom: "3px"
@@ -6555,7 +6555,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                                 {tech.full_name}
                               </div>
                               <div style={{
-                                fontSize: "13px",
+                                fontSize: "14px",
                                 color: "hsl(220, 15%, 45%)",
                                 marginBottom: "10px"
                               }}>
