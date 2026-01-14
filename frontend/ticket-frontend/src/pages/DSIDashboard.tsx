@@ -10152,15 +10152,15 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                             <div style={{ display: "flex", gap: "16px", marginBottom: "12px" }}>
                               {/* Avatar */}
                               <div style={{
-                                width: "48px",
-                                height: "48px",
+                                width: "40px",
+                                height: "40px",
                                 borderRadius: "50%",
                                 background: "hsla(25, 95%, 53%, 0.1)",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
                                 color: "hsl(25, 95%, 53%)",
-                                fontSize: "18px",
+                                fontSize: "14px",
                                 fontWeight: 600,
                                 flexShrink: 0
                               }}>
@@ -10170,7 +10170,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                               {/* Infos */}
                               <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{
-                                  fontSize: "16px",
+                                  fontSize: "14px",
                                   fontWeight: 600,
                                   color: "#111827",
                                   marginBottom: "4px"
