@@ -4073,67 +4073,6 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
         </div>
       )}
 
-      {/* Modal pour résumé de résolution */}
-      {resolveTicket && (
-        <div style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: "rgba(0,0,0,0.5)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 1000
-        }}>
-          <div style={{
-            background: "white",
-            padding: "24px",
-            borderRadius: "8px",
-            maxWidth: "500px",
-            width: "90%"
-          }}>
-            <h3 style={{ marginBottom: "16px" }}>Marquer le ticket comme résolu</h3>
-            <p style={{ marginBottom: "16px", color: "#666", fontSize: "14px" }}>
-              Veuillez fournir un résumé de la résolution. Ce résumé sera visible par l'utilisateur et enregistré dans l'historique.
-            </p>
-            <textarea
-              value={resolutionSummary}
-              onChange={(e) => setResolutionSummary(e.target.value)}
-              placeholder="Résumé de la résolution (actions effectuées, solution appliquée, tests effectués, etc.)"
-              rows={6}
-              style={{
-                width: "100%",
-                padding: "8px",
-                marginTop: "12px",
-                border: "1px solid #ddd",
-                borderRadius: "4px",
-                resize: "vertical"
-              }}
-            />
-            <div style={{ display: "flex", gap: "8px", marginTop: "16px" }}>
-              <button
-                onClick={() => confirmMarkResolved(resolveTicket)}
-                disabled={loading || !resolutionSummary.trim()}
-                style={{ flex: 1, padding: "10px", backgroundColor: "#28a745", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
-              >
-                Marquer comme résolu
-              </button>
-              <button
-                onClick={() => {
-                  setResolveTicket(null);
-                  setResolutionSummary("");
-                }}
-                style={{ flex: 1, padding: "10px", backgroundColor: "#6c757d", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
-              >
-                Annuler
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Modal pour voir les détails du ticket */}
       {viewTicketDetails && ticketDetails && (
         <div style={{
@@ -4863,6 +4802,68 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                 onClick={() => {
                   setSelectedTicket(null);
                   setCommentText("");
+                }}
+                style={{ flex: 1, padding: "10px", backgroundColor: "#6c757d", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
+              >
+                Annuler
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal pour résumé de résolution */}
+      {resolveTicket && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0,0,0,0.5)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 10000,
+          pointerEvents: "auto"
+        }}>
+          <div style={{
+            background: "white",
+            padding: "24px",
+            borderRadius: "8px",
+            maxWidth: "500px",
+            width: "90%"
+          }}>
+            <h3 style={{ marginBottom: "16px" }}>Marquer le ticket comme résolu</h3>
+            <p style={{ marginBottom: "16px", color: "#666", fontSize: "14px" }}>
+              Veuillez fournir un résumé de la résolution. Ce résumé sera visible par l'utilisateur et enregistré dans l'historique.
+            </p>
+            <textarea
+              value={resolutionSummary}
+              onChange={(e) => setResolutionSummary(e.target.value)}
+              placeholder="Résumé de la résolution (actions effectuées, solution appliquée, tests effectués, etc.)"
+              rows={6}
+              style={{
+                width: "100%",
+                padding: "8px",
+                marginTop: "12px",
+                border: "1px solid #ddd",
+                borderRadius: "4px",
+                resize: "vertical"
+              }}
+            />
+            <div style={{ display: "flex", gap: "8px", marginTop: "16px" }}>
+              <button
+                onClick={() => confirmMarkResolved(resolveTicket)}
+                disabled={loading || !resolutionSummary.trim()}
+                style={{ flex: 1, padding: "10px", backgroundColor: "#28a745", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
+              >
+                Marquer comme résolu
+              </button>
+              <button
+                onClick={() => {
+                  setResolveTicket(null);
+                  setResolutionSummary("");
                 }}
                 style={{ flex: 1, padding: "10px", backgroundColor: "#6c757d", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
               >
