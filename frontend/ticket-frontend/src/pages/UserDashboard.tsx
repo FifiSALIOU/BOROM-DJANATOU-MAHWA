@@ -1762,7 +1762,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                         disabled={loading}
                         style={{
                           padding: "10px 20px",
-                          backgroundColor: "#dc3545",
+                          backgroundColor: "#e5e7eb",
                           color: "white",
                           border: "none",
                           borderRadius: "6px",
@@ -1771,10 +1771,10 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                           fontWeight: "500"
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = "#c82333";
+                          e.currentTarget.style.backgroundColor = "#d1d5db";
                         }}
                         onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = "#dc3545";
+                          e.currentTarget.style.backgroundColor = "#e5e7eb";
                         }}
                       >
                         Relancer
