@@ -5706,11 +5706,21 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                                     Par: {h.user.full_name}
                                   </div>
                                 )}
-                                {h.reason && (
-                                  <div style={{ marginTop: "4px", fontSize: "13px", color: "#4B5563" }}>
-                                    Résumé de la résolution: {h.reason}
-                                  </div>
-                                )}
+                                {h.reason && (() => {
+                                  // Ne pas afficher le reason pour les assignations par Secrétaire/Adjoint DSI
+                                  const reason = (h.reason || "").toLowerCase();
+                                  const isAssignmentBySecretary = reason.includes("assignation par secrétaire") || 
+                                                                   reason.includes("assignation par adjoint") ||
+                                                                   reason.includes("secrétaire/adjoint dsi");
+                                  if (isAssignmentBySecretary) {
+                                    return null;
+                                  }
+                                  return (
+                                    <div style={{ marginTop: "4px", fontSize: "13px", color: "#4B5563" }}>
+                                      Résumé de la résolution: {h.reason}
+                                    </div>
+                                  );
+                                })()}
                               </>
                             )}
                           </div>
