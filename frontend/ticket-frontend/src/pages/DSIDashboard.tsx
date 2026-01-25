@@ -277,11 +277,9 @@ function DSIDashboard({ token }: DSIDashboardProps) {
       return "Ticket Délégué à Adjoint DSI";
     }
     
-    // Cas spécifique: assignation par Adjoint DSI (en_attente_analyse → assigne_technicien avec "Assignation par Secrétaire/Adjoint DSI")
-    
+    // Cas spécifique: assignation (en_attente_analyse → assigne_technicien)
     if ((oldStatus.includes("en_attente_analyse") || oldStatus.includes("en attente analyse")) &&
-        (newStatus.includes("assigne_technicien") || newStatus.includes("assigne technicien") || newStatus.includes("assigné technicien")) &&
-        (reason.includes("assignation par secrétaire") || reason.includes("assignation par adjoint") || reason.includes("secrétaire/adjoint dsi"))) {
+        (newStatus.includes("assigne_technicien") || newStatus.includes("assigne technicien") || newStatus.includes("assigné technicien"))) {
       // Si le ticket a un technicien assigné, afficher son nom
       if (ticket && ticket.technician && ticket.technician.full_name) {
         return `Assigné à ${ticket.technician.full_name}`;
