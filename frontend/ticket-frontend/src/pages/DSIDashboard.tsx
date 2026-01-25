@@ -268,6 +268,16 @@ function DSIDashboard({ token }: DSIDashboardProps) {
       return "Ticket en cours de traitement";
     }
     
+    // Cas spécifique: technicien résout le ticket (en_cours → resolu)
+    if ((oldStatus.includes("en_cours") || oldStatus.includes("en cours")) &&
+        (newStatus.includes("resolu") || newStatus.includes("résolu"))) {
+      // Afficher "Résolu par [nom du technicien]" si disponible
+      if (entry.user && entry.user.full_name) {
+        return `Résolu par ${entry.user.full_name}`;
+      }
+      return "Résolu par technicien";
+    }
+    
     // Pour le DSI, on affiche toujours le format "ancien → nouveau"
     return `${entry.old_status} → ${entry.new_status}`;
   };
@@ -5721,9 +5731,14 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                                   if (isAssignmentBySecretary) {
                                     return null;
                                   }
+                                  // Enlever le doublon "Résumé de la résolution:" si présent
+                                  let displayReason = h.reason || "";
+                                  if (displayReason.startsWith("Résumé de la résolution: Résumé de la résolution:")) {
+                                    displayReason = displayReason.replace("Résumé de la résolution: Résumé de la résolution:", "Résumé de la résolution:");
+                                  }
                                   return (
                                     <div style={{ marginTop: "4px", fontSize: "13px", color: "#4B5563" }}>
-                                      Résumé de la résolution: {h.reason}
+                                      {displayReason}
                                     </div>
                                   );
                                 })()}
