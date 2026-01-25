@@ -229,6 +229,20 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
       return entry.user?.full_name ? `Relancé par ${entry.user.full_name}` : "Ticket relancé";
     }
 
+    // Cas spécifique: rejet de résolution par l'utilisateur (resolu → rejete avec Validation utilisateur: Rejeté)
+    if (entry.old_status && entry.new_status) {
+      const oldStatus = (entry.old_status || "").toLowerCase();
+      const newStatus = (entry.new_status || "").toLowerCase();
+      const reason = (entry.reason || "").toLowerCase();
+      
+      // Détecter rejet de résolution : resolu → rejete avec "Validation utilisateur: Rejeté"
+      if ((oldStatus.includes("resolu") || oldStatus.includes("résolu")) && 
+          (newStatus.includes("rejete") || newStatus.includes("rejeté")) &&
+          reason.includes("validation utilisateur: rejeté")) {
+        return "Ticket relancé";
+      }
+    }
+
     // Cas spécifique: assigne_technicien → en_cours
     if (entry.old_status && entry.new_status) {
       const oldStatus = (entry.old_status || "").toLowerCase();
@@ -1880,7 +1894,17 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                                 )}
                                 {h.reason && (
                                   <div style={{ marginTop: "4px", fontSize: "13px", color: "#4B5563" }}>
-                                    {h.reason}
+                                    {(() => {
+                                      // Si c'est une validation rejetée, extraire seulement "Motif: ..."
+                                      const reason = h.reason || "";
+                                      if (reason.toLowerCase().includes("validation utilisateur: rejeté") && reason.includes("Motif:")) {
+                                        const motifMatch = reason.match(/Motif:\s*(.+)/i);
+                                        if (motifMatch && motifMatch[1]) {
+                                          return `Motif: ${motifMatch[1].trim()}`;
+                                        }
+                                      }
+                                      return reason;
+                                    })()}
                                   </div>
                                 )}
                               </>
