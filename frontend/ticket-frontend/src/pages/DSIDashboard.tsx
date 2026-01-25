@@ -262,6 +262,12 @@ function DSIDashboard({ token }: DSIDashboardProps) {
       return "Assigné à technicien";
     }
     
+    // Cas spécifique: technicien prend en charge (assigne_technicien → en_cours)
+    if ((oldStatus.includes("assigne_technicien") || oldStatus.includes("assigne technicien") || oldStatus.includes("assigné technicien")) &&
+        (newStatus.includes("en_cours") || newStatus.includes("en cours"))) {
+      return "Ticket en cours de traitement";
+    }
+    
     // Pour le DSI, on affiche toujours le format "ancien → nouveau"
     return `${entry.old_status} → ${entry.new_status}`;
   };
