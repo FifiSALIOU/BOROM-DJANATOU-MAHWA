@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
-import { ClipboardList, Clock3, CheckCircle2, LayoutDashboard, ChevronLeft, ChevronRight, Bell, Search, Box, Clock, Monitor, Wrench } from "lucide-react";
+import { ClipboardList, Clock3, CheckCircle2, LayoutDashboard, ChevronLeft, ChevronRight, Bell, Search, Box, Clock, Monitor, Wrench, FileText, UserCheck, RefreshCcw, Users } from "lucide-react";
 import helpdeskLogo from "../assets/helpdesk-logo.png";
 
 interface Notification {
@@ -140,6 +140,186 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
       default: return status;
     }
   }
+
+  // Fonction helper pour déterminer l'icône et les couleurs de la timeline d'historique
+  const getHistoryVisuals = (entry: TicketHistory) => {
+    const status = (entry.new_status || "").toLowerCase();
+    const oldStatus = (entry.old_status || "").toLowerCase();
+    const reason = (entry.reason || "").toLowerCase();
+
+    let Icon = Clock;
+    let iconBg = "#F3F4F6";
+    let iconBorder = "#E5E7EB";
+    let iconColor = "#111827";
+
+    if (!entry.old_status || entry.new_status === "creation") {
+      // Création du ticket
+      Icon = FileText;
+    } else if (
+      // Détecter délégation à l'Adjoint DSI (en_attente_analyse → en_attente_analyse avec reason contenant "délégation")
+      entry.old_status &&
+      (oldStatus.includes("en_attente_analyse") || oldStatus.includes("en attente analyse")) &&
+      (status.includes("en_attente_analyse") || status.includes("en attente analyse")) &&
+      (reason.includes("délégation") || reason.includes("délégu") || reason.includes("delegat"))
+    ) {
+      // Délégation à l'Adjoint DSI
+      Icon = Users;
+    } else if (status.includes("assigne") || status.includes("assigné") || status.includes("assign")) {
+      // Assignation
+      Icon = UserCheck;
+    } else if (status.includes("deleg") || status.includes("délégu")) {
+      // Délégation (autres cas)
+      Icon = Users;
+    } else if (
+      // Détecter rejet de résolution (resolu → rejete avec Validation utilisateur: Rejeté)
+      entry.old_status &&
+      (oldStatus.includes("resolu") || oldStatus.includes("résolu")) &&
+      (status.includes("rejete") || status.includes("rejeté")) &&
+      reason.includes("validation utilisateur: rejeté")
+    ) {
+      // Ticket relancé (rejet de résolution)
+      Icon = RefreshCcw;
+    } else if (
+      status.includes("resolu") ||
+      status.includes("résolu") ||
+      status.includes("valide") ||
+      status.includes("validé") ||
+      status.includes("cloture") ||
+      status.includes("clôture")
+    ) {
+      // Résolution / validation
+      Icon = CheckCircle2;
+      iconBg = "#ECFDF3";
+      iconBorder = "#BBF7D0";
+      iconColor = "#166534";
+    } else if (status.includes("relance") || status.includes("relancé")) {
+      // Relance
+      Icon = RefreshCcw;
+    }
+
+    return { Icon, iconBg, iconBorder, iconColor };
+  };
+
+  // Formate la date/heure pour l'historique (ex. "25 janv. 2026 à 10:36")
+  const formatHistoryDate = (dateStr: string): string => {
+    const d = new Date(dateStr);
+    const day = d.toLocaleDateString("fr-FR", { day: "2-digit" });
+    const month = d.toLocaleDateString("fr-FR", { month: "short" });
+    const year = d.toLocaleDateString("fr-FR", { year: "numeric" });
+    const time = d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+    return `${day} ${month} ${year} à ${time}`;
+  };
+
+  // Fonction helper pour déterminer le titre principal d'une entrée d'historique
+  const getHistoryTitle = (entry: TicketHistory, ticket?: Ticket | null): string => {
+    if (!entry.old_status) {
+      return "Création du ticket";
+    }
+    
+    const oldStatus = (entry.old_status || "").toLowerCase();
+    const newStatus = (entry.new_status || "").toLowerCase();
+    const reason = (entry.reason || "").toLowerCase();
+    
+    // Cas spécifique: délégation à l'Adjoint DSI (en_attente_analyse → en_attente_analyse avec "Délégation au Adjoint DSI")
+    if ((oldStatus.includes("en_attente_analyse") || oldStatus.includes("en attente analyse")) &&
+        (newStatus.includes("en_attente_analyse") || newStatus.includes("en attente analyse")) &&
+        (reason.includes("délégation") || reason.includes("délégu") || reason.includes("delegat"))) {
+      return "Ticket Délégué à Adjoint DSI";
+    }
+    
+    // Cas spécifique: assignation (en_attente_analyse → assigne_technicien)
+    if ((oldStatus.includes("en_attente_analyse") || oldStatus.includes("en attente analyse")) &&
+        (newStatus.includes("assigne_technicien") || newStatus.includes("assigne technicien") || newStatus.includes("assigné technicien"))) {
+      // Si le ticket a un technicien assigné, afficher son nom
+      if (ticket && ticket.technician && ticket.technician.full_name) {
+        return `Assigné à ${ticket.technician.full_name}`;
+      }
+      return "Assigné à technicien";
+    }
+    
+    // Cas spécifique: technicien prend en charge (assigne_technicien → en_cours)
+    if ((oldStatus.includes("assigne_technicien") || oldStatus.includes("assigne technicien") || oldStatus.includes("assigné technicien")) &&
+        (newStatus.includes("en_cours") || newStatus.includes("en cours"))) {
+      return "Ticket en cours de traitement";
+    }
+    
+    // Cas spécifique: rejet de résolution par l'utilisateur (resolu → rejete avec "Validation utilisateur: Rejeté")
+    if ((oldStatus.includes("resolu") || oldStatus.includes("résolu")) &&
+        (newStatus.includes("rejete") || newStatus.includes("rejeté")) &&
+        (reason.includes("validation utilisateur: rejeté") || reason.includes("validation utilisateur: rejeté"))) {
+      return "Ticket relancé";
+    }
+    
+    // Cas spécifique: reprise du ticket après relance (rejete → en_cours)
+    if ((oldStatus.includes("rejete") || oldStatus.includes("rejeté")) &&
+        (newStatus.includes("en_cours") || newStatus.includes("en cours"))) {
+      return "Ticket repris en charge par le technicien";
+    }
+    
+    // Cas spécifique: technicien résout le ticket (en_cours → resolu)
+    if ((oldStatus.includes("en_cours") || oldStatus.includes("en cours")) &&
+        (newStatus.includes("resolu") || newStatus.includes("résolu"))) {
+      // Afficher "Résolu par [nom du technicien]" si disponible
+      if (entry.user && entry.user.full_name) {
+        return `Résolu par ${entry.user.full_name}`;
+      }
+      return "Résolu par technicien";
+    }
+    
+    // Cas spécifique: validation et clôture par l'utilisateur (resolu → cloture avec "Validation utilisateur: Validé")
+    if ((oldStatus.includes("resolu") || oldStatus.includes("résolu")) &&
+        (newStatus.includes("cloture") || newStatus.includes("clôture")) &&
+        (reason.includes("validation utilisateur: validé") || reason.includes("validation utilisateur: validé"))) {
+      // Afficher "Validé par [nom de l'utilisateur]" si disponible
+      if (entry.user && entry.user.full_name) {
+        return `Validé par ${entry.user.full_name}`;
+      }
+      return "Validé par utilisateur";
+    }
+    
+    // Format par défaut: "ancien → nouveau"
+    return `${entry.old_status} → ${entry.new_status}`;
+  };
+
+  // Historique affiché : "Création du ticket" en premier, puis le reste trié par date ascendante
+  const getDisplayHistory = (ticket: Ticket, history: TicketHistory[]): TicketHistory[] => {
+    const creation: TicketHistory = {
+      id: `creation-${ticket.id}`,
+      ticket_id: ticket.id,
+      old_status: null,
+      new_status: "creation",
+      user_id: "",
+      reason: null,
+      changed_at: ticket.created_at || "",
+      user: ticket.creator ? { full_name: ticket.creator.full_name } : null,
+    };
+    // Filtrer les entrées d'historique pour exclure les modifications par l'utilisateur
+    const rest = history.filter((h) => {
+      // Garder toutes les entrées qui ont un old_status
+      if (h.old_status == null) return false;
+      
+      // Exclure les modifications par l'utilisateur
+      const reason = (h.reason || "").toLowerCase();
+      const isUserModification = reason.includes("ticket modifié par l'utilisateur") || 
+                                  reason.includes("modifié par l'utilisateur") ||
+                                  reason.includes("modification par l'utilisateur");
+      
+      // Vérifier si l'utilisateur qui a fait l'action est le créateur du ticket
+      const isCreatorAction = ticket.creator && 
+                              h.user && 
+                              h.user.full_name === ticket.creator.full_name;
+      
+      // Exclure si c'est une modification par l'utilisateur créateur
+      if (isUserModification && isCreatorAction) {
+        return false;
+      }
+      
+      return true;
+    });
+    const combined = [creation, ...rest];
+    combined.sort((a, b) => new Date(a.changed_at).getTime() - new Date(b.changed_at).getTime());
+    return combined;
+  };
 
   // Fonction helper pour formater le numéro de ticket en "TKT-XXX"
   const formatTicketNumber = (number: number): string => {
@@ -1521,28 +1701,105 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
               <div style={{ marginTop: "16px" }}>
                 <strong>Historique :</strong>
                 <div style={{ marginTop: "8px" }}>
-                  {ticketHistory.length === 0 ? (
-                    <p style={{ color: "#999", fontStyle: "italic" }}>Aucun historique</p>
-                  ) : (
-                    ticketHistory.map((h) => (
-                      <div key={h.id} style={{ padding: "8px", marginTop: "4px", background: "#f8f9fa", borderRadius: "4px" }}>
-                        <div style={{ fontSize: "12px", color: "#555" }}>
-                          {new Date(h.changed_at).toLocaleString("fr-FR")}
-                        </div>
-                        <div style={{ marginTop: "4px", fontWeight: 500 }}>
-                          {h.old_status ? `${h.old_status} → ${h.new_status}` : h.new_status}
-                        </div>
-                        {h.user && (
-                          <div style={{ marginTop: "4px", fontSize: "12px", color: "#666" }}>
-                            Par: {h.user.full_name}
+                  {(() => {
+                    if (!ticketDetails) return <p style={{ color: "#999", fontStyle: "italic" }}>Aucun historique</p>;
+                    const displayHistory = getDisplayHistory(ticketDetails, ticketHistory);
+                    if (displayHistory.length === 0) {
+                      return <p style={{ color: "#999", fontStyle: "italic" }}>Aucun historique</p>;
+                    }
+                    return displayHistory.map((h, index) => {
+                      const { Icon, iconBg, iconBorder, iconColor } = getHistoryVisuals(h);
+                      const isLast = index === displayHistory.length - 1;
+                      const isCreation = h.new_status === "creation";
+
+                      return (
+                        <div key={h.id} style={{ display: "flex", gap: "12px" }}>
+                          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", minHeight: "60px" }}>
+                            <div
+                              style={{
+                                width: "32px",
+                                height: "32px",
+                                borderRadius: "9999px",
+                                border: `2px solid ${iconBorder}`,
+                                backgroundColor: iconBg,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                color: iconColor,
+                                boxShadow: "0 0 0 4px rgba(148, 163, 184, 0.15)",
+                              }}
+                            >
+                              <Icon size={18} />
+                            </div>
+                            {!isLast && (
+                              <div
+                                style={{
+                                  flexGrow: 1,
+                                  width: "2px",
+                                  backgroundColor: "#E5E7EB",
+                                  marginTop: "4px",
+                                  marginBottom: "-4px",
+                                }}
+                              />
+                            )}
                           </div>
-                        )}
-                        {h.reason && (
-                          <div style={{ marginTop: "4px", color: "#666" }}>{h.reason}</div>
-                        )}
-                      </div>
-                    ))
-                  )}
+                          <div
+                            style={{
+                              padding: "8px 12px",
+                              marginBottom: "12px",
+                              background: "#F9FAFB",
+                              borderRadius: "8px",
+                              border: "1px solid #E5E7EB",
+                              flex: 1,
+                            }}
+                          >
+                            <div style={{ fontSize: "14px", fontWeight: 600, color: "#111827" }}>
+                              {getHistoryTitle(h, ticketDetails)}
+                            </div>
+                            <div style={{ fontSize: "12px", color: "#6B7280", marginTop: "4px" }}>
+                              {formatHistoryDate(h.changed_at)}
+                            </div>
+                            {!isCreation && (
+                              <>
+                                {h.user && (
+                                  <div style={{ marginTop: "4px", fontSize: "12px", color: "#6B7280" }}>
+                                    Par: {h.user.full_name}
+                                  </div>
+                                )}
+                                {h.reason && (() => {
+                                  // Ne pas afficher le reason pour les assignations par Secrétaire/Adjoint DSI
+                                  const reason = (h.reason || "").toLowerCase();
+                                  const isAssignmentBySecretary = reason.includes("assignation par secrétaire") || 
+                                                                   reason.includes("assignation par adjoint") ||
+                                                                   reason.includes("secrétaire/adjoint dsi");
+                                  if (isAssignmentBySecretary) {
+                                    return null;
+                                  }
+                                  // Si c'est une validation rejetée, extraire seulement "Motif: ..."
+                                  let displayReason = h.reason || "";
+                                  if (reason.includes("validation utilisateur: rejeté") && displayReason.includes("Motif:")) {
+                                    const motifMatch = displayReason.match(/Motif:\s*(.+)/i);
+                                    if (motifMatch && motifMatch[1]) {
+                                      displayReason = `Motif: ${motifMatch[1].trim()}`;
+                                    }
+                                  }
+                                  // Enlever le doublon "Résumé de la résolution:" si présent
+                                  if (displayReason.startsWith("Résumé de la résolution: Résumé de la résolution:")) {
+                                    displayReason = displayReason.replace("Résumé de la résolution: Résumé de la résolution:", "Résumé de la résolution:");
+                                  }
+                                  return (
+                                    <div style={{ marginTop: "4px", fontSize: "13px", color: "#4B5563" }}>
+                                      {displayReason}
+                                    </div>
+                                  );
+                                })()}
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    });
+                  })()}
                 </div>
               </div>
 
@@ -4011,28 +4268,125 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                         <div style={{ marginTop: "24px", marginBottom: "16px" }}>
                           <strong>Historique :</strong>
                           <div style={{ marginTop: "8px" }}>
-                            {ticketHistory.length === 0 ? (
-                              <p style={{ color: "#999", fontStyle: "italic" }}>Aucun historique</p>
-                            ) : (
-                              ticketHistory.map((h: TicketHistory) => (
-                                <div key={h.id} style={{ padding: "8px", marginTop: "4px", background: "#f8f9fa", borderRadius: "4px" }}>
-                                  <div style={{ fontSize: "12px", color: "#555" }}>
-                                    {new Date(h.changed_at).toLocaleString("fr-FR")}
-                                  </div>
-                                  <div style={{ marginTop: "4px", fontWeight: 500 }}>
-                                    {h.old_status ? `${h.old_status} → ${h.new_status}` : h.new_status}
-                                  </div>
-                                  {h.user && (
-                                    <div style={{ marginTop: "4px", fontSize: "12px", color: "#666" }}>
-                                      Par: {h.user.full_name}
+                            {(() => {
+                              if (!selectedNotificationTicketDetails) return <p style={{ color: "#999", fontStyle: "italic" }}>Aucun historique</p>;
+                              const ticketForHistory: Ticket = {
+                                id: selectedNotificationTicketDetails.id,
+                                number: selectedNotificationTicketDetails.number,
+                                title: selectedNotificationTicketDetails.title,
+                                description: selectedNotificationTicketDetails.description,
+                                creator_id: selectedNotificationTicketDetails.creator_id || "",
+                                creator: selectedNotificationTicketDetails.creator,
+                                user_agency: selectedNotificationTicketDetails.user_agency,
+                                priority: selectedNotificationTicketDetails.priority,
+                                status: selectedNotificationTicketDetails.status,
+                                type: selectedNotificationTicketDetails.type,
+                                category: selectedNotificationTicketDetails.category,
+                                technician_id: selectedNotificationTicketDetails.technician_id,
+                                technician: selectedNotificationTicketDetails.technician,
+                                secretary_id: selectedNotificationTicketDetails.secretary_id,
+                                created_at: selectedNotificationTicketDetails.created_at,
+                                resolved_at: selectedNotificationTicketDetails.resolved_at,
+                                closed_at: selectedNotificationTicketDetails.closed_at,
+                                feedback_score: selectedNotificationTicketDetails.feedback_score
+                              };
+                              const displayHistory = getDisplayHistory(ticketForHistory, ticketHistory);
+                              if (displayHistory.length === 0) {
+                                return <p style={{ color: "#999", fontStyle: "italic" }}>Aucun historique</p>;
+                              }
+                              return displayHistory.map((h, index) => {
+                                const { Icon, iconBg, iconBorder, iconColor } = getHistoryVisuals(h);
+                                const isLast = index === displayHistory.length - 1;
+                                const isCreation = h.new_status === "creation";
+
+                                return (
+                                  <div key={h.id} style={{ display: "flex", gap: "12px" }}>
+                                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", minHeight: "60px" }}>
+                                      <div
+                                        style={{
+                                          width: "32px",
+                                          height: "32px",
+                                          borderRadius: "9999px",
+                                          border: `2px solid ${iconBorder}`,
+                                          backgroundColor: iconBg,
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
+                                          color: iconColor,
+                                          boxShadow: "0 0 0 4px rgba(148, 163, 184, 0.15)",
+                                        }}
+                                      >
+                                        <Icon size={18} />
+                                      </div>
+                                      {!isLast && (
+                                        <div
+                                          style={{
+                                            flexGrow: 1,
+                                            width: "2px",
+                                            backgroundColor: "#E5E7EB",
+                                            marginTop: "4px",
+                                            marginBottom: "-4px",
+                                          }}
+                                        />
+                                      )}
                                     </div>
-                                  )}
-                                  {h.reason && (
-                                    <div style={{ marginTop: "4px", color: "#666" }}>Résumé de la résolution: {h.reason}</div>
-                                  )}
-                                </div>
-                              ))
-                            )}
+                                    <div
+                                      style={{
+                                        padding: "8px 12px",
+                                        marginBottom: "12px",
+                                        background: "#F9FAFB",
+                                        borderRadius: "8px",
+                                        border: "1px solid #E5E7EB",
+                                        flex: 1,
+                                      }}
+                                    >
+                                      <div style={{ fontSize: "14px", fontWeight: 600, color: "#111827" }}>
+                                        {getHistoryTitle(h, ticketForHistory)}
+                                      </div>
+                                      <div style={{ fontSize: "12px", color: "#6B7280", marginTop: "4px" }}>
+                                        {formatHistoryDate(h.changed_at)}
+                                      </div>
+                                      {!isCreation && (
+                                        <>
+                                          {h.user && (
+                                            <div style={{ marginTop: "4px", fontSize: "12px", color: "#6B7280" }}>
+                                              Par: {h.user.full_name}
+                                            </div>
+                                          )}
+                                          {h.reason && (() => {
+                                            // Ne pas afficher le reason pour les assignations par Secrétaire/Adjoint DSI
+                                            const reason = (h.reason || "").toLowerCase();
+                                            const isAssignmentBySecretary = reason.includes("assignation par secrétaire") || 
+                                                                             reason.includes("assignation par adjoint") ||
+                                                                             reason.includes("secrétaire/adjoint dsi");
+                                            if (isAssignmentBySecretary) {
+                                              return null;
+                                            }
+                                            // Si c'est une validation rejetée, extraire seulement "Motif: ..."
+                                            let displayReason = h.reason || "";
+                                            if (reason.includes("validation utilisateur: rejeté") && displayReason.includes("Motif:")) {
+                                              const motifMatch = displayReason.match(/Motif:\s*(.+)/i);
+                                              if (motifMatch && motifMatch[1]) {
+                                                displayReason = `Motif: ${motifMatch[1].trim()}`;
+                                              }
+                                            }
+                                            // Enlever le doublon "Résumé de la résolution:" si présent
+                                            if (displayReason.startsWith("Résumé de la résolution: Résumé de la résolution:")) {
+                                              displayReason = displayReason.replace("Résumé de la résolution: Résumé de la résolution:", "Résumé de la résolution:");
+                                            }
+                                            return (
+                                              <div style={{ marginTop: "4px", fontSize: "13px", color: "#4B5563" }}>
+                                                {displayReason}
+                                              </div>
+                                            );
+                                          })()}
+                                        </>
+                                      )}
+                                    </div>
+                                  </div>
+                                );
+                              });
+                            })()}
                           </div>
                         </div>
                       </div>
@@ -4199,28 +4553,105 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
             <div style={{ marginTop: "16px" }}>
               <strong>Historique :</strong>
               <div style={{ marginTop: "8px" }}>
-                {ticketHistory.length === 0 ? (
-                  <p style={{ color: "#999", fontStyle: "italic" }}>Aucun historique</p>
-                ) : (
-                  ticketHistory.map((h: TicketHistory) => (
-                    <div key={h.id} style={{ padding: "8px", marginTop: "4px", background: "#f8f9fa", borderRadius: "4px" }}>
-                      <div style={{ fontSize: "12px", color: "#555" }}>
-                        {new Date(h.changed_at).toLocaleString("fr-FR")}
-                      </div>
-                      <div style={{ marginTop: "4px", fontWeight: 500 }}>
-                        {h.old_status ? `${h.old_status} → ${h.new_status}` : h.new_status}
-                      </div>
-                      {h.user && (
-                        <div style={{ marginTop: "4px", fontSize: "12px", color: "#666" }}>
-                          Par: {h.user.full_name}
+                {(() => {
+                  if (!ticketDetails) return <p style={{ color: "#999", fontStyle: "italic" }}>Aucun historique</p>;
+                  const displayHistory = getDisplayHistory(ticketDetails, ticketHistory);
+                  if (displayHistory.length === 0) {
+                    return <p style={{ color: "#999", fontStyle: "italic" }}>Aucun historique</p>;
+                  }
+                  return displayHistory.map((h, index) => {
+                    const { Icon, iconBg, iconBorder, iconColor } = getHistoryVisuals(h);
+                    const isLast = index === displayHistory.length - 1;
+                    const isCreation = h.new_status === "creation";
+
+                    return (
+                      <div key={h.id} style={{ display: "flex", gap: "12px" }}>
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", minHeight: "60px" }}>
+                          <div
+                            style={{
+                              width: "32px",
+                              height: "32px",
+                              borderRadius: "9999px",
+                              border: `2px solid ${iconBorder}`,
+                              backgroundColor: iconBg,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              color: iconColor,
+                              boxShadow: "0 0 0 4px rgba(148, 163, 184, 0.15)",
+                            }}
+                          >
+                            <Icon size={18} />
+                          </div>
+                          {!isLast && (
+                            <div
+                              style={{
+                                flexGrow: 1,
+                                width: "2px",
+                                backgroundColor: "#E5E7EB",
+                                marginTop: "4px",
+                                marginBottom: "-4px",
+                              }}
+                            />
+                          )}
                         </div>
-                      )}
-                      {h.reason && (
-                        <div style={{ marginTop: "4px", color: "#666" }}>{h.reason}</div>
-                      )}
-                    </div>
-                  ))
-                )}
+                        <div
+                          style={{
+                            padding: "8px 12px",
+                            marginBottom: "12px",
+                            background: "#F9FAFB",
+                            borderRadius: "8px",
+                            border: "1px solid #E5E7EB",
+                            flex: 1,
+                          }}
+                        >
+                          <div style={{ fontSize: "14px", fontWeight: 600, color: "#111827" }}>
+                            {getHistoryTitle(h, ticketDetails)}
+                          </div>
+                          <div style={{ fontSize: "12px", color: "#6B7280", marginTop: "4px" }}>
+                            {formatHistoryDate(h.changed_at)}
+                          </div>
+                          {!isCreation && (
+                            <>
+                              {h.user && (
+                                <div style={{ marginTop: "4px", fontSize: "12px", color: "#6B7280" }}>
+                                  Par: {h.user.full_name}
+                                </div>
+                              )}
+                              {h.reason && (() => {
+                                // Ne pas afficher le reason pour les assignations par Secrétaire/Adjoint DSI
+                                const reason = (h.reason || "").toLowerCase();
+                                const isAssignmentBySecretary = reason.includes("assignation par secrétaire") || 
+                                                                 reason.includes("assignation par adjoint") ||
+                                                                 reason.includes("secrétaire/adjoint dsi");
+                                if (isAssignmentBySecretary) {
+                                  return null;
+                                }
+                                // Si c'est une validation rejetée, extraire seulement "Motif: ..."
+                                let displayReason = h.reason || "";
+                                if (reason.includes("validation utilisateur: rejeté") && displayReason.includes("Motif:")) {
+                                  const motifMatch = displayReason.match(/Motif:\s*(.+)/i);
+                                  if (motifMatch && motifMatch[1]) {
+                                    displayReason = `Motif: ${motifMatch[1].trim()}`;
+                                  }
+                                }
+                                // Enlever le doublon "Résumé de la résolution:" si présent
+                                if (displayReason.startsWith("Résumé de la résolution: Résumé de la résolution:")) {
+                                  displayReason = displayReason.replace("Résumé de la résolution: Résumé de la résolution:", "Résumé de la résolution:");
+                                }
+                                return (
+                                  <div style={{ marginTop: "4px", fontSize: "13px", color: "#4B5563" }}>
+                                    {displayReason}
+                                  </div>
+                                );
+                              })()}
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
               </div>
             </div>
 
@@ -4690,28 +5121,125 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                     <div style={{ marginTop: "24px", marginBottom: "16px" }}>
                       <strong>Historique :</strong>
                       <div style={{ marginTop: "8px" }}>
-                        {ticketHistory.length === 0 ? (
-                          <p style={{ color: "#999", fontStyle: "italic" }}>Aucun historique</p>
-                        ) : (
-                          ticketHistory.map((h: TicketHistory) => (
-                            <div key={h.id} style={{ padding: "8px", marginTop: "4px", background: "#f8f9fa", borderRadius: "4px" }}>
-                              <div style={{ fontSize: "12px", color: "#555" }}>
-                                {new Date(h.changed_at).toLocaleString("fr-FR")}
-                              </div>
-                              <div style={{ marginTop: "4px", fontWeight: 500 }}>
-                                {h.old_status ? `${h.old_status} → ${h.new_status}` : h.new_status}
-                              </div>
-                              {h.user && (
-                                <div style={{ marginTop: "4px", fontSize: "12px", color: "#666" }}>
-                                  Par: {h.user.full_name}
+                        {(() => {
+                          if (!selectedNotificationTicketDetails) return <p style={{ color: "#999", fontStyle: "italic" }}>Aucun historique</p>;
+                          const ticketForHistory: Ticket = {
+                            id: selectedNotificationTicketDetails.id,
+                            number: selectedNotificationTicketDetails.number,
+                            title: selectedNotificationTicketDetails.title,
+                            description: selectedNotificationTicketDetails.description,
+                            creator_id: selectedNotificationTicketDetails.creator_id || "",
+                            creator: selectedNotificationTicketDetails.creator,
+                            user_agency: selectedNotificationTicketDetails.user_agency,
+                            priority: selectedNotificationTicketDetails.priority,
+                            status: selectedNotificationTicketDetails.status,
+                            type: selectedNotificationTicketDetails.type,
+                            category: selectedNotificationTicketDetails.category,
+                            technician_id: selectedNotificationTicketDetails.technician_id,
+                            technician: selectedNotificationTicketDetails.technician,
+                            secretary_id: selectedNotificationTicketDetails.secretary_id,
+                            created_at: selectedNotificationTicketDetails.created_at,
+                            resolved_at: selectedNotificationTicketDetails.resolved_at,
+                            closed_at: selectedNotificationTicketDetails.closed_at,
+                            feedback_score: selectedNotificationTicketDetails.feedback_score
+                          };
+                          const displayHistory = getDisplayHistory(ticketForHistory, ticketHistory);
+                          if (displayHistory.length === 0) {
+                            return <p style={{ color: "#999", fontStyle: "italic" }}>Aucun historique</p>;
+                          }
+                          return displayHistory.map((h, index) => {
+                            const { Icon, iconBg, iconBorder, iconColor } = getHistoryVisuals(h);
+                            const isLast = index === displayHistory.length - 1;
+                            const isCreation = h.new_status === "creation";
+
+                            return (
+                              <div key={h.id} style={{ display: "flex", gap: "12px" }}>
+                                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", minHeight: "60px" }}>
+                                  <div
+                                    style={{
+                                      width: "32px",
+                                      height: "32px",
+                                      borderRadius: "9999px",
+                                      border: `2px solid ${iconBorder}`,
+                                      backgroundColor: iconBg,
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      color: iconColor,
+                                      boxShadow: "0 0 0 4px rgba(148, 163, 184, 0.15)",
+                                    }}
+                                  >
+                                    <Icon size={18} />
+                                  </div>
+                                  {!isLast && (
+                                    <div
+                                      style={{
+                                        flexGrow: 1,
+                                        width: "2px",
+                                        backgroundColor: "#E5E7EB",
+                                        marginTop: "4px",
+                                        marginBottom: "-4px",
+                                      }}
+                                    />
+                                  )}
                                 </div>
-                              )}
-                              {h.reason && (
-                                <div style={{ marginTop: "4px", color: "#666" }}>Résumé de la résolution: {h.reason}</div>
-                              )}
-                            </div>
-                          ))
-                        )}
+                                <div
+                                  style={{
+                                    padding: "8px 12px",
+                                    marginBottom: "12px",
+                                    background: "#F9FAFB",
+                                    borderRadius: "8px",
+                                    border: "1px solid #E5E7EB",
+                                    flex: 1,
+                                  }}
+                                >
+                                  <div style={{ fontSize: "14px", fontWeight: 600, color: "#111827" }}>
+                                    {getHistoryTitle(h, ticketForHistory)}
+                                  </div>
+                                  <div style={{ fontSize: "12px", color: "#6B7280", marginTop: "4px" }}>
+                                    {formatHistoryDate(h.changed_at)}
+                                  </div>
+                                  {!isCreation && (
+                                    <>
+                                      {h.user && (
+                                        <div style={{ marginTop: "4px", fontSize: "12px", color: "#6B7280" }}>
+                                          Par: {h.user.full_name}
+                                        </div>
+                                      )}
+                                      {h.reason && (() => {
+                                        // Ne pas afficher le reason pour les assignations par Secrétaire/Adjoint DSI
+                                        const reason = (h.reason || "").toLowerCase();
+                                        const isAssignmentBySecretary = reason.includes("assignation par secrétaire") || 
+                                                                         reason.includes("assignation par adjoint") ||
+                                                                         reason.includes("secrétaire/adjoint dsi");
+                                        if (isAssignmentBySecretary) {
+                                          return null;
+                                        }
+                                        // Si c'est une validation rejetée, extraire seulement "Motif: ..."
+                                        let displayReason = h.reason || "";
+                                        if (reason.includes("validation utilisateur: rejeté") && displayReason.includes("Motif:")) {
+                                          const motifMatch = displayReason.match(/Motif:\s*(.+)/i);
+                                          if (motifMatch && motifMatch[1]) {
+                                            displayReason = `Motif: ${motifMatch[1].trim()}`;
+                                          }
+                                        }
+                                        // Enlever le doublon "Résumé de la résolution:" si présent
+                                        if (displayReason.startsWith("Résumé de la résolution: Résumé de la résolution:")) {
+                                          displayReason = displayReason.replace("Résumé de la résolution: Résumé de la résolution:", "Résumé de la résolution:");
+                                        }
+                                        return (
+                                          <div style={{ marginTop: "4px", fontSize: "13px", color: "#4B5563" }}>
+                                            {displayReason}
+                                          </div>
+                                        );
+                                      })()}
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          });
+                        })()}
                       </div>
                     </div>
                   </div>
