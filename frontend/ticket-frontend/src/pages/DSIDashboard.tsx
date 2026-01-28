@@ -11454,14 +11454,14 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        color: "hsl(220, 15%, 45%)"
+                        color: "#111827"
                       }}
                     >
                       <X size={20} />
                     </button>
 
-                    {/* Titre: text-foreground (bleu marine #1E3A5F) */}
-                    <h2 style={{ marginBottom: "24px", fontSize: "24px", fontWeight: "600", color: "#1E3A5F" }}>
+                    {/* Titre: Bold, dark gray */}
+                    <h2 style={{ marginBottom: "24px", fontSize: "20px", fontWeight: "700", color: "#111827", fontFamily: "system-ui, -apple-system, sans-serif" }}>
                       {editingType ? "Modifier le type" : "Ajouter un type"}
                     </h2>
                     
@@ -11475,8 +11475,8 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                     }} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                       {/* Nom du type */}
                       <div>
-                        {/* Label: text-sm font-medium text-foreground mb-2 */}
-                        <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "500", color: "#1E3A5F" }}>
+                        {/* Label: Regular weight, dark gray */}
+                        <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "400", color: "#111827", fontFamily: "system-ui, -apple-system, sans-serif" }}>
                           Nom du type <span style={{ color: "#dc3545" }}>*</span>
                         </label>
                         {/* Input: border border-input rounded-lg px-4 py-3 text-base bg-background */}
@@ -11493,17 +11493,19 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                             borderRadius: "8px",
                             fontSize: "16px",
                             backgroundColor: "white",
-                            color: "#1E3A5F",
+                            color: "#111827",
                             height: "40px",
-                            boxSizing: "border-box"
+                            boxSizing: "border-box",
+                            fontFamily: "system-ui, -apple-system, sans-serif",
+                            fontWeight: "400"
                           }}
                         />
                       </div>
 
                       {/* Code (identifiant technique) */}
                       <div>
-                        {/* Label: text-sm font-medium text-foreground mb-2 */}
-                        <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "500", color: "#1E3A5F" }}>
+                        {/* Label: Regular weight, dark gray */}
+                        <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "400", color: "#111827", fontFamily: "system-ui, -apple-system, sans-serif" }}>
                           Code (identifiant technique)
                         </label>
                         {/* Input désactivé: border border-input rounded-lg px-4 py-3 text-muted-foreground bg-muted/50 cursor-not-allowed */}
@@ -11523,15 +11525,16 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                             color: "#6b7280",
                             cursor: "not-allowed",
                             height: "40px",
-                            boxSizing: "border-box"
+                            boxSizing: "border-box",
+                            fontWeight: "400"
                           }}
                         />
                       </div>
 
                       {/* Description */}
                       <div>
-                        {/* Label: text-sm font-medium text-foreground mb-2 */}
-                        <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "500", color: "#1E3A5F" }}>
+                        {/* Label: Regular weight, dark gray */}
+                        <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "400", color: "#111827", fontFamily: "system-ui, -apple-system, sans-serif" }}>
                           Description
                         </label>
                         {/* Textarea: border border-input rounded-lg px-4 py-3 min-h-[100px] text-sm bg-background resize-y */}
@@ -11548,17 +11551,19 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                             minHeight: "80px",
                             height: "100px",
                             backgroundColor: "white",
-                            color: "#1E3A5F",
+                            color: "#111827",
                             resize: "vertical",
-                            boxSizing: "border-box"
+                            boxSizing: "border-box",
+                            fontFamily: "system-ui, -apple-system, sans-serif",
+                            fontWeight: "400"
                           }}
                         />
                       </div>
 
                       {/* Actif Switch */}
                       <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
-                        {/* Label: text-sm font-medium text-foreground */}
-                        <label style={{ fontSize: "14px", fontWeight: "500", color: "#1E3A5F", margin: 0 }}>
+                        {/* Label: Regular weight, dark gray */}
+                        <label style={{ fontSize: "14px", fontWeight: "400", color: "#111827", margin: 0, fontFamily: "system-ui, -apple-system, sans-serif" }}>
                           Actif
                         </label>
                         <div
@@ -11603,17 +11608,18 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                           style={{
                             padding: "10px 20px",
                             background: "white",
-                            color: "#374151",
+                            color: "#111827",
                             border: "1px solid #e5e7eb",
                             borderRadius: "8px",
                             cursor: "pointer",
                             fontSize: "14px",
-                            fontWeight: "500",
+                            fontWeight: "400",
                             height: "40px",
                             boxSizing: "border-box",
                             display: "flex",
                             alignItems: "center",
-                            justifyContent: "center"
+                            justifyContent: "center",
+                            fontFamily: "system-ui, -apple-system, sans-serif"
                           }}
                         >
                           Annuler
@@ -11629,12 +11635,13 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                             borderRadius: "8px",
                             cursor: "pointer",
                             fontSize: "14px",
-                            fontWeight: "600",
+                            fontWeight: "700",
                             height: "40px",
                             boxSizing: "border-box",
                             display: "flex",
                             alignItems: "center",
-                            justifyContent: "center"
+                            justifyContent: "center",
+                            fontFamily: "system-ui, -apple-system, sans-serif"
                           }}
                         >
                           {editingType ? "Modifier" : "Ajouter"}
