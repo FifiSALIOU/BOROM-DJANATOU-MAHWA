@@ -5848,7 +5848,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
         </div>
 
         {/* Contenu principal avec scroll */}
-        <div style={{ flex: 1, padding: "30px", overflow: activeSection === "notifications" ? "hidden" : "auto", paddingTop: "80px" }}>
+        <div style={{ flex: 1, padding: "30px", overflow: activeSection === "notifications" ? "hidden" : "auto", paddingTop: "120px" }}>
         {/* Affichage des détails du ticket en pleine page */}
         {showTicketDetailsPage && ticketDetails ? (
           <div>
