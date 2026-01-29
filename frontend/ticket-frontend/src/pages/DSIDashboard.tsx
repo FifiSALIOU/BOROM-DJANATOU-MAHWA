@@ -6227,7 +6227,11 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
         </div>
 
         {/* Contenu principal avec scroll */}
-        <div style={{ flex: 1, padding: "30px", overflow: activeSection === "notifications" ? "hidden" : "auto", paddingTop: activeSection === "notifications" ? "72px" : "120px" }}>
+        <div style={{
+          flex: 1,
+          padding: activeSection === "notifications" ? "72px 30px 30px 0" : "120px 30px 30px 30px",
+          overflow: activeSection === "notifications" ? "hidden" : "auto"
+        }}>
         {/* Affichage des détails du ticket en pleine page */}
         {showTicketDetailsPage && ticketDetails ? (
           <div>
@@ -16512,7 +16516,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                   flexShrink: 0
                 }}>
                   <div style={{
-                    padding: "28px 20px 20px 0",
+                    padding: "28px 20px 20px 30px",
                     borderBottom: "1px solid #e0e0e0",
                     display: "flex",
                     justifyContent: "space-between",
@@ -16587,7 +16591,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                               }
                             }}
                             style={{
-                              padding: "12px 12px 12px 0",
+                              padding: "12px 12px 12px 30px",
                               marginBottom: "8px",
                               borderRadius: "8px",
                               background: isSelected ? "#e3f2fd" : "white",
@@ -16669,7 +16673,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                   {selectedNotificationTicketDetails ? (
                     <>
                       <div style={{
-                        padding: "28px 20px 20px 20px",
+                        padding: "28px 20px 20px 30px",
                         borderBottom: "1px solid #e0e0e0",
                         background: "white",
                         borderRadius: "0 8px 0 0"
@@ -16695,7 +16699,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                       <div style={{
                         flex: 1,
                         overflowY: "auto",
-                        padding: "20px"
+                        padding: "20px 20px 20px 30px"
                       }}>
                         <div style={{ marginBottom: "16px" }}>
                           <strong>Titre :</strong>
@@ -18101,7 +18105,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
               flexShrink: 0
             }}>
               <div style={{
-                padding: "28px 20px 20px 0",
+                padding: "28px 20px 20px 30px",
                 borderBottom: "1px solid #e0e0e0",
                 display: "flex",
                 justifyContent: "space-between",
@@ -18189,7 +18193,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                           }
                         }}
                         style={{
-                          padding: "12px 12px 12px 0",
+                          padding: "12px 12px 12px 30px",
                           marginBottom: "8px",
                           borderRadius: "8px",
                           background: isSelected ? "#e3f2fd" : "white",
@@ -18272,7 +18276,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
               {selectedNotificationTicketDetails ? (
                 <>
                   <div style={{
-                    padding: "28px 20px 20px 20px",
+                    padding: "28px 20px 20px 30px",
                     borderBottom: "1px solid #e0e0e0",
                     background: "white",
                     borderRadius: "0 8px 0 0"
@@ -18298,7 +18302,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                   <div style={{
                     flex: 1,
                     overflowY: "auto",
-                    padding: "20px"
+                    padding: "20px 20px 20px 30px"
                   }}>
                     <div style={{ marginBottom: "16px" }}>
                       <strong>Titre :</strong>
