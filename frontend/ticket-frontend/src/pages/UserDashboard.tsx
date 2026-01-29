@@ -763,6 +763,22 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
     }
   }
 
+  async function markAllAsRead() {
+    if (!actualToken || actualToken.trim() === "") return;
+    try {
+      const res = await fetch("http://localhost:8000/notifications/read-all", {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${actualToken}` },
+      });
+      if (res.ok) {
+        await loadNotifications();
+        await loadUnreadCount();
+      }
+    } catch (err) {
+      console.error("Erreur lors du marquage de toutes les notifications comme lues:", err);
+    }
+  }
+
   async function clearAllNotifications() {
     try {
       const unreadIds = notifications.filter((n) => !n.read).map((n) => n.id);
@@ -4437,19 +4453,25 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                   Notifications
                 </h3>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <button
-                    onClick={clearAllNotifications}
-                    style={{
-                      background: "transparent",
-                      border: "none",
-                      color: "#1f6feb",
-                      cursor: "pointer",
-                      fontSize: "14px",
-                      padding: "6px 8px"
-                    }}
-                  >
-                    Effacer les notifications
-                  </button>
+                  {notifications.length > 0 && (
+                    <button
+                      onClick={markAllAsRead}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        color: "#F58220",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        padding: "6px 8px",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px"
+                      }}
+                    >
+                      <CheckCircle2 size={18} />
+                      Tout marquer comme lu
+                    </button>
+                  )}
                   <button
                     onClick={() => setShowNotifications(false)}
                     style={{
