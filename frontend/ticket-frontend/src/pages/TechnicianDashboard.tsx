@@ -351,7 +351,7 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
     }
     
     try {
-      const res = await fetch("http://localhost:8000/notifications/", {
+      const res = await fetch("http://localhost:8000/notifications/?unread_only=true", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -403,6 +403,41 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
       }
     } catch (err) {
       console.error("Erreur lors du marquage de la notification comme lue:", err);
+    }
+  }
+
+  async function markTicketNotificationsAsRead(ticketId: string) {
+    const unreadForTicket = notifications.filter((n) => n.ticket_id === ticketId && !n.read);
+    if (unreadForTicket.length === 0 || !token || token.trim() === "") return;
+    try {
+      await Promise.all(
+        unreadForTicket.map((n) =>
+          fetch(`http://localhost:8000/notifications/${n.id}/read`, {
+            method: "PUT",
+            headers: { Authorization: `Bearer ${token}` },
+          })
+        )
+      );
+      await loadNotifications();
+      await loadUnreadCount();
+    } catch (err) {
+      console.error("Erreur lors du marquage des notifications du ticket comme lues:", err);
+    }
+  }
+
+  async function markAllAsRead() {
+    if (!token || token.trim() === "") return;
+    try {
+      const res = await fetch("http://localhost:8000/notifications/read-all", {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        await loadNotifications();
+        await loadUnreadCount();
+      }
+    } catch (err) {
+      console.error("Erreur lors du marquage de toutes les notifications comme lues:", err);
     }
   }
   
@@ -3987,6 +4022,7 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                                   const data = await res.json();
                                   setSelectedNotificationTicketDetails(data);
                                   await loadTicketHistory(ticket.id);
+                                  await markTicketNotificationsAsRead(ticket.id);
                                 }
                               } catch (err) {
                                 console.error("Erreur chargement détails:", err);
@@ -4626,19 +4662,25 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                 Notifications
               </h3>
               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <button
-                  onClick={clearAllNotifications}
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    color: "#1f6feb",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                    padding: "6px 8px"
-                  }}
-                >
-                  Effacer les notifications
-                </button>
+                {notifications.length > 0 && (
+                  <button
+                    onClick={markAllAsRead}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: "#F58220",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      padding: "6px 8px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px"
+                    }}
+                  >
+                    <CheckCircle2 size={18} />
+                    Tout marquer comme lu
+                  </button>
+                )}
                 <button
                   onClick={() => setShowNotifications(false)}
                   style={{
@@ -4845,6 +4887,7 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                               const data = await res.json();
                               setSelectedNotificationTicketDetails(data);
                               await loadTicketHistory(ticket.id);
+                              await markTicketNotificationsAsRead(ticket.id);
                             }
                           } catch (err) {
                             console.error("Erreur chargement détails:", err);
