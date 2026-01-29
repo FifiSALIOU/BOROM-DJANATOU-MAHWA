@@ -428,6 +428,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
   const [resumedFlags, setResumedFlags] = useState<Record<string, boolean>>({});
   const [confirmDeleteTicket, setConfirmDeleteTicket] = useState<Ticket | null>(null);
   const [openActionsMenuFor, setOpenActionsMenuFor] = useState<string | null>(null);
+  const actionsMenuContainerRef = useRef<HTMLDivElement | null>(null);
   const [ticketTypes, setTicketTypes] = useState<TicketTypeConfig[]>([]);
   const [ticketCategories, setTicketCategories] = useState<TicketCategoryConfig[]>([]);
   const [notificationSearch, setNotificationSearch] = useState<string>("");
@@ -446,6 +447,19 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
       }
     }
   }, [tokenProp]);
+
+  // Fermer le menu d'actions au clic en dehors
+  useEffect(() => {
+    if (openActionsMenuFor === null) return;
+    function handleClickOutside(e: MouseEvent) {
+      const target = e.target as Node;
+      if (actionsMenuContainerRef.current && !actionsMenuContainerRef.current.contains(target)) {
+        setOpenActionsMenuFor(null);
+      }
+    }
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [openActionsMenuFor]);
 
   // Charger les types et catégories de tickets depuis l'API
   useEffect(() => {
@@ -3045,10 +3059,13 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                           </div>
 
                           {/* Menu 3 points */}
-                          <div style={{ position: "relative" }}>
+                          <div
+                            ref={openActionsMenuFor === t.id ? actionsMenuContainerRef : undefined}
+                            style={{ position: "relative" }}
+                          >
                         <button
-                          onClick={(e) => { 
-                            e.stopPropagation(); 
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setOpenActionsMenuFor(openActionsMenuFor === t.id ? null : t.id);
                           }}
                           disabled={loading}
