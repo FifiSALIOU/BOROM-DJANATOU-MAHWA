@@ -4053,18 +4053,8 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
               ))}
           </select>
         </div>
-        <div style={{ marginBottom: "16px" }}>
-          <label style={{ display: "block", marginBottom: "4px", fontWeight: "500" }}>Priorité</label>
-          <select
-            value={priority}
-            onChange={(e) => setPriority(e.target.value)}
-            style={{ width: "100%", padding: "10px", border: "1px solid #ddd", borderRadius: "4px" }}
-          >
-            <option value="faible">Faible</option>
-            <option value="moyenne">Moyenne</option>
-            <option value="haute">Haute</option>
-            <option value="critique">Critique</option>
-          </select>
+        <div style={{ marginBottom: "16px", padding: "10px 12px", background: "#f0f9ff", border: "1px solid #bae6fd", borderRadius: "6px", fontSize: "14px", color: "#0c4a6e" }}>
+          Note : La priorité du ticket sera définie par l'équipe DSI lors de l'assignation
         </div>
                 <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
                   <button 
