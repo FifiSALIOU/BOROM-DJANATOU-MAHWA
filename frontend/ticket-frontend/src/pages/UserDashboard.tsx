@@ -1574,6 +1574,12 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
         </div>
         {/* Section Déconnexion + utilisateur en bas */}
         <div style={{ marginTop: "auto" }}>
+          {/* Trait de séparation (même style qu'au-dessus de Tableau de bord) */}
+          <div style={{
+            height: "1px",
+            background: "rgba(255, 255, 255, 0.1)",
+            margin: "0 12px 8px 12px"
+          }} />
           {/* Bouton Notifications */}
           <div 
             onClick={() => navigate("/dashboard/user/notifications")}
