@@ -16549,7 +16549,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                   <div style={{
                     flex: 1,
                     overflowY: "auto",
-                    padding: "10px"
+                    padding: "10px 10px 10px 0"
                   }}>
                     {notificationsTickets.length === 0 ? (
                       <div style={{
@@ -16587,7 +16587,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                               }
                             }}
                             style={{
-                              padding: "12px",
+                              padding: "12px 12px 12px 0",
                               marginBottom: "8px",
                               borderRadius: "8px",
                               background: isSelected ? "#e3f2fd" : "white",
@@ -18138,7 +18138,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
               <div style={{
                 flex: 1,
                 overflowY: "auto",
-                padding: "10px"
+                padding: "10px 10px 10px 0"
               }}>
                 {notificationsTickets.length === 0 ? (
                   <div style={{
@@ -18189,7 +18189,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                           }
                         }}
                         style={{
-                          padding: "12px",
+                          padding: "12px 12px 12px 0",
                           marginBottom: "8px",
                           borderRadius: "8px",
                           background: isSelected ? "#e3f2fd" : "white",
