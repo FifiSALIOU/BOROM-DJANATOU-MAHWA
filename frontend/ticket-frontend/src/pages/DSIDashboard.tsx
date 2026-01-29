@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
-import { Users, Clock3, TrendingUp, Award, UserCheck, Star, LayoutDashboard, ChevronLeft, ChevronRight, Bell, BarChart3, Search, Ticket, Wrench, CheckCircle2, AlertTriangle, Clock, Briefcase, UserPlus, CornerUpRight, Box, FileText, RefreshCcw, Plus, Pencil, Trash2, ChevronDown, UserX, UserCog, Shield, Check, Layers, Monitor, X, FolderTree } from "lucide-react";
+import { Users, Clock3, TrendingUp, Award, UserCheck, Star, LayoutDashboard, ChevronLeft, ChevronRight, Bell, BarChart3, Search, Ticket, Wrench, CheckCircle2, AlertTriangle, Clock, Briefcase, UserPlus, CornerUpRight, Box, FileText, RefreshCcw, Plus, Pencil, Trash2, ChevronDown, UserX, UserCog, Shield, Check, Layers, Monitor, X, FolderTree, Tag } from "lucide-react";
 import React from "react";
 import helpdeskLogo from "../assets/helpdesk-logo.png";
 import jsPDF from "jspdf";
@@ -11424,20 +11424,67 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                             <ChevronDown size={20} color="hsl(220, 15%, 45%)" />
                           </div>
                         </div>
-                        {isExpanded && subCategories.length > 0 && (
-                          <div style={{ borderTop: "1px solid hsl(220, 20%, 90%)", padding: "12px 20px 16px", background: "hsl(210, 20%, 98%)" }}>
-                            <ul style={{ margin: 0, paddingLeft: "20px", listStyle: "disc" }}>
-                              {subCategories.map((cat) => (
-                                <li key={cat.id} style={{ fontSize: "14px", color: "#374151", marginBottom: "4px", fontFamily: "system-ui, -apple-system, sans-serif" }}>
-                                  {cat.name}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                        {isExpanded && subCategories.length === 0 && (
-                          <div style={{ borderTop: "1px solid hsl(220, 20%, 90%)", padding: "12px 20px 16px", background: "hsl(210, 20%, 98%)", color: "hsl(220, 15%, 45%)", fontSize: "14px" }}>
-                            Aucune sous-catégorie
+                        {isExpanded && (
+                          <div style={{ borderTop: "1px solid hsl(220, 20%, 90%)", padding: "16px 20px", background: "white" }}>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                              {subCategories.length === 0 ? (
+                                <div style={{ color: "hsl(220, 15%, 45%)", fontSize: "14px" }}>Aucune catégorie</div>
+                              ) : (
+                                subCategories.map((cat) => (
+                                  <div
+                                    key={cat.id}
+                                    style={{
+                                      background: "hsl(0, 0%, 100%)",
+                                      borderRadius: "0.75rem",
+                                      border: "1px solid hsl(220, 20%, 90%)",
+                                      padding: "16px 20px"
+                                    }}
+                                  >
+                                    {/* Header de catégorie */}
+                                    <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+                                      <Tag size={20} color="hsl(220, 15%, 45%)" />
+                                      <span style={{ fontSize: "16px", fontWeight: 500, color: "hsl(var(--foreground, #111827))", fontFamily: "system-ui, -apple-system, sans-serif", flex: 1 }}>
+                                        {cat.name}
+                                      </span>
+                                      {cat.is_active && (
+                                        <span
+                                          style={{
+                                            padding: "4px 10px",
+                                            borderRadius: "9999px",
+                                            border: "1px solid hsl(220, 20%, 80%)",
+                                            color: "hsl(220, 15%, 45%)",
+                                            fontSize: "13px",
+                                            fontWeight: 500
+                                          }}
+                                        >
+                                          Actif
+                                        </span>
+                                      )}
+                                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                                        <button
+                                          type="button"
+                                          style={{ padding: "4px", background: "transparent", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+                                          title="Modifier"
+                                        >
+                                          <Pencil size={20} color="hsl(220, 15%, 45%)" />
+                                        </button>
+                                        <button
+                                          type="button"
+                                          style={{ padding: "4px", background: "transparent", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+                                          title="Supprimer"
+                                        >
+                                          <Trash2 size={20} color="rgb(239, 68, 68)" />
+                                        </button>
+                                      </div>
+                                    </div>
+                                    {/* Sous-catégories (vide pour l'instant, prêt pour la table sous-catégorie) */}
+                                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                                      {/* Les sous-catégories s'afficheront ici une fois la table créée */}
+                                    </div>
+                                  </div>
+                                ))
+                              )}
+                            </div>
                           </div>
                         )}
                       </div>
