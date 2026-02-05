@@ -24,6 +24,9 @@ import {
   Pie,
   LabelList
 } from "recharts";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/style.css";
+import { fr } from "date-fns/locale";
 
 interface DSIDashboardProps {
   token: string;
@@ -463,6 +466,9 @@ function DSIDashboard({ token }: DSIDashboardProps) {
   const [priorityFilter, setPriorityFilter] = useState<string>("all");
   const [delegationFilter, setDelegationFilter] = useState<string>("all");
   // États pour les filtres avancés de la section Tickets (DSI)
+  const [advancedPeriodRange, setAdvancedPeriodRange] = useState<{ from: Date | undefined; to?: Date | undefined } | undefined>(undefined);
+  const [showPeriodCalendar, setShowPeriodCalendar] = useState<boolean>(false);
+  const periodCalendarRef = useRef<HTMLDivElement>(null);
   const [advancedMonthFilter, setAdvancedMonthFilter] = useState<string>("all");
   const [advancedAgencyFilter, setAdvancedAgencyFilter] = useState<string>("all");
   const [advancedCategoryFilter, setAdvancedCategoryFilter] = useState<string>("all");
@@ -788,6 +794,18 @@ function DSIDashboard({ token }: DSIDashboardProps) {
       setLocalAppLogo(appLogo);
     }
   }, [activeSection, appName, appTheme, primaryColor, appLogo]);
+
+  // Fermer le Popover Période au clic extérieur
+  useEffect(() => {
+    if (!showPeriodCalendar) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (periodCalendarRef.current && !periodCalendarRef.current.contains(e.target as Node)) {
+        setShowPeriodCalendar(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showPeriodCalendar]);
   
   // Gérer les paramètres URL pour ouvrir automatiquement les modals
   useEffect(() => {
@@ -5438,6 +5456,28 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
   }
 
   // --- Filtres avancés appliqués sur les tickets ---
+  if (advancedPeriodRange?.from !== undefined) {
+    const fromStart = new Date(advancedPeriodRange.from);
+    fromStart.setHours(0, 0, 0, 0);
+    filteredTickets = filteredTickets.filter((t) => {
+      if (!t.created_at) return false;
+      const created = new Date(t.created_at).getTime();
+      if (created < fromStart.getTime()) return false;
+      if (advancedPeriodRange.to !== undefined) {
+        const toEnd = new Date(advancedPeriodRange.to);
+        toEnd.setHours(23, 59, 59, 999);
+        return created <= toEnd.getTime();
+      }
+      return true;
+    });
+  } else if (advancedPeriodRange?.to !== undefined) {
+    const toEnd = new Date(advancedPeriodRange.to);
+    toEnd.setHours(23, 59, 59, 999);
+    filteredTickets = filteredTickets.filter((t) => {
+      if (!t.created_at) return false;
+      return new Date(t.created_at).getTime() <= toEnd.getTime();
+    });
+  }
   if (advancedMonthFilter !== "all") {
     filteredTickets = filteredTickets.filter((t) => {
       if (!t.created_at) return false;
@@ -8861,13 +8901,15 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                     gap: "12px 16px",
                   }}
                 >
-                  {/* Période (2 colonnes) */}
+                  {/* Période (2 colonnes) - Popover + react-day-picker */}
                   <div
+                    ref={periodCalendarRef}
                     style={{
                       gridColumn: "span 2",
                       display: "flex",
                       flexDirection: "column",
                       gap: "4px",
+                      position: "relative",
                     }}
                   >
                     <span
@@ -8883,6 +8925,10 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                       <span>Période</span>
                     </span>
                     <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => setShowPeriodCalendar((v) => !v)}
+                      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setShowPeriodCalendar((v) => !v); } }}
                       style={{
                         display: "flex",
                         alignItems: "center",
@@ -8894,11 +8940,52 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                         fontSize: "14px",
                         color: "#6b7280",
                         height: "36px",
+                        cursor: "pointer",
                       }}
                     >
                       <Calendar size={16} color="#6b7280" />
-                      <span>Sélectionner une période</span>
+                      <span>
+                        {advancedPeriodRange?.from
+                          ? advancedPeriodRange.to
+                            ? `${advancedPeriodRange.from.toLocaleDateString("fr-FR")} – ${advancedPeriodRange.to.toLocaleDateString("fr-FR")}`
+                            : advancedPeriodRange.from.toLocaleDateString("fr-FR")
+                          : "Sélectionner une période"}
+                      </span>
                     </div>
+                    {/* Popover : contenu avec pointer-events: auto pour rendre le calendrier cliquable */}
+                    {showPeriodCalendar && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "100%",
+                          left: 0,
+                          marginTop: "4px",
+                          zIndex: 1000,
+                          backgroundColor: "#fff",
+                          borderRadius: "8px",
+                          boxShadow: "0 4px 14px rgba(0,0,0,0.15)",
+                          border: "1px solid #e5e7eb",
+                          padding: "12px",
+                          pointerEvents: "auto",
+                          minWidth: "560px",
+                        }}
+                        className="rdp-root"
+                      >
+                        <DayPicker
+                          mode="range"
+                          numberOfMonths={2}
+                          locale={fr}
+                          weekStartsOn={1}
+                          showOutsideDays
+                          selected={advancedPeriodRange}
+                          onSelect={(range) => setAdvancedPeriodRange(range)}
+                          defaultMonth={advancedPeriodRange?.from ?? new Date()}
+                          styles={{
+                            months: { flexWrap: "nowrap", display: "flex", gap: "2rem" },
+                          }}
+                        />
+                      </div>
+                    )}
                   </div>
 
                   {/* Agence */}
