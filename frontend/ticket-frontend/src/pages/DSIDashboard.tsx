@@ -5371,9 +5371,9 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
     new Set(allTickets.map((t) => t.type).filter(Boolean))
   );
 
-  // Utilisateurs (techniciens) associés aux tickets
+  // Utilisateurs pour le filtre "Utilisateur" : tous les utilisateurs connus (pas seulement les techniciens)
   const advancedUsers = Array.from(
-    new Set(allTickets.map((t) => t.technician?.full_name).filter(Boolean))
+    new Set(allUsers.map((u: any) => u.full_name).filter(Boolean))
   );
 
   // Filtrer les tickets selon les filtres sélectionnés
@@ -5454,9 +5454,11 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
   }
 
   if (advancedUserFilter !== "all") {
-    filteredTickets = filteredTickets.filter(
-      (t) => t.technician?.full_name === advancedUserFilter
-    );
+    filteredTickets = filteredTickets.filter((t) => {
+      const techName = t.technician?.full_name || "";
+      const creatorName = t.creator?.full_name || "";
+      return techName === advancedUserFilter || creatorName === advancedUserFilter;
+    });
   }
 
   if (advancedCreatorFilter.trim() !== "") {
