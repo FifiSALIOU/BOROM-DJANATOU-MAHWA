@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
 import { Clock3, Users, CheckCircle2, ChevronRight, ChevronLeft, ChevronDown, LayoutDashboard, Bell, Search, Clock, Monitor, Wrench, Forward, AlertTriangle, BarChart3, TrendingUp, Box, UserPlus, FileText, UserCheck, RefreshCcw, Filter, Calendar, Layers, Building2, User, FileSpreadsheet, MessageCircle } from "lucide-react";
 import helpdeskLogo from "../assets/helpdesk-logo.png";
@@ -21,6 +21,9 @@ import {
   Area,
   LabelList
 } from "recharts";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/style.css";
+import { fr } from "date-fns/locale";
 
 interface SecretaryDashboardProps {
   token: string;
@@ -188,6 +191,9 @@ function SecretaryDashboard({ token }: SecretaryDashboardProps) {
   const [priorityFilter, setPriorityFilter] = useState<string>("all");
   const [delegationFilter, setDelegationFilter] = useState<string>("all");
   // Filtres avancés section Tickets (Adjoint DSI uniquement)
+  const [advancedPeriodRange, setAdvancedPeriodRange] = useState<{ from: Date | undefined; to?: Date | undefined } | undefined>(undefined);
+  const [showPeriodCalendar, setShowPeriodCalendar] = useState<boolean>(false);
+  const periodCalendarRef = useRef<HTMLDivElement>(null);
   const [advancedAgencyFilter, setAdvancedAgencyFilter] = useState<string>("all");
   const [advancedCategoryFilter, setAdvancedCategoryFilter] = useState<string>("all");
   const [advancedTypeFilter, setAdvancedTypeFilter] = useState<string>("all");
@@ -872,6 +878,18 @@ function SecretaryDashboard({ token }: SecretaryDashboardProps) {
       } catch (e) { console.error("Erreur chargement catégories (Adjoint DSI):", e); }
     })();
   }, [roleName, location.pathname, token]);
+
+  // Fermer le Popover Période au clic extérieur (Adjoint DSI)
+  useEffect(() => {
+    if (!showPeriodCalendar) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (periodCalendarRef.current && !periodCalendarRef.current.contains(e.target as Node)) {
+        setShowPeriodCalendar(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showPeriodCalendar]);
 
   // Gérer les paramètres URL pour ouvrir automatiquement les modals
   useEffect(() => {
@@ -3235,6 +3253,28 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
 
   // Appliquer les filtres avancés (Adjoint DSI uniquement, sans toucher aux 4 filtres existants)
   if (roleName === "Adjoint DSI") {
+    if (advancedPeriodRange?.from !== undefined) {
+      const fromStart = new Date(advancedPeriodRange.from);
+      fromStart.setHours(0, 0, 0, 0);
+      filteredTickets = filteredTickets.filter((t) => {
+        if (!t.created_at) return false;
+        const created = new Date(t.created_at).getTime();
+        if (created < fromStart.getTime()) return false;
+        if (advancedPeriodRange.to !== undefined) {
+          const toEnd = new Date(advancedPeriodRange.to);
+          toEnd.setHours(23, 59, 59, 999);
+          return created <= toEnd.getTime();
+        }
+        return true;
+      });
+    } else if (advancedPeriodRange?.to !== undefined) {
+      const toEnd = new Date(advancedPeriodRange.to);
+      toEnd.setHours(23, 59, 59, 999);
+      filteredTickets = filteredTickets.filter((t) => {
+        if (!t.created_at) return false;
+        return new Date(t.created_at).getTime() <= toEnd.getTime();
+      });
+    }
     if (advancedAgencyFilter !== "all") filteredTickets = filteredTickets.filter((t) => (t.creator?.agency || t.user_agency) === advancedAgencyFilter);
     if (advancedCategoryFilter !== "all") filteredTickets = filteredTickets.filter((t) => t.category === advancedCategoryFilter);
     if (advancedTypeFilter !== "all") filteredTickets = filteredTickets.filter((t) => t.type === advancedTypeFilter);
@@ -6018,9 +6058,39 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                     </div>
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "12px 16px" }}>
-                    <div style={{ gridColumn: "span 2", display: "flex", flexDirection: "column", gap: "4px" }}>
+                    {/* Période (Adjoint DSI) - Popover + react-day-picker, 2 mois côte à côte */}
+                    <div ref={periodCalendarRef} style={{ gridColumn: "span 2", display: "flex", flexDirection: "column", gap: "4px", position: "relative" }}>
                       <span style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px", color: "#6b7280" }}><Calendar size={12} /><span>Période</span></span>
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "6px 10px", borderRadius: "8px", border: "1px solid #e5e7eb", backgroundColor: "#f9fafb", fontSize: "14px", color: "#6b7280", height: "36px" }}><Calendar size={16} color="#6b7280" /><span>Sélectionner une période</span></div>
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => setShowPeriodCalendar((v) => !v)}
+                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setShowPeriodCalendar((v) => !v); } }}
+                        style={{ display: "flex", alignItems: "center", gap: "8px", padding: "6px 10px", borderRadius: "8px", border: "1px solid #e5e7eb", backgroundColor: "#f9fafb", fontSize: "14px", color: "#6b7280", height: "36px", cursor: "pointer" }}
+                      >
+                        <Calendar size={16} color="#6b7280" />
+                        <span>
+                          {advancedPeriodRange?.from ? (advancedPeriodRange.to ? `${advancedPeriodRange.from.toLocaleDateString("fr-FR")} – ${advancedPeriodRange.to.toLocaleDateString("fr-FR")}` : advancedPeriodRange.from.toLocaleDateString("fr-FR")) : "Sélectionner une période"}
+                        </span>
+                      </div>
+                      {showPeriodCalendar && (
+                        <div
+                          style={{ position: "absolute", top: "100%", left: 0, marginTop: "4px", zIndex: 1000, backgroundColor: "#fff", borderRadius: "8px", boxShadow: "0 4px 14px rgba(0,0,0,0.15)", border: "1px solid #e5e7eb", padding: "12px", pointerEvents: "auto", minWidth: "560px" }}
+                          className="rdp-root"
+                        >
+                          <DayPicker
+                            mode="range"
+                            numberOfMonths={2}
+                            locale={fr}
+                            weekStartsOn={1}
+                            showOutsideDays
+                            selected={advancedPeriodRange}
+                            onSelect={(range) => setAdvancedPeriodRange(range)}
+                            defaultMonth={advancedPeriodRange?.from ?? new Date()}
+                            styles={{ months: { flexWrap: "nowrap", display: "flex", gap: "2rem" } }}
+                          />
+                        </div>
+                      )}
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                       <span style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px", color: "#6b7280" }}><Building2 size={12} /><span>Agence</span></span>
