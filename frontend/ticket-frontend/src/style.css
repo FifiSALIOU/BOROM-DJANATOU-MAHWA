@@ -6,6 +6,31 @@
   box-sizing: border-box;
 }
 
+/* Réduction de la taille du calendrier react-day-picker */
+.rdp {
+  font-size: 12px;
+}
+
+.rdp-months {
+  gap: 0.5rem;
+}
+
+.rdp-caption {
+  padding: 0.25rem 0.5rem;
+}
+
+.rdp-table {
+  border-spacing: 0.15rem;
+}
+
+.rdp-day {
+  width: 1.8rem;
+  height: 1.8rem;
+  line-height: 1.8rem;
+  font-size: 12px;
+  padding: 0;
+}
+
 body {
   font-family: 'Inter', system-ui, sans-serif;
   background-color: #f5f5f5;

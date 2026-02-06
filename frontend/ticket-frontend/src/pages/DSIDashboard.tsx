@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
-import { Users, User, Clock3, TrendingUp, Award, UserCheck, Star, LayoutDashboard, ChevronLeft, ChevronRight, Bell, BarChart3, Search, Ticket, Wrench, CheckCircle2, AlertTriangle, Clock, Briefcase, UserPlus, CornerUpRight, Box, FileText, RefreshCcw, Plus, Pencil, Trash2, ChevronDown, UserX, UserCog, Shield, Check, Layers, Monitor, X, FolderTree, Tag, Settings, Mail, Building2, Filter, Calendar, FileSpreadsheet, MessageCircle } from "lucide-react";
+import { Users, User, Clock3, TrendingUp, UserCheck, Star, LayoutDashboard, ChevronLeft, ChevronRight, Bell, BarChart3, Search, Ticket, Wrench, CheckCircle2, AlertTriangle, Clock, Briefcase, Box, FileText, RefreshCcw, Plus, Pencil, Trash2, ChevronDown, UserX, UserCog, Shield, Check, Layers, Monitor, X, FolderTree, Tag, Settings, Mail, Building2, Filter, Calendar, FileSpreadsheet, MessageCircle } from "lucide-react";
 import React from "react";
 import helpdeskLogo from "../assets/helpdesk-logo.png";
 import jsPDF from "jspdf";
@@ -21,8 +21,7 @@ import {
   ResponsiveContainer,
   Cell,
   PieChart,
-  Pie,
-  LabelList
+  Pie
 } from "recharts";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
@@ -116,16 +115,13 @@ interface UserRead {
 }
 
 // Composant Label personnalisé pour les donut charts avec labels externes et lignes de connexion
-const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name, fill, value }: any) => {
+const CustomLabel = ({ cx, cy, midAngle, outerRadius, percent, name, fill, value }: any) => {
   // Ne pas afficher le label si la valeur est 0 ou le pourcentage est 0%
   if (value === 0 || percent === 0 || Math.round(percent * 100) === 0) {
     return null;
   }
   
   const RADIAN = Math.PI / 180;
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
   
   // Position externe pour le label (outerRadius + 25px pour plus d'espace)
   const labelRadius = outerRadius + 25;
@@ -174,15 +170,10 @@ function DSIDashboard({ token }: DSIDashboardProps) {
   // Fonction pour formater le message de notification en remplaçant #X par TKT-XXX
   const formatNotificationMessage = (message: string): string => {
     return message.replace(/#(\d+)/g, (match, number) => {
+      void match;
       return formatTicketNumber(parseInt(number, 10));
     });
   };
-  
-  // Déterminer le statut simple Actif / Inactif à partir de actif (Boolean)
-  function getAvailabilityStatus(tech: Technician): string {
-    // actif est maintenant un Boolean
-    return tech.actif === true ? "actif" : "inactif";
-  }
 
   // Fonction pour obtenir le libellé d'une priorité
   function getPriorityLabel(priority: string): string {
@@ -362,7 +353,7 @@ function DSIDashboard({ token }: DSIDashboardProps) {
       new_status: "creation",
       user_id: "",
       reason: null,
-      changed_at: ticket.created_at,
+      changed_at: ticket.created_at ?? new Date().toISOString(),
       user: ticket.creator ? { full_name: ticket.creator.full_name } : null,
     };
     // Filtrer les entrées d'historique pour exclure les modifications par l'utilisateur
@@ -423,7 +414,7 @@ function DSIDashboard({ token }: DSIDashboardProps) {
     avgResolutionTime: null,
     userSatisfaction: null,
   });
-  const [techniciansSatisfaction, setTechniciansSatisfaction] = useState<string>("0.0");
+  const [, setTechniciansSatisfaction] = useState<string>("0.0");
   const [reopenedTicketsCount, setReopenedTicketsCount] = useState<number>(0);
   const [reopeningCalculated, setReopeningCalculated] = useState<boolean>(false);
   const [expandedGroupId, setExpandedGroupId] = useState<string | null>(null);
@@ -469,14 +460,13 @@ function DSIDashboard({ token }: DSIDashboardProps) {
   const [advancedPeriodRange, setAdvancedPeriodRange] = useState<{ from: Date | undefined; to?: Date | undefined } | undefined>(undefined);
   const [showPeriodCalendar, setShowPeriodCalendar] = useState<boolean>(false);
   const periodCalendarRef = useRef<HTMLDivElement>(null);
-  const [advancedMonthFilter, setAdvancedMonthFilter] = useState<string>("all");
+  const [advancedMonthFilter] = useState<string>("all");
   const [advancedAgencyFilter, setAdvancedAgencyFilter] = useState<string>("all");
   const [advancedCategoryFilter, setAdvancedCategoryFilter] = useState<string>("all");
   const [advancedTypeFilter, setAdvancedTypeFilter] = useState<string>("all");
   const [advancedNonResolvedFilter, setAdvancedNonResolvedFilter] = useState<string>("all");
   const [advancedUserFilter, setAdvancedUserFilter] = useState<string>("all");
   const [advancedCreatorFilter, setAdvancedCreatorFilter] = useState<string>("");
-  const [showReportsDropdown, setShowReportsDropdown] = useState<boolean>(false);
   const [showSettingsDropdown, setShowSettingsDropdown] = useState<boolean>(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   
@@ -509,12 +499,8 @@ function DSIDashboard({ token }: DSIDashboardProps) {
   const [usersPerPage] = useState<number>(10);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   // États pour la section Techniciens
-  const [techSearchQuery, setTechSearchQuery] = useState<string>("");
-  const [techSpecializationFilter, setTechSpecializationFilter] = useState<string>("all");
-  const [techAvailabilityFilter, setTechAvailabilityFilter] = useState<string>("all");
   const [selectedTechnicianDetails, setSelectedTechnicianDetails] = useState<Technician | null>(null);
   const [showTechnicianDetailsModal, setShowTechnicianDetailsModal] = useState<boolean>(false);
-  const [, setLoadingTechnicianStats] = useState<boolean>(false);
   const [showCreateTechnicianModal, setShowCreateTechnicianModal] = useState<boolean>(false);
   const [showEditTechnicianModal, setShowEditTechnicianModal] = useState<boolean>(false);
   const [editingTechnician, setEditingTechnician] = useState<Technician | null>(null);
@@ -564,6 +550,9 @@ function DSIDashboard({ token }: DSIDashboardProps) {
     code: string;
     label: string;
     is_active: boolean;
+    type: string;
+    description: string;
+    color: string;
   }>>([]);
   const [showAddTypeModal, setShowAddTypeModal] = useState(false);
   const [editingType, setEditingType] = useState<number | null>(null);
@@ -1947,26 +1936,6 @@ function DSIDashboard({ token }: DSIDashboardProps) {
       console.error("Erreur lors du marquage de toutes les notifications comme lues:", err);
     }
   }
-  
-  async function clearAllNotifications() {
-    const confirmed = window.confirm("Confirmer l'effacement de toutes les notifications ?");
-    if (!confirmed) return;
-    try {
-      const unreadIds = notifications.filter((n) => !n.read).map((n) => n.id);
-      if (token && token.trim() !== "" && unreadIds.length > 0) {
-        await Promise.all(
-          unreadIds.map((id) =>
-            fetch(`http://localhost:8000/notifications/${id}/read`, {
-              method: "PUT",
-              headers: { Authorization: `Bearer ${token}` },
-            })
-          )
-        );
-      }
-    } catch {}
-    setNotifications([]);
-    setUnreadCount(0);
-  }
 
   function handleLogout() {
     localStorage.removeItem("token");
@@ -3250,22 +3219,7 @@ function DSIDashboard({ token }: DSIDashboardProps) {
     return tech.actif === true;
   }).length;
 
-  const ticketsInProgressCount = assignedCount;
-
   // Taux de résolution pour les TECHNICIENS (uniquement les tickets assignés aux techniciens)
-  const ticketsAssignedToTechnicians = allTickets.filter((t) => t.technician_id !== null);
-  const ticketsResolvedByTechnicians = ticketsAssignedToTechnicians.filter(
-    (t) => t.status === "resolu" || t.status === "cloture"
-  );
-  const resolutionRateForTechnicians =
-    ticketsAssignedToTechnicians.length > 0
-      ? `${Math.round((ticketsResolvedByTechnicians.length / ticketsAssignedToTechnicians.length) * 100)}%`
-      : "0%";
-
-  // Satisfaction moyenne pour les TECHNICIENS (calculée avec le système hybride dans le useEffect)
-  // Utiliser l'état techniciansSatisfaction qui est mis à jour dans le useEffect
-  const averageSatisfactionForTechniciansPercentage = techniciansSatisfaction;
-
   // Fonctions pour préparer les données des graphiques
   const prepareTimeSeriesData = () => {
     const last30Days = Array.from({ length: 30 }, (_, i) => {
@@ -5377,24 +5331,6 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
     allTickets.map((t) => t.creator?.agency || t.user_agency).filter(Boolean)
   ));
 
-  // Listes de valeurs pour les filtres avancés (utilisent tes vraies données)
-  const advancedMonths = Array.from(
-    new Set(
-      allTickets
-        .filter((t) => t.created_at)
-        .map((t) => {
-          const d = new Date(t.created_at as string);
-          return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`; // YYYY-MM
-        })
-    )
-  );
-
-  const formatMonthLabel = (key: string) => {
-    const [year, month] = key.split("-");
-    const d = new Date(Number(year), Number(month) - 1, 1);
-    return d.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
-  };
-
   // Catégories actives (matériel / applicatif) depuis l'API
   const advancedCategories = Array.from(
     new Set(categoriesList.filter((c) => c.is_active).map((c) => c.name))
@@ -6467,7 +6403,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                     background: ticketDetails.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : ticketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : ticketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : ticketDetails.priority === "faible" ? "#E5E7EB" : ticketDetails.priority === "non_definie" ? "#E5E7EB" : "#9e9e9e",
                     color: ticketDetails.priority === "critique" ? "#E53E3E" : ticketDetails.priority === "haute" ? "#F59E0B" : ticketDetails.priority === "moyenne" ? "#0DADDB" : ticketDetails.priority === "faible" ? "#6B7280" : ticketDetails.priority === "non_definie" ? "#6B7280" : "white"
                   }}>
-                    {getPriorityLabel(ticketDetails.priority)}
+                    {getPriorityLabel(ticketDetails.priority ?? "non_definie")}
                   </span>
                 </div>
                 <div>
@@ -11790,14 +11726,12 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
              const uniqueRoles = Array.from(new Set(allUsers.map((u: any) => u.role?.name).filter(Boolean)));
              const uniqueAgencies = Array.from(new Set(allUsers.map((u: any) => u.agency).filter(Boolean)));
              
-             const borderColor = "hsl(var(--border))";
-             const mutedFg = "hsl(var(--muted-foreground))";
-             const fg = "hsl(var(--foreground))";
-             const cardBg = "hsl(var(--card))";
-             const orange = "hsl(var(--brand-orange))";
-             const orangeLight = "hsl(var(--brand-orange-light))";
-             const orangeDark = "hsl(var(--brand-orange-dark))";
-             const greenActive = "hsl(var(--green-active))";
+            const borderColor = "hsl(var(--border))";
+            const mutedFg = "hsl(var(--muted-foreground))";
+            const fg = "hsl(var(--foreground))";
+            const cardBg = "hsl(var(--card))";
+            const orange = "hsl(var(--brand-orange))";
+            const orangeLight = "hsl(var(--brand-orange-light))";
 
              return (
                <div
@@ -12318,10 +12252,9 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                 <div style={{ textAlign: "center", padding: "40px", color: "hsl(220, 15%, 45%)", fontSize: "14px" }}>Chargement des catégories...</div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                  {categoriesTypes.map((typeItem) => {
+                 {categoriesTypes.map((typeItem) => {
                     const count = categoriesList.filter((c) => c.type_code === typeItem.code).length;
                     const isMateriel = typeItem.code === "materiel" || typeItem.label.toLowerCase().includes("matériel") || typeItem.label.toLowerCase().includes("materiel");
-                    const isApplicatif = typeItem.code === "applicatif" || typeItem.label.toLowerCase().includes("applicatif");
                     const isExpanded = expandedCategoryType === typeItem.code;
                     const subCategories = categoriesList.filter((c) => c.type_code === typeItem.code);
                     return (
@@ -17362,8 +17295,8 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                               fontWeight: "500",
                               background: selectedNotificationTicketDetails.priority === "critique" ? "#f44336" : selectedNotificationTicketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : selectedNotificationTicketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : selectedNotificationTicketDetails.priority === "faible" ? "#E5E7EB" : "#9e9e9e",
                               color: selectedNotificationTicketDetails.priority === "critique" ? "#E53E3E" : selectedNotificationTicketDetails.priority === "haute" ? "#F59E0B" : selectedNotificationTicketDetails.priority === "moyenne" ? "#0DADDB" : selectedNotificationTicketDetails.priority === "faible" ? "#6B7280" : "white"
-                            }}>
-                              {getPriorityLabel(selectedNotificationTicketDetails.priority)}
+                           }}>
+                              {getPriorityLabel(selectedNotificationTicketDetails.priority ?? "non_definie")}
                             </span>
                           </div>
                           <div>
@@ -18956,7 +18889,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                           background: selectedNotificationTicketDetails.priority === "critique" ? "#f44336" : selectedNotificationTicketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : selectedNotificationTicketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
                           color: selectedNotificationTicketDetails.priority === "haute" ? "#F59E0B" : "white"
                         }}>
-                          {getPriorityLabel(selectedNotificationTicketDetails.priority)}
+                          {getPriorityLabel(selectedNotificationTicketDetails.priority ?? "non_definie")}
                         </span>
                       </div>
                       {selectedNotificationTicketDetails.category && (
