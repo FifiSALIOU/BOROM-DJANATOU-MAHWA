@@ -1828,7 +1828,12 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
         </div>
 
         {/* Contenu principal avec scroll */}
-        <div style={{ flex: 1, padding: "30px", overflow: activeSection === "notifications" ? "hidden" : "auto", paddingTop: "80px" }}>
+        <div style={{
+          flex: 1,
+          padding: activeSection === "notifications" ? "72px 30px 30px 0" : "30px",
+          paddingTop: activeSection === "notifications" ? "72px" : "80px",
+          overflow: activeSection === "notifications" ? "hidden" : "auto"
+        }}>
         {/* Affichage des détails du ticket en pleine page */}
         {showTicketDetailsPage && ticketDetails ? (
           <div>
@@ -3416,12 +3421,12 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
           </>
         )}
 
-      {/* Section Notifications dans le contenu principal */}
+      {/* Section Notifications dans le contenu principal - même design que DSI */}
       {activeSection === "notifications" && !showTicketDetailsPage && (
         <div style={{
           display: "flex",
           width: "100%",
-          height: "calc(100vh - 80px)",
+          height: "100vh",
           background: "white",
           overflow: "hidden"
         }}>
@@ -3437,7 +3442,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
             flexShrink: 0
           }}>
             <div style={{
-              padding: "28px 20px 20px 0",
+              padding: "28px 20px 20px 30px",
               borderBottom: "1px solid #e0e0e0",
               display: "flex",
               justifyContent: "space-between",
@@ -3448,6 +3453,28 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
               <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "600", color: "#333" }}>
                 Tickets avec notifications
               </h3>
+              <button
+                onClick={() => {
+                  navigate("/dashboard/user");
+                  setSelectedNotificationTicket(null);
+                  setSelectedNotificationTicketDetails(null);
+                }}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: "24px",
+                  cursor: "pointer",
+                  color: "#999",
+                  padding: "0",
+                  width: "24px",
+                  height: "24px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                ×
+              </button>
             </div>
             <div style={{
               flex: 1,
@@ -3490,7 +3517,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                         }
                       }}
                       style={{
-                        padding: "12px 12px 12px 0",
+                        padding: "12px 12px 12px 30px",
                         marginBottom: "8px",
                         borderRadius: "8px",
                         background: isSelected ? "#e3f2fd" : "white",
@@ -3572,7 +3599,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
             {selectedNotificationTicketDetails ? (
               <>
                 <div style={{
-                  padding: "28px 20px 20px 20px",
+                  padding: "28px 20px 20px 30px",
                   borderBottom: "1px solid #e0e0e0",
                   background: "white",
                   borderRadius: "0 8px 0 0"
@@ -3598,7 +3625,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                 <div style={{
                   flex: 1,
                   overflowY: "auto",
-                  padding: "20px"
+                  padding: "20px 20px 20px 30px"
                 }}>
                   <div style={{ marginBottom: "16px" }}>
                     <strong>Titre :</strong>
@@ -4643,7 +4670,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                 flexShrink: 0
               }}>
                 <div style={{
-                  padding: "28px 20px 20px 0",
+                  padding: "28px 20px 20px 30px",
                   borderBottom: "1px solid #e0e0e0",
                   display: "flex",
                   justifyContent: "space-between",
@@ -4718,7 +4745,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                             }
                           }}
                           style={{
-                            padding: "12px 12px 12px 0",
+                            padding: "12px 12px 12px 30px",
                             marginBottom: "8px",
                             borderRadius: "8px",
                             background: isSelected ? "#e3f2fd" : "white",
@@ -4800,13 +4827,13 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                 {selectedNotificationTicketDetails ? (
                   <>
                     <div style={{
-                      padding: "28px 20px 20px 20px",
+                      padding: "28px 20px 20px 30px",
                       borderBottom: "1px solid #e0e0e0",
                       background: "white",
                       borderRadius: "0 8px 0 0"
                     }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "600", color: "#333" }}>Détails du ticket #{selectedNotificationTicketDetails.number}</h3>
+                        <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "600", color: "#333" }}>Détails du ticket {formatTicketNumber(selectedNotificationTicketDetails.number)}</h3>
                         {selectedNotificationTicketDetails.status === "rejete" && (
                           <span style={{
                             padding: "6px 10px",
@@ -4826,7 +4853,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                     <div style={{
                       flex: 1,
                       overflowY: "auto",
-                      padding: "20px"
+                      padding: "20px 20px 20px 30px"
                     }}>
                       <div style={{ marginBottom: "16px" }}>
                         <strong>Titre :</strong>
