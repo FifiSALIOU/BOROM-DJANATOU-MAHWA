@@ -2251,9 +2251,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                   width: "100%",
                   marginBottom: "8px"
                 }}>
-                  <div style={{ color: "#6b7280", fontSize: "11px", fontWeight: "500" }}>
-                    En attente
-                  </div>
+                  <span style={{ fontSize: "13px", fontWeight: "500", color: "#4b5563", zIndex: 1, position: "relative" }}>En attente d'assignation</span>
                   <div style={{
                     width: "32px",
                     height: "32px",
@@ -2271,7 +2269,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                 <span style={{ fontSize: "28px", fontWeight: "bold", color: "#1f2937", marginBottom: "4px", zIndex: 1, position: "relative" }}>
                   {statusCounts.en_attente_analyse}
                 </span>
-                <span style={{ fontSize: "13px", fontWeight: "500", color: "#4b5563", zIndex: 1, position: "relative" }}>En attente d'assignation</span>
+                <span style={{ fontSize: "11px", fontWeight: "500", color: "#6b7280", zIndex: 1, position: "relative" }}>En attente</span>
               </div>
 
               {/* En cours */}
@@ -2322,9 +2320,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                   width: "100%",
                   marginBottom: "8px"
                 }}>
-                  <div style={{ color: "#6b7280", fontSize: "11px", fontWeight: "500" }}>
-                    En traitement
-                  </div>
+                  <span style={{ fontSize: "13px", fontWeight: "500", color: "#4b5563" }}>Tickets en cours</span>
                   <div style={{
                     width: "32px",
                     height: "32px",
@@ -2340,7 +2336,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                 <span style={{ fontSize: "28px", fontWeight: "bold", color: "#111827", marginBottom: "4px" }}>
                   {statusCounts.en_cours}
                 </span>
-                <span style={{ fontSize: "13px", fontWeight: "500", color: "#4b5563" }}>Tickets en cours</span>
+                <span style={{ fontSize: "11px", fontWeight: "500", color: "#6b7280" }}>En traitement</span>
               </div>
 
               {/* Résolu */}
@@ -2391,9 +2387,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                   width: "100%",
                   marginBottom: "8px"
                 }}>
-                  <div style={{ color: "#6b7280", fontSize: "11px", fontWeight: "500" }}>
-                    Ce mois-ci
-                  </div>
+                  <span style={{ fontSize: "13px", fontWeight: "500", color: "#4b5563" }}>En attente de validation</span>
                   <div style={{
                     width: "32px",
                     height: "32px",
@@ -2409,7 +2403,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                 <span style={{ fontSize: "28px", fontWeight: "bold", color: "#1f2937", marginBottom: "4px" }}>
                   {statusCounts.resolu}
                 </span>
-                <span style={{ fontSize: "13px", fontWeight: "500", color: "#4b5563" }}>En attente de validation</span>
+                <span style={{ fontSize: "11px", fontWeight: "500", color: "#6b7280" }}>Ce mois-ci</span>
               </div>
 
               {/* (Cartes supplémentaires supprimées) */}
