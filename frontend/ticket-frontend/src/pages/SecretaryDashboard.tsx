@@ -10237,12 +10237,6 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                 <div style={{ marginBottom: "8px" }}>
                   <strong>Ticket #{ticket.number}:</strong> {ticket.title}
                 </div>
-                <div style={{ fontSize: "14px", color: "#666" }}>
-                  Type: <strong>{ticket.type === "materiel" ? "Matériel" : "Applicatif"}</strong>
-                </div>
-                <div style={{ fontSize: "14px", color: "#666" }}>
-                  Priorité: <strong>{ticket.priority}</strong>
-                </div>
               </div>
               <div style={{ marginBottom: "16px" }}>
                 <label style={{ display: "block", marginBottom: "8px", fontWeight: "500", color: "#333" }}>
