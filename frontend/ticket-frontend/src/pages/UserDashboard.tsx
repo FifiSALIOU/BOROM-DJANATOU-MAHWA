@@ -671,6 +671,9 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
       if (res.ok) {
         const updated = await res.json();
         setTickets(prev => prev.map(t => t.id === updated.id ? { ...t, ...updated } : t));
+        if (ticketDetails?.id === editTicketId) {
+          await loadTicketDetails(String(editTicketId));
+        }
         setShowEditModal(false);
         setEditTicketId(null);
       } else if (res.status === 403) {
@@ -710,6 +713,10 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
         },
       });
       if (res.ok || res.status === 204) {
+        if (ticketDetails?.id === ticket.id) {
+          setShowTicketDetailsPage(false);
+          setTicketDetails(null);
+        }
         // Supprimer le ticket de la liste immédiatement
         setTickets(prev => prev.filter(t => t.id !== ticket.id));
         // Recharger la liste pour s'assurer de la synchronisation
@@ -1082,6 +1089,9 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
         await loadTickets();
         await loadNotifications();
         await loadUnreadCount();
+        if (ticketDetails && String(ticketDetails.id) === String(ticketId)) {
+          await loadTicketDetails(ticketId);
+        }
         setValidationTicket(null);
         setRejectionReason("");
         setShowRejectionForm(false);
@@ -1122,6 +1132,9 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
         await loadTickets();
         await loadNotifications();
         await loadUnreadCount();
+        if (ticketDetails && String(ticketDetails.id) === String(ticketId)) {
+          await loadTicketDetails(ticketId);
+        }
         setFeedbackTicket(null);
         setFeedbackScore(5);
         setFeedbackComment("");
