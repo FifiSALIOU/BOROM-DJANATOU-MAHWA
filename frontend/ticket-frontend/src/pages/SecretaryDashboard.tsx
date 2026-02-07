@@ -6066,6 +6066,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                         tabIndex={0}
                         onClick={() => setShowPeriodCalendar((v) => !v)}
                         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setShowPeriodCalendar((v) => !v); } }}
+                        className="dsi-period-filter-trigger"
                         style={{ display: "flex", alignItems: "center", gap: "8px", padding: "6px 10px", borderRadius: "8px", border: "1px solid #e5e7eb", backgroundColor: "#f9fafb", fontSize: "14px", color: "#6b7280", height: "36px", cursor: "pointer" }}
                       >
                         <Calendar size={16} color="#6b7280" />
