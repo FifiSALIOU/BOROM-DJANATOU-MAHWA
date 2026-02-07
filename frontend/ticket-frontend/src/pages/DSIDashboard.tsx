@@ -8997,6 +8997,42 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                     </select>
                   </div>
 
+                  {/* Type */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                    <span
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        fontSize: "12px",
+                        color: "#6b7280",
+                      }}
+                    >
+                      <Layers size={12} />
+                      <span>Type</span>
+                    </span>
+                    <select
+                      value={advancedTypeFilter}
+                      onChange={(e) => setAdvancedTypeFilter(e.target.value)}
+                      style={{
+                        width: "100%",
+                        padding: "6px 10px",
+                        borderRadius: "8px",
+                        border: "1px solid #e5e7eb",
+                        backgroundColor: "#f9fafb",
+                        fontSize: "14px",
+                        height: "36px",
+                      }}
+                    >
+                      <option value="all">Tous</option>
+                      {advancedTypes.map((type) => (
+                        <option key={type as string} value={type as string}>
+                          {type}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
                   {/* Statut */}
                   <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                     <span
@@ -9066,42 +9102,6 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                       <option value="haute">Haute</option>
                       <option value="moyenne">Moyenne</option>
                       <option value="faible">Faible</option>
-                    </select>
-                  </div>
-
-                  {/* Type */}
-                  <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                    <span
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        fontSize: "12px",
-                        color: "#6b7280",
-                      }}
-                    >
-                      <Layers size={12} />
-                      <span>Type</span>
-                    </span>
-                    <select
-                      value={advancedTypeFilter}
-                      onChange={(e) => setAdvancedTypeFilter(e.target.value)}
-                      style={{
-                        width: "100%",
-                        padding: "6px 10px",
-                        borderRadius: "8px",
-                        border: "1px solid #e5e7eb",
-                        backgroundColor: "#f9fafb",
-                        fontSize: "14px",
-                        height: "36px",
-                      }}
-                    >
-                      <option value="all">Tous</option>
-                      {advancedTypes.map((type) => (
-                        <option key={type as string} value={type as string}>
-                          {type}
-                        </option>
-                      ))}
                     </select>
                   </div>
 
