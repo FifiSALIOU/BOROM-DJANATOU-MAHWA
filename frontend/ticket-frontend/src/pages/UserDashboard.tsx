@@ -1921,15 +1921,15 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                   </div>
                 )}
                 <div>
-                  <strong>Catégorie :</strong>
-                  <span style={{ marginLeft: "8px", padding: "4px 8px", borderRadius: "4px" }}>
-                    {ticketDetails.category || "Non spécifiée"}
-                  </span>
-                </div>
-                <div>
                   <strong>Type :</strong>
                   <span style={{ marginLeft: "8px", padding: "4px 8px", borderRadius: "4px" }}>
                     {ticketDetails.type === "materiel" ? "Matériel" : ticketDetails.type === "applicatif" ? "Applicatif" : ticketDetails.type || "—"}
+                  </span>
+                </div>
+                <div>
+                  <strong>Catégorie :</strong>
+                  <span style={{ marginLeft: "8px", padding: "4px 8px", borderRadius: "4px" }}>
+                    {ticketDetails.category || "Non spécifiée"}
                   </span>
                 </div>
                 <div>
