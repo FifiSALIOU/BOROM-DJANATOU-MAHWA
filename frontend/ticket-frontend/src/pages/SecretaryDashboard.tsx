@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
-import { Clock3, Users, CheckCircle2, CheckCircle, ChevronRight, ChevronLeft, ChevronDown, LayoutDashboard, Bell, Search, Clock, Monitor, Wrench, Forward, AlertTriangle, BarChart3, TrendingUp, Box, UserPlus, FileText, UserCheck, RefreshCcw, Filter, Calendar, Layers, Building2, User, FileSpreadsheet, MessageCircle, Flag, Share2, Package, Trash2, DollarSign, Ticket as TicketIcon, Archive, Banknote, Download, Plus } from "lucide-react";
+import { Clock3, Users, CheckCircle2, CheckCircle, ChevronRight, ChevronLeft, ChevronDown, LayoutDashboard, Bell, Search, Clock, Monitor, Wrench, Forward, AlertTriangle, BarChart3, TrendingUp, Box, UserPlus, FileText, UserCheck, RefreshCcw, Filter, Calendar, Layers, Building2, User, FileSpreadsheet, MessageCircle, Flag, Share2, Package, Trash2, DollarSign, Ticket as TicketIcon, Archive, Banknote, Download, Plus, Pencil, X } from "lucide-react";
 import helpdeskLogo from "../assets/helpdesk-logo.png";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -330,6 +330,20 @@ function SecretaryDashboard({ token }: SecretaryDashboardProps) {
   const [openActionsMenuFor, setOpenActionsMenuFor] = useState<string | null>(null);
   const [ticketSearchQuery, setTicketSearchQuery] = useState<string>("");
   const [delegatedTicketsByDSI, setDelegatedTicketsByDSI] = useState<Set<string>>(new Set());
+  // États pour la section Types (Adjoint DSI) – même contenu que Admin
+  const [ticketTypes, setTicketTypes] = useState<Array<{
+    id: number;
+    code: string;
+    label: string;
+    is_active: boolean;
+    type: string;
+    description: string;
+    color: string;
+  }>>([]);
+  const [showAddTypeModal, setShowAddTypeModal] = useState(false);
+  const [editingType, setEditingType] = useState<number | null>(null);
+  const [newType, setNewType] = useState({ type: "", description: "", color: "#007bff", is_active: true });
+  const [loadingTypes, setLoadingTypes] = useState(false);
 
   // Fonction pour déterminer la section active basée sur l'URL (uniquement pour Adjoint DSI)
   function getActiveSectionFromPath(): string {
@@ -355,6 +369,22 @@ function SecretaryDashboard({ token }: SecretaryDashboardProps) {
       setActiveSection(sectionFromPath);
     }
   }, [location.pathname, roleName]);
+
+  // Charger les types de tickets pour la section Types (Adjoint DSI)
+  useEffect(() => {
+    if (currentActiveSection === "types" && roleName === "Adjoint DSI" && token) {
+      let cancelled = false;
+      setLoadingTypes(true);
+      fetch("http://localhost:8000/ticket-config/types", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => res.ok ? res.json() : [])
+        .then((data) => { if (!cancelled) setTicketTypes(data); })
+        .catch(() => { if (!cancelled) setTicketTypes([]); })
+        .finally(() => { if (!cancelled) setLoadingTypes(false); });
+      return () => { cancelled = true; };
+    }
+  }, [currentActiveSection, roleName, token]);
 
   // Fonction pour obtenir le libellé d'une priorité
   function getPriorityLabel(priority: string): string {
@@ -389,6 +419,87 @@ function SecretaryDashboard({ token }: SecretaryDashboardProps) {
       default: return type;
     }
   }
+
+  // Handlers pour la section Types (Adjoint DSI) – même logique que Admin
+  const handleAddType = async () => {
+    if (!newType.type.trim()) { alert("Veuillez remplir le nom du type"); return; }
+    if (!token) { alert("Session expirée. Veuillez vous reconnecter."); return; }
+    try {
+      const res = await fetch("http://localhost:8000/ticket-config/types", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ label: newType.type.trim(), is_active: newType.is_active }),
+      });
+      if (res.ok) {
+        const typesRes = await fetch("http://localhost:8000/ticket-config/types", { headers: { Authorization: `Bearer ${token}` } });
+        if (typesRes.ok) setTicketTypes(await typesRes.json());
+        setNewType({ type: "", description: "", color: "#007bff", is_active: true });
+        setShowAddTypeModal(false);
+        alert("Type de ticket ajouté avec succès !");
+      } else {
+        const error = await res.json().catch(() => ({ detail: "Erreur lors de l'ajout" }));
+        alert(error.detail || "Erreur lors de l'ajout du type");
+      }
+    } catch (err) {
+      console.error("Erreur lors de l'ajout du type:", err);
+      alert("Erreur lors de l'ajout du type");
+    }
+  };
+  const handleEditType = (typeId: number) => {
+    const type = ticketTypes.find(t => t.id === typeId);
+    if (type) {
+      setNewType({ type: type.label, description: "", color: "#007bff", is_active: type.is_active });
+      setEditingType(typeId);
+      setShowAddTypeModal(true);
+    }
+  };
+  const handleToggleActiveType = () => setNewType({ ...newType, is_active: !newType.is_active });
+  const handleUpdateType = async () => {
+    if (!newType.type.trim()) { alert("Veuillez remplir le nom du type"); return; }
+    if (!editingType || !token) { alert("Erreur: type non sélectionné"); return; }
+    try {
+      const res = await fetch(`http://localhost:8000/ticket-config/types/${editingType}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ label: newType.type, is_active: newType.is_active }),
+      });
+      if (res.ok) {
+        const typesRes = await fetch("http://localhost:8000/ticket-config/types", { headers: { Authorization: `Bearer ${token}` } });
+        if (typesRes.ok) setTicketTypes(await typesRes.json());
+        setNewType({ type: "", description: "", color: "#007bff", is_active: true });
+        setEditingType(null);
+        setShowAddTypeModal(false);
+        alert("Type de ticket modifié avec succès !");
+      } else {
+        const error = await res.json().catch(() => ({ detail: "Erreur lors de la modification" }));
+        alert(error.detail || "Erreur lors de la modification du type");
+      }
+    } catch (err) {
+      console.error("Erreur lors de la modification du type:", err);
+      alert("Erreur lors de la modification du type");
+    }
+  };
+  const handleDeleteType = async (typeId: number) => {
+    if (!confirm("Êtes-vous sûr de vouloir supprimer ce type de ticket ?")) return;
+    if (!token) { alert("Session expirée. Veuillez vous reconnecter."); return; }
+    try {
+      const res = await fetch(`http://localhost:8000/ticket-config/types/${typeId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const typesRes = await fetch("http://localhost:8000/ticket-config/types", { headers: { Authorization: `Bearer ${token}` } });
+        if (typesRes.ok) setTicketTypes(await typesRes.json());
+        alert("Type de ticket supprimé avec succès !");
+      } else {
+        const error = await res.json().catch(() => ({ detail: "Erreur lors de la suppression" }));
+        alert(error.detail || "Erreur lors de la suppression du type");
+      }
+    } catch (err) {
+      console.error("Erreur lors de la suppression du type:", err);
+      alert("Erreur lors de la suppression du type");
+    }
+  };
 
   // Fonction helper pour déterminer l'icône et les couleurs de la timeline d'historique
   const getHistoryVisuals = (entry: TicketHistory) => {
@@ -6237,14 +6348,88 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
           )}
 
           {currentActiveSection === "types" && roleName === "Adjoint DSI" && (
-            <div style={{ marginTop: "40px", padding: "24px", background: "#f9fafb", borderRadius: "8px", border: "1px solid #e5e7eb" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
-                <Layers size={24} color="#f97316" strokeWidth={2} />
-                <span style={{ fontSize: "18px", fontWeight: "600", color: "#111827" }}>Types</span>
+            <div style={{ padding: "24px", background: "white" }}>
+              <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", marginBottom: "24px" }}>
+                <button
+                  onClick={() => {
+                    setNewType({ type: "", description: "", color: "#007bff", is_active: true });
+                    setEditingType(null);
+                    setShowAddTypeModal(true);
+                  }}
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: "8px", padding: "10px 20px",
+                    backgroundColor: "#FF6B00", color: "white", border: "none", borderRadius: "8px",
+                    cursor: "pointer", fontSize: "14px", fontWeight: 500, boxShadow: "0 1px 2px rgba(0,0,0,0.05)"
+                  }}
+                >
+                  <Plus size={18} />
+                  Nouveau type
+                </button>
               </div>
-              <p style={{ margin: 0, fontSize: "14px", color: "#6b7280" }}>
-                Types de tickets (Matériel / Applicatif). Cette section est disponible dans le menu.
-              </p>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(400px, 1fr))", gap: "20px" }}>
+                {loadingTypes ? (
+                  <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "40px", color: "hsl(220, 15%, 45%)" }}>Chargement des types...</div>
+                ) : ticketTypes.length === 0 ? (
+                  <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "40px", color: "hsl(220, 15%, 45%)" }}>Aucun type de ticket trouvé</div>
+                ) : (
+                  ticketTypes.map((ticketType) => {
+                    const isMateriel = ticketType.code === "materiel" || ticketType.label.toLowerCase().includes("matériel") || ticketType.label.toLowerCase().includes("materiel");
+                    const isApplicatif = ticketType.code === "applicatif" || ticketType.label.toLowerCase().includes("applicatif") || ticketType.label.toLowerCase().includes("logiciel");
+                    const description = isMateriel ? "Problèmes liés aux équipements physiques (ordinateurs, imprimantes, etc.)" : isApplicatif ? "Problèmes liés aux logiciels et applications" : `Problèmes liés à ${ticketType.label.toLowerCase()}`;
+                    return (
+                      <div key={ticketType.id} style={{ background: "#fff", borderRadius: "8px", border: "1px solid #e5e7eb", padding: "20px", display: "flex", gap: "16px", transition: "all 0.2s ease", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }} onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.12)"; }} onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.08)"; }}>
+                        <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: isMateriel ? "rgba(255, 107, 0, 0.1)" : "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                          {isMateriel ? <Wrench size={24} color="#FF6B00" /> : <Monitor size={24} color="#64748b" />}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px", flexWrap: "wrap" }}>
+                            <h3 style={{ fontSize: "16px", fontWeight: 600, color: "#111827", margin: 0 }}>{ticketType.label}</h3>
+                            {ticketType.is_active && <span style={{ padding: "4px 12px", borderRadius: "9999px", fontSize: "13px", fontWeight: 500, background: "rgba(34, 197, 94, 0.1)", color: "rgb(34, 197, 94)" }}>Actif</span>}
+                          </div>
+                          <p style={{ fontSize: "14px", color: "#6b7280", margin: "0 0 8px 0", lineHeight: "1.5" }}>{description}</p>
+                          <p style={{ fontSize: "12px", color: "#FF6B00", margin: 0, fontFamily: "monospace" }}>Code: {ticketType.code}</p>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", flexShrink: 0 }}>
+                          <button onClick={(e) => { e.stopPropagation(); handleEditType(ticketType.id); }} style={{ padding: "8px", background: "transparent", border: "none", borderRadius: "6px", cursor: "pointer", color: "#6b7280", display: "flex", alignItems: "center", justifyContent: "center" }} title="Modifier"><Pencil size={20} /></button>
+                          <button onClick={(e) => { e.stopPropagation(); handleDeleteType(ticketType.id); }} style={{ padding: "8px", background: "transparent", border: "none", borderRadius: "6px", cursor: "pointer", color: "rgb(239, 68, 68)", display: "flex", alignItems: "center", justifyContent: "center" }} title="Supprimer"><Trash2 size={20} /></button>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+              {showAddTypeModal && (
+                <div onClick={() => { setShowAddTypeModal(false); setEditingType(null); setNewType({ type: "", description: "", color: "#007bff", is_active: true }); }} style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "20px" }}>
+                  <div onClick={(e) => e.stopPropagation()} style={{ background: "white", borderRadius: "8px", width: "100%", maxWidth: "500px", boxShadow: "0 4px 20px rgba(0,0,0,0.2)", padding: "24px", position: "relative", maxHeight: "90vh", overflowY: "auto" }}>
+                    <button onClick={() => { setShowAddTypeModal(false); setEditingType(null); setNewType({ type: "", description: "", color: "#007bff", is_active: true }); }} style={{ position: "absolute", top: "16px", right: "16px", background: "transparent", border: "none", cursor: "pointer", padding: "4px", display: "flex", alignItems: "center", justifyContent: "center", color: "#111827" }}><X size={20} /></button>
+                    <h2 style={{ marginBottom: "24px", fontSize: "20px", fontWeight: "700", color: "#111827" }}>{editingType ? "Modifier le type" : "Ajouter un type"}</h2>
+                    <form onSubmit={(e) => { e.preventDefault(); if (editingType) handleUpdateType(); else handleAddType(); }} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                      <div>
+                        <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "400", color: "#111827" }}>Nom du type <span style={{ color: "#dc3545" }}>*</span></label>
+                        <input type="text" value={newType.type} onChange={(e) => setNewType({ ...newType, type: e.target.value })} placeholder="Ex: Matériel" required style={{ width: "100%", padding: "12px 16px", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "16px", backgroundColor: "white", color: "#111827", height: "40px", boxSizing: "border-box" }} />
+                      </div>
+                      <div>
+                        <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "400", color: "#111827" }}>Code (identifiant technique)</label>
+                        <input type="text" value={editingType ? ticketTypes.find(t => t.id === editingType)?.code || "" : (newType.type ? newType.type.toLowerCase().replace(/\s+/g, "-") : "")} readOnly placeholder="Généré automatiquement" style={{ width: "100%", padding: "12px 16px", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "16px", fontFamily: "monospace", backgroundColor: "#f3f4f6", color: "#6b7280", cursor: "not-allowed", height: "40px", boxSizing: "border-box" }} />
+                      </div>
+                      <div>
+                        <label style={{ display: "block", marginBottom: "8px", fontSize: "14px", fontWeight: "400", color: "#111827" }}>Description</label>
+                        <textarea value={newType.description} onChange={(e) => setNewType({ ...newType, description: e.target.value })} placeholder="Ex: Problèmes liés aux équipements physiques (ordinateurs, imprimantes, etc.)" style={{ width: "100%", padding: "12px 16px", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "14px", minHeight: "80px", height: "100px", backgroundColor: "white", color: "#111827", resize: "vertical", boxSizing: "border-box" }} />
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                        <label style={{ fontSize: "14px", fontWeight: "400", color: "#111827", margin: 0 }}>Actif</label>
+                        <div onClick={handleToggleActiveType} style={{ width: "44px", height: "24px", borderRadius: "12px", background: newType.is_active ? "#22c55e" : "#1E3A5F", position: "relative", cursor: "pointer", transition: "all 0.2s", flexShrink: 0 }}>
+                          <div style={{ width: "20px", height: "20px", borderRadius: "50%", background: "white", position: "absolute", top: "2px", right: newType.is_active ? "2px" : "22px", transition: "all 0.2s", boxShadow: "0 1px 3px rgba(0,0,0,0.2)" }} />
+                        </div>
+                      </div>
+                      <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItems: "center", gap: "12px", marginTop: "24px" }}>
+                        <button type="button" onClick={() => { setShowAddTypeModal(false); setEditingType(null); setNewType({ type: "", description: "", color: "#007bff", is_active: true }); }} style={{ padding: "10px 20px", background: "white", color: "#111827", border: "1px solid #e5e7eb", borderRadius: "8px", cursor: "pointer", fontSize: "14px", fontWeight: "400", height: "40px", boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center" }}>Annuler</button>
+                        <button type="submit" style={{ padding: "10px 20px", background: "#F58220", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "14px", fontWeight: "700", height: "40px", boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center" }}>{editingType ? "Modifier" : "Ajouter"}</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

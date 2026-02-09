@@ -1910,9 +1910,9 @@ function DSIDashboard({ token }: DSIDashboardProps) {
     }
   }, [activeSection]);
 
-  // Charger les types de tickets depuis la base de données
+  // Charger les types de tickets depuis la base de données (Admin et DSI)
   useEffect(() => {
-    if (activeSection === "types" && userRole === "Admin" && token) {
+    if (activeSection === "types" && (userRole === "Admin" || userRole === "DSI") && token) {
       async function loadTicketTypes() {
         setLoadingTypes(true);
         try {
@@ -13367,19 +13367,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
             </div>
           )}
 
-          {activeSection === "types" && userRole !== "Admin" && (
-            <div style={{ marginTop: "40px", padding: "24px", background: "#f9fafb", borderRadius: "8px", border: "1px solid #e5e7eb" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
-                <Layers size={24} color="#f97316" strokeWidth={2} />
-                <span style={{ fontSize: "18px", fontWeight: "600", color: "#111827" }}>Types</span>
-              </div>
-              <p style={{ margin: 0, fontSize: "14px", color: "#6b7280" }}>
-                Types de tickets (Matériel / Applicatif). Cette section est disponible dans le menu.
-              </p>
-            </div>
-          )}
-
-          {activeSection === "types" && userRole === "Admin" && (
+          {activeSection === "types" && (userRole === "Admin" || userRole === "DSI") && (
             <div style={{ padding: "24px", background: "white" }}>
               {/* Header avec bouton */}
               <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", marginBottom: "24px" }}>
