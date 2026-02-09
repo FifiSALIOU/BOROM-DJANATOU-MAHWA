@@ -19947,6 +19947,32 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                 Rouvrir
               </button>
             )}
+            {ticket.status === "retraite" && (
+              <button
+                onClick={() => { loadTicketDetails(ticket.id); setOpenActionsMenuFor(null); }}
+                disabled={loading}
+                style={{ 
+                  width: "100%", 
+                  padding: "10px 12px", 
+                  background: "transparent", 
+                  border: "none", 
+                  textAlign: "left", 
+                  cursor: "pointer",
+                  color: "#111827",
+                  fontSize: "14px",
+                  display: "block",
+                  whiteSpace: "nowrap"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#f3f4f6";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                }}
+              >
+                Voir détails
+              </button>
+            )}
           </div>
           </>
         );
@@ -20233,6 +20259,32 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                 }}
               >
                 Réouvrir
+              </button>
+            )}
+            {ticket.status === "retraite" && (
+              <button
+                onClick={() => { loadTicketDetails(ticket.id); setOpenActionsMenuFor(null); }}
+                disabled={loading}
+                style={{ 
+                  width: "100%", 
+                  padding: "10px 12px", 
+                  background: "transparent", 
+                  border: "none", 
+                  textAlign: "left", 
+                  cursor: "pointer",
+                  color: "#111827",
+                  fontSize: "14px",
+                  display: "block",
+                  whiteSpace: "nowrap"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#f3f4f6";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                }}
+              >
+                Voir détails
               </button>
             )}
           </div>
