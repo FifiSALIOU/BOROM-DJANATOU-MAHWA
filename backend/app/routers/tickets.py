@@ -314,6 +314,7 @@ def edit_ticket(
         models.TicketStatus.EN_COURS,
         models.TicketStatus.CLOTURE,
         models.TicketStatus.RESOLU,
+        models.TicketStatus.RETRAITE,
         models.TicketStatus.REJETE
     ]
     if ticket.technician_id is not None or ticket.status in blocked_statuses:
@@ -374,6 +375,7 @@ def delete_ticket(
         models.TicketStatus.EN_COURS,
         models.TicketStatus.CLOTURE,
         models.TicketStatus.RESOLU,
+        models.TicketStatus.RETRAITE,
         models.TicketStatus.REJETE
     ]
     if ticket.technician_id is not None or ticket.status in blocked_statuses:
@@ -771,6 +773,9 @@ def update_ticket_status(
     creator = db.query(models.User).filter(models.User.id == ticket.creator_id).first()
     technician = db.query(models.User).filter(models.User.id == ticket.technician_id).first() if ticket.technician_id else None
     
+    # Statut effectif à enregistrer (pour RESOLU → RETRAITE si le ticket a déjà été relancé)
+    effective_new_status = status_update.status
+
     # Vérifier les permissions selon le statut
     if status_update.status == models.TicketStatus.RESOLU:
         # Seul le technicien assigné peut marquer comme résolu
@@ -779,6 +784,19 @@ def update_ticket_status(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Only assigned technician can mark as resolved"
             )
+        # Si le ticket a déjà été relancé (rejete) par l'utilisateur, enregistrer comme Retraité au lieu de Résolu
+        has_been_relanced = (
+            db.query(models.TicketHistory)
+            .filter(
+                models.TicketHistory.ticket_id == ticket.id,
+                models.TicketHistory.new_status == models.TicketStatus.REJETE,
+            )
+            .first()
+            is not None
+        )
+        if has_been_relanced:
+            effective_new_status = models.TicketStatus.RETRAITE
+
         ticket.resolved_at = datetime.utcnow()
         
         # Créer une notification pour l'utilisateur créateur
@@ -895,9 +913,9 @@ def update_ticket_status(
             )
     
     old_status = ticket.status
-    ticket.status = status_update.status
+    ticket.status = effective_new_status
     
-    # Créer une entrée d'historique avec résumé si résolu
+    # Créer une entrée d'historique avec résumé si résolu/retraité
     history_reason = None
     if status_update.status == models.TicketStatus.RESOLU and status_update.resolution_summary:
         history_reason = f"Résumé de la résolution: {status_update.resolution_summary}"
@@ -905,7 +923,7 @@ def update_ticket_status(
     history = models.TicketHistory(
         ticket_id=ticket.id,
         old_status=old_status,
-        new_status=status_update.status,
+        new_status=effective_new_status,
         user_id=current_user.id,
         reason=history_reason,
     )
@@ -1037,8 +1055,8 @@ def validate_ticket_resolution(
             detail="Only ticket creator can validate resolution"
         )
     
-    # Vérifier que le ticket est en statut "résolu"
-    if ticket.status != models.TicketStatus.RESOLU:
+    # Vérifier que le ticket est en statut "résolu" ou "retraité" (validation possible dans les deux cas)
+    if ticket.status not in (models.TicketStatus.RESOLU, models.TicketStatus.RETRAITE):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Ticket must be resolved before validation"

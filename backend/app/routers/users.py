@@ -109,12 +109,12 @@ def get_technician_stats(
             detail="Technicien not found"
         )
     
-    # Tickets résolus
+    # Tickets résolus ou retraités
     resolved_tickets = (
         db.query(models.Ticket)
         .filter(
             models.Ticket.technician_id == technician_id,
-            models.Ticket.status == models.TicketStatus.RESOLU
+            models.Ticket.status.in_([models.TicketStatus.RESOLU, models.TicketStatus.RETRAITE])
         )
         .all()
     )
@@ -162,7 +162,7 @@ def get_technician_stats(
         db.query(models.Ticket)
         .filter(
             models.Ticket.technician_id == technician_id,
-            models.Ticket.status.in_([models.TicketStatus.RESOLU, models.TicketStatus.CLOTURE]),
+            models.Ticket.status.in_([models.TicketStatus.RESOLU, models.TicketStatus.RETRAITE, models.TicketStatus.CLOTURE]),
             models.Ticket.resolved_at.isnot(None),
             models.Ticket.resolved_at >= first_day_of_month
         )
@@ -228,7 +228,7 @@ def get_technician_stats(
         db.query(models.Ticket)
         .filter(
             models.Ticket.technician_id == technician_id,
-            models.Ticket.status.in_([models.TicketStatus.RESOLU, models.TicketStatus.CLOTURE]),
+            models.Ticket.status.in_([models.TicketStatus.RESOLU, models.TicketStatus.RETRAITE, models.TicketStatus.CLOTURE]),
             models.Ticket.resolved_at.isnot(None),
             models.Ticket.resolved_at >= today_start
         )

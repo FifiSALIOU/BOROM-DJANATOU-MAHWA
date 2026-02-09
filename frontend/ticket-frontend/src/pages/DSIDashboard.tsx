@@ -290,6 +290,7 @@ function DSIDashboard({ token }: DSIDashboardProps) {
       case "en_cours": return "En cours";
       case "resolu": return "Résolu";
       case "rejete": return "Relancé";
+      case "retraite": return "Retraité";
       case "cloture": return "Clôturé";
       default: return status;
     }

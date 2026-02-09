@@ -236,6 +236,7 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
       case "en_cours": return "En cours";
       case "resolu": return "Résolu";
       case "rejete": return "Relancé";
+      case "retraite": return "Retraité";
       case "cloture": return "Clôturé";
       default: return status;
     }
@@ -1029,8 +1030,8 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
   // Filtrer les tickets selon leur statut
   const assignedTickets = allTickets.filter((t) => t.status === "assigne_technicien");
   const inProgressTickets = allTickets.filter((t) => t.status === "en_cours");
-  // Tickets résolus : inclure les tickets avec statut "resolu" ou "cloture" qui ont été assignés au technicien
-  const resolvedTickets = allTickets.filter((t) => t.status === "resolu" || t.status === "cloture");
+  // Tickets résolus : inclure les tickets avec statut "resolu", "retraite" ou "cloture" qui ont été assignés au technicien
+  const resolvedTickets = allTickets.filter((t) => t.status === "resolu" || t.status === "retraite" || t.status === "cloture");
   const rejectedTickets = allTickets.filter((t) => t.status === "rejete");
 
   const matchesFilters = (t: Ticket) => {
@@ -1829,8 +1830,8 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                     borderRadius: "4px",
                     fontSize: "12px",
                     fontWeight: "500",
-                    background: ticketDetails.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : ticketDetails.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : ticketDetails.status === "en_cours" ? "rgba(15, 31, 61, 0.1)" : ticketDetails.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : ticketDetails.status === "rejete" ? "#fee2e2" : ticketDetails.status === "cloture" ? "#e5e7eb" : "#9e9e9e",
-                    color: ticketDetails.status === "en_attente_analyse" ? "#0DADDB" : ticketDetails.status === "assigne_technicien" ? "#FF7A1B" : ticketDetails.status === "en_cours" ? "#0F1F3D" : ticketDetails.status === "resolu" ? "#2F9E44" : ticketDetails.status === "rejete" ? "#991b1b" : ticketDetails.status === "cloture" ? "#6B7280" : "white"
+                    background: ticketDetails.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : ticketDetails.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : ticketDetails.status === "en_cours" ? "rgba(15, 31, 61, 0.1)" : ticketDetails.status === "resolu" || ticketDetails.status === "retraite" ? "rgba(47, 158, 68, 0.1)" : ticketDetails.status === "rejete" ? "#fee2e2" : ticketDetails.status === "cloture" ? "#e5e7eb" : "#9e9e9e",
+                    color: ticketDetails.status === "en_attente_analyse" ? "#0DADDB" : ticketDetails.status === "assigne_technicien" ? "#FF7A1B" : ticketDetails.status === "en_cours" ? "#0F1F3D" : ticketDetails.status === "resolu" || ticketDetails.status === "retraite" ? "#2F9E44" : ticketDetails.status === "rejete" ? "#991b1b" : ticketDetails.status === "cloture" ? "#6B7280" : "white"
                   }}>
                     {getStatusLabel(ticketDetails.status)}
                   </span>
@@ -2493,6 +2494,7 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                     <option value="assigne_technicien">Assigné</option>
                     <option value="en_cours">En cours</option>
                     <option value="resolu">Résolu</option>
+                    <option value="retraite">Retraité</option>
                     <option value="rejete">Relancé</option>
                   </select>
 
@@ -3776,11 +3778,11 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                                          t.priority === "faible" ? "rgba(107, 114, 128, 0.3)" : 
                                          "#0DADDB";
 
-                      // Déterminer le statut pour l'affichage
-                      const isResolved = t.status === "resolu";
-                      const statusLabel = isResolved ? "Résolu" : "Clôturé";
-                      const statusBg = isResolved ? "rgba(47, 158, 68, 0.1)" : "#e5e7eb";
-                      const statusColor = isResolved ? "#2F9E44" : "#374151";
+                      // Déterminer le statut pour l'affichage (résolu, retraité ou clôturé)
+                      const isResolvedOrRetraite = t.status === "resolu" || t.status === "retraite";
+                      const statusLabel = t.status === "retraite" ? "Retraité" : (t.status === "resolu" ? "Résolu" : "Clôturé");
+                      const statusBg = isResolvedOrRetraite ? "rgba(47, 158, 68, 0.1)" : "#e5e7eb";
+                      const statusColor = isResolvedOrRetraite ? "#2F9E44" : "#374151";
 
                       return (
                         <div

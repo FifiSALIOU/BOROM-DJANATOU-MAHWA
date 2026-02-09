@@ -79,6 +79,7 @@ class TicketStatus(str, PyEnum):
     EN_COURS = "en_cours"
     RESOLU = "resolu"
     REJETE = "rejete"
+    RETRAITE = "retraite"  # Résolu après relance par l'utilisateur (au lieu de Résolu)
     CLOTURE = "cloture"
 
 

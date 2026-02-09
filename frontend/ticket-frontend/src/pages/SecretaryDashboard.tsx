@@ -439,6 +439,7 @@ function SecretaryDashboard({ token }: SecretaryDashboardProps) {
       case "resolu": return "Résolu";
       case "cloture": return "Clôturé";
       case "rejete": return "Relancé";
+      case "retraite": return "Retraité";
       default: return status || "—";
     }
   }

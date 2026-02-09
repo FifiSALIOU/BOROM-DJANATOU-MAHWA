@@ -17,11 +17,11 @@ def check_validation_reminders():
     """
     db: Session = SessionLocal()
     try:
-        # Récupérer tous les tickets résolus non clôturés
+        # Récupérer tous les tickets résolus ou retraités non clôturés (rappels de validation)
         resolved_tickets = (
             db.query(models.Ticket)
             .filter(
-                models.Ticket.status == models.TicketStatus.RESOLU,
+                models.Ticket.status.in_([models.TicketStatus.RESOLU, models.TicketStatus.RETRAITE]),
                 models.Ticket.resolved_at.isnot(None)
             )
             .all()
@@ -157,7 +157,7 @@ def auto_close_unvalidated_tickets():
         unvalidated_tickets = (
             db.query(models.Ticket)
             .filter(
-                models.Ticket.status == models.TicketStatus.RESOLU,
+                models.Ticket.status.in_([models.TicketStatus.RESOLU, models.TicketStatus.RETRAITE]),
                 models.Ticket.resolved_at.isnot(None),
                 models.Ticket.resolved_at <= cutoff_date,
                 models.Ticket.closed_at.is_(None)  # Pas encore clôturé
@@ -167,6 +167,7 @@ def auto_close_unvalidated_tickets():
         
         for ticket in unvalidated_tickets:
             # Clôturer le ticket automatiquement
+            old_st = ticket.status
             ticket.status = models.TicketStatus.CLOTURE
             ticket.closed_at = now
             ticket.auto_closed_at = now  # Marquer comme clôture automatique
@@ -174,7 +175,7 @@ def auto_close_unvalidated_tickets():
             # Créer une entrée d'historique
             history = models.TicketHistory(
                 ticket_id=ticket.id,
-                old_status=models.TicketStatus.RESOLU,
+                old_status=old_st,
                 new_status=models.TicketStatus.CLOTURE,
                 user_id=ticket.creator_id,  # Utiliser le créateur comme user_id pour l'historique
                 reason="Clôture automatique après 14 jours sans validation"

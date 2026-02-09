@@ -618,7 +618,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
     if (ticket.status === "cloture") {
       return `Ce ticket est déjà clôturé. ${action === "modification" ? "Modification" : "Suppression"} impossible.`;
     }
-    if (ticket.status === "resolu") {
+    if (ticket.status === "resolu" || ticket.status === "retraite") {
       return `Ce ticket est déjà résolu. ${action === "modification" ? "Modification" : "Suppression"} impossible.`;
     }
     if (ticket.status === "rejete") {
@@ -633,7 +633,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
   function openEditModal(ticket: Ticket) {
     // Vérifier si le ticket peut être modifié (non assigné et statut en attente)
     const isAssigned = ticket.technician !== null && ticket.technician !== undefined;
-    const blockedStatuses = ["assigne_technicien", "en_cours", "cloture", "resolu", "rejete"];
+    const blockedStatuses = ["assigne_technicien", "en_cours", "cloture", "resolu", "retraite", "rejete"];
     const isBlocked = blockedStatuses.includes(ticket.status) || isAssigned;
     
     if (isBlocked) {
@@ -688,7 +688,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
   async function handleDelete(ticket: Ticket) {
     // Vérifier si le ticket peut être supprimé (non assigné et statut en attente)
     const isAssigned = ticket.technician !== null && ticket.technician !== undefined;
-    const blockedStatuses = ["assigne_technicien", "en_cours", "cloture", "resolu", "rejete"];
+    const blockedStatuses = ["assigne_technicien", "en_cours", "cloture", "resolu", "retraite", "rejete"];
     const isBlocked = blockedStatuses.includes(ticket.status) || isAssigned;
     
     if (isBlocked) {
@@ -1156,7 +1156,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
     en_attente_analyse: tickets.filter((t) => t.status === "en_attente_analyse").length,
     assigne_technicien: tickets.filter((t) => t.status === "assigne_technicien").length,
     en_cours: tickets.filter((t) => t.status === "en_cours").length,
-    resolu: tickets.filter((t) => t.status === "resolu").length,
+    resolu: tickets.filter((t) => t.status === "resolu" || t.status === "retraite").length,
     rejete: tickets.filter((t) => t.status === "rejete").length,
     cloture: tickets.filter((t) => t.status === "cloture").length,
   };
@@ -1294,6 +1294,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
       case "en_cours": return "En cours";
       case "resolu": return "Résolu";
       case "rejete": return "Relancé";
+      case "retraite": return "Retraité";
       case "cloture": return "Clôturé";
       default: return status;
     }
@@ -1963,8 +1964,8 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                     borderRadius: "4px",
                     fontSize: "12px",
                     fontWeight: "500",
-                    background: ticketDetails.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : ticketDetails.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : ticketDetails.status === "en_cours" ? "rgba(15, 31, 61, 0.1)" : ticketDetails.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : ticketDetails.status === "rejete" ? "#fee2e2" : ticketDetails.status === "cloture" ? "#E5E7EB" : "#f3f4f6",
-                    color: ticketDetails.status === "en_attente_analyse" ? "#0DADDB" : ticketDetails.status === "assigne_technicien" ? "#FF7A1B" : ticketDetails.status === "en_cours" ? "#0F1F3D" : ticketDetails.status === "resolu" ? "#2F9E44" : ticketDetails.status === "rejete" ? "#991b1b" : ticketDetails.status === "cloture" ? "#374151" : "#6b7280"
+                    background: ticketDetails.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : ticketDetails.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : ticketDetails.status === "en_cours" ? "rgba(15, 31, 61, 0.1)" : (ticketDetails.status === "resolu" || ticketDetails.status === "retraite") ? "rgba(47, 158, 68, 0.1)" : ticketDetails.status === "rejete" ? "#fee2e2" : ticketDetails.status === "cloture" ? "#E5E7EB" : "#f3f4f6",
+                    color: ticketDetails.status === "en_attente_analyse" ? "#0DADDB" : ticketDetails.status === "assigne_technicien" ? "#FF7A1B" : ticketDetails.status === "en_cours" ? "#0F1F3D" : (ticketDetails.status === "resolu" || ticketDetails.status === "retraite") ? "#2F9E44" : ticketDetails.status === "rejete" ? "#991b1b" : ticketDetails.status === "cloture" ? "#374151" : "#6b7280"
                   }}>
                     {getStatusLabel(ticketDetails.status)}
                   </span>
@@ -2087,13 +2088,13 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                 <div style={{ marginTop: "12px", display: "flex", gap: "8px", flexWrap: "wrap" }}>
                   {(() => {
                     const isAssigned = ticketDetails.technician !== null && ticketDetails.technician !== undefined;
-                    const blockedStatuses = ["assigne_technicien", "en_cours", "cloture", "resolu", "rejete"];
+                    const blockedStatuses = ["assigne_technicien", "en_cours", "cloture", "resolu", "retraite", "rejete"];
                     const isBlocked = blockedStatuses.includes(ticketDetails.status) || isAssigned;
-                    const noActionsAvailable = isBlocked && ticketDetails.status !== "resolu";
+                    const noActionsAvailable = isBlocked && ticketDetails.status !== "resolu" && ticketDetails.status !== "retraite";
                     if (noActionsAvailable) {
                       return <span style={{ fontStyle: "italic" }}>Aucune action disponible pour ce ticket</span>;
                     }
-                    if (ticketDetails.status === "resolu") {
+                    if (ticketDetails.status === "resolu" || ticketDetails.status === "retraite") {
                       return null;
                     }
                     return (
@@ -2149,8 +2150,8 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                     );
                   })()}
 
-                  {/* Boutons Valider/Rejeter si le ticket est résolu */}
-                  {ticketDetails.status === "resolu" && (
+                  {/* Boutons Valider/Rejeter si le ticket est résolu ou retraité */}
+                  {(ticketDetails.status === "resolu" || ticketDetails.status === "retraite") && (
                     <>
                       <button
                         onClick={() => {
@@ -2740,8 +2741,8 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                             borderRadius: "12px",
                             fontSize: "12px",
                             fontWeight: "500",
-                            background: t.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : t.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : t.status === "en_cours" ? "rgba(15, 31, 61, 0.1)" : t.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : t.status === "rejete" ? "#fee2e2" : "#e5e7eb",
-                            color: t.status === "en_attente_analyse" ? "#0DADDB" : t.status === "assigne_technicien" ? "#FF7A1B" : t.status === "en_cours" ? "#0F1F3D" : t.status === "resolu" ? "#2F9E44" : t.status === "rejete" ? "#991b1b" : "#374151",
+                            background: t.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : t.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : t.status === "en_cours" ? "rgba(15, 31, 61, 0.1)" : (t.status === "resolu" || t.status === "retraite") ? "rgba(47, 158, 68, 0.1)" : t.status === "rejete" ? "#fee2e2" : "#e5e7eb",
+                            color: t.status === "en_attente_analyse" ? "#0DADDB" : t.status === "assigne_technicien" ? "#FF7A1B" : t.status === "en_cours" ? "#0F1F3D" : (t.status === "resolu" || t.status === "retraite") ? "#2F9E44" : t.status === "rejete" ? "#991b1b" : "#374151",
                             display: "inline-flex",
                             alignItems: "center",
                             gap: "6px"
@@ -2749,13 +2750,13 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                             {t.status === "en_attente_analyse" && <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#0DADDB" }}></div>}
                             {t.status === "assigne_technicien" && <div style={{ width: "8px", height: "8px", borderRadius: "50%", border: "2px solid #FF7A1B" }}></div>}
                             {t.status === "en_cours" && <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#0F1F3D" }}></div>}
-                            {t.status === "resolu" && <div style={{ width: "8px", height: "8px", borderRadius: "50%", border: "2px solid #6b7280" }}></div>}
+                            {(t.status === "resolu" || t.status === "retraite") && <div style={{ width: "8px", height: "8px", borderRadius: "50%", border: "2px solid #6b7280" }}></div>}
                             {t.status === "rejete" && <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#ef4444" }}></div>}
                             {t.status === "cloture" && <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#6b7280" }}></div>}
                             {t.status === "en_attente_analyse" ? "En attente d'assignation" :
                              t.status === "assigne_technicien" ? "Assigné au technicien" :
                              t.status === "en_cours" ? "En cours" :
-                             t.status === "resolu" ? "Résolu" :
+                             t.status === "retraite" ? "Retraité" : t.status === "resolu" ? "Résolu" :
                              t.status === "rejete" ? "Relancé" :
                              t.status === "cloture" ? "Clôturé" : t.status}
                           </span>
@@ -2904,6 +2905,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                     <option value="assigne_technicien">Assigné au technicien</option>
                     <option value="en_cours">En cours</option>
                     <option value="resolu">Résolu</option>
+                    <option value="retraite">Retraité</option>
                     <option value="rejete">Relancé</option>
                     <option value="cloture">Clôturé</option>
                   </select>
@@ -3114,14 +3116,14 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                               borderRadius: "20px",
                               fontSize: t.status === "en_cours" ? "12px" : "10px",
                               fontWeight: "500",
-                        background: t.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : t.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : t.status === "en_cours" ? "rgba(15, 31, 61, 0.1)" : t.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : t.status === "rejete" ? "#fee2e2" : t.status === "cloture" ? "#e5e7eb" : "#e5e7eb",
-                        color: t.status === "en_attente_analyse" ? "#0DADDB" : t.status === "assigne_technicien" ? "#FF7A1B" : t.status === "en_cours" ? "#0F1F3D" : t.status === "resolu" ? "#2F9E44" : t.status === "rejete" ? "#991b1b" : t.status === "cloture" ? "#374151" : "#374151",
+                        background: t.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : t.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : t.status === "en_cours" ? "rgba(15, 31, 61, 0.1)" : (t.status === "resolu" || t.status === "retraite") ? "rgba(47, 158, 68, 0.1)" : t.status === "rejete" ? "#fee2e2" : t.status === "cloture" ? "#e5e7eb" : "#e5e7eb",
+                        color: t.status === "en_attente_analyse" ? "#0DADDB" : t.status === "assigne_technicien" ? "#FF7A1B" : t.status === "en_cours" ? "#0F1F3D" : (t.status === "resolu" || t.status === "retraite") ? "#2F9E44" : t.status === "rejete" ? "#991b1b" : t.status === "cloture" ? "#374151" : "#374151",
                         whiteSpace: "nowrap",
                       }}>
                         {t.status === "en_attente_analyse" ? "En attente d'assignation" :
                          t.status === "assigne_technicien" ? "Assigné au technicien" :
                          t.status === "en_cours" ? "En cours" :
-                         t.status === "resolu" ? "Résolu" :
+                         t.status === "retraite" ? "Retraité" : t.status === "resolu" ? "Résolu" :
                          t.status === "rejete" ? "Relancé" :
                          t.status === "cloture" ? "Clôturé" : t.status}
                       </span>
@@ -3277,7 +3279,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                             <button
                               onClick={() => { 
                                 const isAssigned = t.technician !== null && t.technician !== undefined;
-                                const blockedStatuses = ["assigne_technicien", "en_cours", "cloture", "resolu", "rejete"];
+                                const blockedStatuses = ["assigne_technicien", "en_cours", "cloture", "resolu", "retraite", "rejete"];
                                 const isBlocked = blockedStatuses.includes(t.status) || isAssigned;
                                 
                                 if (isBlocked) {
@@ -3315,7 +3317,7 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                               onClick={() => { 
                                 if (loading) return;
                                 const isAssigned = t.technician !== null && t.technician !== undefined;
-                                const blockedStatuses = ["assigne_technicien", "en_cours", "cloture", "resolu", "rejete"];
+                                const blockedStatuses = ["assigne_technicien", "en_cours", "cloture", "resolu", "retraite", "rejete"];
                                 const isBlocked = blockedStatuses.includes(t.status) || isAssigned;
                                 
                                 if (isBlocked) {
@@ -3717,8 +3719,8 @@ function UserDashboard({ token: tokenProp }: UserDashboardProps) {
                         borderRadius: "4px",
                         fontSize: "12px",
                         fontWeight: "500",
-                        background: selectedNotificationTicketDetails.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : selectedNotificationTicketDetails.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : selectedNotificationTicketDetails.status === "en_cours" ? "rgba(15, 31, 61, 0.1)" : selectedNotificationTicketDetails.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : selectedNotificationTicketDetails.status === "rejete" ? "#fee2e2" : selectedNotificationTicketDetails.status === "cloture" ? "#E5E7EB" : "#f3f4f6",
-                        color: selectedNotificationTicketDetails.status === "en_attente_analyse" ? "#0DADDB" : selectedNotificationTicketDetails.status === "assigne_technicien" ? "#FF7A1B" : selectedNotificationTicketDetails.status === "en_cours" ? "#0F1F3D" : selectedNotificationTicketDetails.status === "resolu" ? "#2F9E44" : selectedNotificationTicketDetails.status === "rejete" ? "#991b1b" : selectedNotificationTicketDetails.status === "cloture" ? "#374151" : "#6b7280"
+                        background: selectedNotificationTicketDetails.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : selectedNotificationTicketDetails.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : selectedNotificationTicketDetails.status === "en_cours" ? "rgba(15, 31, 61, 0.1)" : (selectedNotificationTicketDetails.status === "resolu" || selectedNotificationTicketDetails.status === "retraite") ? "rgba(47, 158, 68, 0.1)" : selectedNotificationTicketDetails.status === "rejete" ? "#fee2e2" : selectedNotificationTicketDetails.status === "cloture" ? "#E5E7EB" : "#f3f4f6",
+                        color: selectedNotificationTicketDetails.status === "en_attente_analyse" ? "#0DADDB" : selectedNotificationTicketDetails.status === "assigne_technicien" ? "#FF7A1B" : selectedNotificationTicketDetails.status === "en_cours" ? "#0F1F3D" : (selectedNotificationTicketDetails.status === "resolu" || selectedNotificationTicketDetails.status === "retraite") ? "#2F9E44" : selectedNotificationTicketDetails.status === "rejete" ? "#991b1b" : selectedNotificationTicketDetails.status === "cloture" ? "#374151" : "#6b7280"
                       }}>
                         {getStatusLabel(selectedNotificationTicketDetails.status)}
                       </span>
