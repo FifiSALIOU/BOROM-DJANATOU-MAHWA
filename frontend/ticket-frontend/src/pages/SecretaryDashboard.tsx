@@ -3655,10 +3655,10 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
     <div style={{ display: "flex", minHeight: "100vh", fontFamily: "'Inter', system-ui, sans-serif", background: "#f5f5f5", overflowX: "visible" }}>
       {/* Sidebar */}
       <style>{`
-        .sidebar-custom::-webkit-scrollbar {
+        .sidebar-custom-menu::-webkit-scrollbar {
           display: none;
         }
-        .sidebar-custom {
+        .sidebar-custom-menu {
           -ms-overflow-style: none;
           scrollbar-width: none;
         }
@@ -3677,7 +3677,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
         flexDirection: "column",
         gap: "0px",
         transition: "width 0.3s ease",
-        overflowY: "auto",
+        overflow: "hidden",
         overflowX: "visible",
         zIndex: 100,
         boxSizing: "border-box"
@@ -3690,7 +3690,8 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
           marginTop: "0px",
           paddingBottom: "8px",
           paddingTop: "0px",
-          borderBottom: "1px solid rgba(255,255,255,0.1)"
+          borderBottom: "1px solid rgba(255,255,255,0.1)",
+          flexShrink: 0
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: 1 }}>
             <div style={{ width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, backgroundColor: "white", borderRadius: "0.75rem", padding: "2px" }}>
@@ -3765,7 +3766,8 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
             gap: "12px",
             padding: "12px 0",
             marginBottom: "12px",
-            borderBottom: "1px solid rgba(255,255,255,0.1)"
+            borderBottom: "1px solid rgba(255,255,255,0.1)",
+            flexShrink: 0
           }}>
             <div style={{
               width: "40px",
@@ -3814,6 +3816,8 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
           </div>
         )}
         
+        {/* Zone défilable : uniquement les sections du menu */}
+        <div className="sidebar-custom-menu" style={{ flex: 1, minHeight: 0, overflowY: "auto", overflowX: "visible" }}>
         <div 
           onClick={() => {
             if (roleName === "Adjoint DSI") {
@@ -3986,9 +3990,10 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
             <div style={{ fontSize: "16px", fontFamily: "'Inter', system-ui, sans-serif", fontWeight: "500" }}>Statistiques</div>
           </div>
         )}
+        </div>
 
         {/* Section Notifications + Déconnexion en bas */}
-        <div style={{ marginTop: "auto" }}>
+        <div style={{ marginTop: "auto", flexShrink: 0 }}>
           {/* Trait de séparation (même style qu'au-dessus de Tableau de bord) */}
           <div style={{
             height: "1px",
