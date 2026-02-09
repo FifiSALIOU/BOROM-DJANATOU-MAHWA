@@ -2955,6 +2955,7 @@ function DSIDashboard({ token }: DSIDashboardProps) {
         setAssignmentPriority(activePrioritiesForAssign.length > 0 ? activePrioritiesForAssign[0].code : "moyenne");
         setShowAssignModal(false);
         setAssignTicketId(null);
+        if (ticketDetails?.id === ticketId) await loadTicketDetails(ticketId);
         alert("Ticket assigné avec succès");
       } else {
         let errorMessage = "Impossible d'assigner le ticket";
@@ -3051,6 +3052,7 @@ function DSIDashboard({ token }: DSIDashboardProps) {
         setAssignmentNotes("");
         setShowReassignModal(false);
         setReassignTicketId(null);
+        if (ticketDetails?.id === ticketId) await loadTicketDetails(ticketId);
         alert("Ticket réassigné avec succès");
       } else {
         const error = await res.json();
@@ -3120,6 +3122,7 @@ function DSIDashboard({ token }: DSIDashboardProps) {
         setAssignmentNotes("");
         setShowDelegateModal(false);
         setDelegateTicketId(null);
+        if (ticketDetails?.id === ticketId) await loadTicketDetails(ticketId);
         alert("Ticket délégué à un adjoint avec succès");
       } else {
         const error = await res.json();
@@ -3160,6 +3163,7 @@ function DSIDashboard({ token }: DSIDashboardProps) {
           const ticketsData = await ticketsRes.json();
           setAllTickets(ticketsData);
         }
+        if (ticketDetails?.id === ticketId) await loadTicketDetails(ticketId);
         alert("Ticket escaladé avec succès");
       } else {
         const error = await res.json();
@@ -3199,6 +3203,7 @@ function DSIDashboard({ token }: DSIDashboardProps) {
           const ticketsData = await ticketsRes.json();
           setAllTickets(ticketsData);
         }
+        if (ticketDetails?.id === ticketId) await loadTicketDetails(ticketId);
         alert("Ticket clôturé avec succès");
       } else {
         const error = await res.json();
@@ -3301,6 +3306,7 @@ function DSIDashboard({ token }: DSIDashboardProps) {
         setReopenTicketId(null);
         setRejectionReason("");
         setShowReopenModal(false);
+        if (ticketDetails?.id === ticketId) await loadTicketDetails(ticketId);
         alert("Ticket réouvert et réassigné avec succès");
       } else {
         const error = await res.json();
