@@ -4569,8 +4569,8 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                           borderRadius: "4px",
                           fontSize: "12px",
                           fontWeight: "500",
-                          background: selectedNotificationTicketDetails.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : selectedNotificationTicketDetails.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : (selectedNotificationTicketDetails.status === "en_traitement" || selectedNotificationTicketDetails.status === "en_cours") ? "rgba(15, 31, 61, 0.1)" : selectedNotificationTicketDetails.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : selectedNotificationTicketDetails.status === "rejete" ? "#fee2e2" : selectedNotificationTicketDetails.status === "cloture" ? "#e5e7eb" : "#e5e7eb",
-                          color: selectedNotificationTicketDetails.status === "en_attente_analyse" ? "#0DADDB" : selectedNotificationTicketDetails.status === "assigne_technicien" ? "#FF7A1B" : (selectedNotificationTicketDetails.status === "en_traitement" || selectedNotificationTicketDetails.status === "en_cours") ? "#0F1F3D" : selectedNotificationTicketDetails.status === "resolu" ? "#2F9E44" : selectedNotificationTicketDetails.status === "rejete" ? "#991b1b" : selectedNotificationTicketDetails.status === "cloture" ? "#374151" : "#374151"
+                          background: selectedNotificationTicketDetails.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : selectedNotificationTicketDetails.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : (selectedNotificationTicketDetails.status === "en_traitement" || selectedNotificationTicketDetails.status === "en_cours") ? "rgba(15, 31, 61, 0.1)" : selectedNotificationTicketDetails.status === "retraite" ? "#EDE7F6" : selectedNotificationTicketDetails.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : selectedNotificationTicketDetails.status === "rejete" ? "#fee2e2" : selectedNotificationTicketDetails.status === "cloture" ? "#e5e7eb" : "#e5e7eb",
+                          color: selectedNotificationTicketDetails.status === "en_attente_analyse" ? "#0DADDB" : selectedNotificationTicketDetails.status === "assigne_technicien" ? "#FF7A1B" : (selectedNotificationTicketDetails.status === "en_traitement" || selectedNotificationTicketDetails.status === "en_cours") ? "#0F1F3D" : selectedNotificationTicketDetails.status === "retraite" ? "#4A148C" : selectedNotificationTicketDetails.status === "resolu" ? "#2F9E44" : selectedNotificationTicketDetails.status === "rejete" ? "#991b1b" : selectedNotificationTicketDetails.status === "cloture" ? "#374151" : "#374151"
                         }}>
                           {getStatusLabel(selectedNotificationTicketDetails.status)}
                         </span>
@@ -4837,8 +4837,8 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                       borderRadius: "4px",
                       fontSize: "12px",
                       fontWeight: "500",
-                      background: ticketDetails.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : ticketDetails.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : (ticketDetails.status === "en_traitement" || ticketDetails.status === "en_cours") ? "rgba(15, 31, 61, 0.1)" : ticketDetails.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : ticketDetails.status === "rejete" ? "#fee2e2" : ticketDetails.status === "cloture" ? "#e5e7eb" : "#e5e7eb",
-                      color: ticketDetails.status === "en_attente_analyse" ? "#0DADDB" : ticketDetails.status === "assigne_technicien" ? "#FF7A1B" : (ticketDetails.status === "en_traitement" || ticketDetails.status === "en_cours") ? "#0F1F3D" : ticketDetails.status === "resolu" ? "#2F9E44" : ticketDetails.status === "rejete" ? "#991b1b" : ticketDetails.status === "cloture" ? "#374151" : "#374151"
+                      background: ticketDetails.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : ticketDetails.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : (ticketDetails.status === "en_traitement" || ticketDetails.status === "en_cours") ? "rgba(15, 31, 61, 0.1)" : ticketDetails.status === "retraite" ? "#EDE7F6" : ticketDetails.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : ticketDetails.status === "rejete" ? "#fee2e2" : ticketDetails.status === "cloture" ? "#e5e7eb" : "#e5e7eb",
+                      color: ticketDetails.status === "en_attente_analyse" ? "#0DADDB" : ticketDetails.status === "assigne_technicien" ? "#FF7A1B" : (ticketDetails.status === "en_traitement" || ticketDetails.status === "en_cours") ? "#0F1F3D" : ticketDetails.status === "retraite" ? "#4A148C" : ticketDetails.status === "resolu" ? "#2F9E44" : ticketDetails.status === "rejete" ? "#991b1b" : ticketDetails.status === "cloture" ? "#374151" : "#374151"
                     }}>
                       {getStatusLabel(ticketDetails.status)}
                     </span>
@@ -5463,13 +5463,14 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                               borderRadius: "20px",
                               fontSize: t.status === "en_cours" ? "12px" : "10px",
                               fontWeight: "500",
-                              background: t.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : t.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : t.status === "en_cours" ? "rgba(15, 31, 61, 0.1)" : t.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : t.status === "rejete" ? "#fee2e2" : t.status === "cloture" ? "#e5e7eb" : "#e5e7eb",
-                              color: t.status === "en_attente_analyse" ? "#0DADDB" : t.status === "assigne_technicien" ? "#FF7A1B" : t.status === "en_cours" ? "#0F1F3D" : t.status === "resolu" ? "#2F9E44" : t.status === "rejete" ? "#991b1b" : t.status === "cloture" ? "#374151" : "#374151",
+                              background: t.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : t.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : t.status === "en_cours" ? "rgba(15, 31, 61, 0.1)" : t.status === "retraite" ? "#EDE7F6" : t.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : t.status === "rejete" ? "#fee2e2" : t.status === "cloture" ? "#e5e7eb" : "#e5e7eb",
+                              color: t.status === "en_attente_analyse" ? "#0DADDB" : t.status === "assigne_technicien" ? "#FF7A1B" : t.status === "en_cours" ? "#0F1F3D" : t.status === "retraite" ? "#4A148C" : t.status === "resolu" ? "#2F9E44" : t.status === "rejete" ? "#991b1b" : t.status === "cloture" ? "#374151" : "#374151",
                               whiteSpace: "nowrap",
                             }}>
                               {t.status === "en_attente_analyse" ? "En attente d'assignation" :
                                t.status === "assigne_technicien" ? "Assigné au technicien" :
                                t.status === "en_cours" ? "En cours" :
+                               t.status === "retraite" ? "Retraité" :
                                t.status === "resolu" ? "Résolu" :
                                t.status === "rejete" ? "Relancé" :
                                t.status === "cloture" ? "Clôturé" : t.status}
@@ -7189,7 +7190,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                       <span style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px", color: "#6b7280" }}><CheckCircle size={12} /><span>Statut</span></span>
-                      <OrangeSelect value={statusFilter} onChange={setStatusFilter} options={[{ value: "all", label: "Tous" }, { value: "en_attente_analyse", label: "En attente d'assignation" }, { value: "en_traitement", label: "En traitement" }, { value: "resolu", label: "Résolus" }, { value: "cloture", label: "Clôturés" }, { value: "rejete", label: "Relancés" }]} />
+                      <OrangeSelect value={statusFilter} onChange={setStatusFilter} options={[{ value: "all", label: "Tous" }, { value: "en_attente_analyse", label: "En attente d'assignation" }, { value: "en_traitement", label: "En traitement" }, { value: "resolu", label: "Résolus" }, { value: "retraite", label: "Retraité" }, { value: "cloture", label: "Clôturés" }, { value: "rejete", label: "Relancés" }]} />
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                       <span style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px", color: "#6b7280" }}><Flag size={12} /><span>Priorité</span></span>
@@ -7355,13 +7356,14 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                               borderRadius: "20px",
                               fontSize: t.status === "en_cours" ? "12px" : "10px",
                               fontWeight: "500",
-                              background: t.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : t.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : t.status === "en_cours" ? "rgba(15, 31, 61, 0.1)" : t.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : t.status === "rejete" ? "#fee2e2" : t.status === "cloture" ? "#e5e7eb" : "#e5e7eb",
-                              color: t.status === "en_attente_analyse" ? "#0DADDB" : t.status === "assigne_technicien" ? "#FF7A1B" : t.status === "en_cours" ? "#0F1F3D" : t.status === "resolu" ? "#2F9E44" : t.status === "rejete" ? "#991b1b" : t.status === "cloture" ? "#374151" : "#374151",
+                              background: t.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : t.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : t.status === "en_cours" ? "rgba(15, 31, 61, 0.1)" : t.status === "retraite" ? "#EDE7F6" : t.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : t.status === "rejete" ? "#fee2e2" : t.status === "cloture" ? "#e5e7eb" : "#e5e7eb",
+                              color: t.status === "en_attente_analyse" ? "#0DADDB" : t.status === "assigne_technicien" ? "#FF7A1B" : t.status === "en_cours" ? "#0F1F3D" : t.status === "retraite" ? "#4A148C" : t.status === "resolu" ? "#2F9E44" : t.status === "rejete" ? "#991b1b" : t.status === "cloture" ? "#374151" : "#374151",
                               whiteSpace: "nowrap",
                             }}>
                               {t.status === "en_attente_analyse" ? "En attente d'assignation" :
                                t.status === "assigne_technicien" ? "Assigné au technicien" :
                                t.status === "en_cours" ? "En cours" :
+                               t.status === "retraite" ? "Retraité" :
                                t.status === "resolu" ? "Résolu" :
                                t.status === "rejete" ? "Relancé" :
                                t.status === "cloture" ? "Clôturé" : t.status}
@@ -11702,8 +11704,8 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                           borderRadius: "4px",
                           fontSize: "12px",
                           fontWeight: "500",
-                          background: selectedNotificationTicketDetails.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : selectedNotificationTicketDetails.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : (selectedNotificationTicketDetails.status === "en_traitement" || selectedNotificationTicketDetails.status === "en_cours") ? "rgba(15, 31, 61, 0.1)" : selectedNotificationTicketDetails.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : selectedNotificationTicketDetails.status === "rejete" ? "#fee2e2" : selectedNotificationTicketDetails.status === "cloture" ? "#e5e7eb" : "#e5e7eb",
-                          color: selectedNotificationTicketDetails.status === "en_attente_analyse" ? "#0DADDB" : selectedNotificationTicketDetails.status === "assigne_technicien" ? "#FF7A1B" : (selectedNotificationTicketDetails.status === "en_traitement" || selectedNotificationTicketDetails.status === "en_cours") ? "#0F1F3D" : selectedNotificationTicketDetails.status === "resolu" ? "#2F9E44" : selectedNotificationTicketDetails.status === "rejete" ? "#991b1b" : selectedNotificationTicketDetails.status === "cloture" ? "#374151" : "#374151"
+                          background: selectedNotificationTicketDetails.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : selectedNotificationTicketDetails.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : (selectedNotificationTicketDetails.status === "en_traitement" || selectedNotificationTicketDetails.status === "en_cours") ? "rgba(15, 31, 61, 0.1)" : selectedNotificationTicketDetails.status === "retraite" ? "#EDE7F6" : selectedNotificationTicketDetails.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : selectedNotificationTicketDetails.status === "rejete" ? "#fee2e2" : selectedNotificationTicketDetails.status === "cloture" ? "#e5e7eb" : "#e5e7eb",
+                          color: selectedNotificationTicketDetails.status === "en_attente_analyse" ? "#0DADDB" : selectedNotificationTicketDetails.status === "assigne_technicien" ? "#FF7A1B" : (selectedNotificationTicketDetails.status === "en_traitement" || selectedNotificationTicketDetails.status === "en_cours") ? "#0F1F3D" : selectedNotificationTicketDetails.status === "retraite" ? "#4A148C" : selectedNotificationTicketDetails.status === "resolu" ? "#2F9E44" : selectedNotificationTicketDetails.status === "rejete" ? "#991b1b" : selectedNotificationTicketDetails.status === "cloture" ? "#374151" : "#374151"
                         }}>
                           {getStatusLabel(selectedNotificationTicketDetails.status)}
                         </span>
