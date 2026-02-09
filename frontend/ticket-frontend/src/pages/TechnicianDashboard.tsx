@@ -2187,8 +2187,8 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "flex-start",
-                      justifyContent: "space-between",
-                      padding: "14px",
+                      justifyContent: "flex-start",
+                      padding: "8px 14px 14px 14px",
                       borderRadius: "12px",
                       background: "white",
                       boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
@@ -2224,7 +2224,7 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                         justifyContent: "flex-end",
                         alignItems: "flex-start",
                         width: "100%",
-                        marginBottom: "8px",
+                        marginBottom: "0px",
                         zIndex: 1,
                       }}
                     >
@@ -2244,16 +2244,6 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                     </div>
                     <span
                       style={{
-                        fontSize: "28px",
-                        fontWeight: "bold",
-                        color: "#111827",
-                        marginBottom: "4px",
-                      }}
-                    >
-                      {assignedCount}
-                    </span>
-                    <span
-                      style={{
                         fontSize: "13px",
                         fontWeight: "500",
                         color: "#374151",
@@ -2263,9 +2253,19 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                     </span>
                     <span
                       style={{
+                        fontSize: "28px",
+                        fontWeight: "bold",
+                        color: "#111827",
+                        marginTop: "4px",
+                        marginBottom: "12px",
+                      }}
+                    >
+                      {assignedCount}
+                    </span>
+                    <span
+                      style={{
                         fontSize: "12px",
                         color: "#6b7280",
-                        marginTop: "2px",
                       }}
                     >
                       Nouveaux tickets reçus
@@ -2279,8 +2279,8 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "flex-start",
-                      justifyContent: "space-between",
-                      padding: "14px",
+                      justifyContent: "flex-start",
+                      padding: "8px 14px 14px 14px",
                       borderRadius: "12px",
                       background: "white",
                       boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
@@ -2316,7 +2316,7 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                         justifyContent: "flex-end",
                         alignItems: "flex-start",
                         width: "100%",
-                        marginBottom: "8px",
+                        marginBottom: "0px",
                         zIndex: 1,
                       }}
                     >
@@ -2336,16 +2336,6 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                   </div>
                     <span
                       style={{
-                        fontSize: "28px",
-                        fontWeight: "bold",
-                        color: "#111827",
-                        marginBottom: "4px",
-                      }}
-                    >
-                      {inProgressCount}
-                    </span>
-                    <span
-                      style={{
                         fontSize: "13px",
                         fontWeight: "500",
                         color: "#374151",
@@ -2355,9 +2345,19 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                     </span>
                     <span
                       style={{
+                        fontSize: "28px",
+                        fontWeight: "bold",
+                        color: "#111827",
+                        marginTop: "4px",
+                        marginBottom: "12px",
+                      }}
+                    >
+                      {inProgressCount}
+                    </span>
+                    <span
+                      style={{
                         fontSize: "12px",
                         color: "#6b7280",
-                        marginTop: "2px",
                       }}
                     >
                       En cours de traitement
@@ -2371,8 +2371,8 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "flex-start",
-                      justifyContent: "space-between",
-                      padding: "14px",
+                      justifyContent: "flex-start",
+                      padding: "8px 14px 14px 14px",
                       borderRadius: "12px",
                       background: "white",
                       boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
@@ -2408,7 +2408,7 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                         justifyContent: "flex-end",
                         alignItems: "flex-start",
                         width: "100%",
-                        marginBottom: "8px",
+                        marginBottom: "0px",
                         zIndex: 1,
                       }}
                     >
@@ -2428,16 +2428,6 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                     </div>
                     <span
                       style={{
-                        fontSize: "28px",
-                        fontWeight: "bold",
-                        color: "#111827",
-                        marginBottom: "4px",
-                      }}
-                    >
-                      {resolvedCount}
-                    </span>
-                    <span
-                      style={{
                         fontSize: "13px",
                         fontWeight: "500",
                         color: "#374151",
@@ -2447,9 +2437,19 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                     </span>
                     <span
                       style={{
+                        fontSize: "28px",
+                        fontWeight: "bold",
+                        color: "#111827",
+                        marginTop: "4px",
+                        marginBottom: "12px",
+                      }}
+                    >
+                      {resolvedCount}
+                    </span>
+                    <span
+                      style={{
                         fontSize: "12px",
                         color: "#6b7280",
-                        marginTop: "2px",
                       }}
                     >
                       Aujourd'hui
