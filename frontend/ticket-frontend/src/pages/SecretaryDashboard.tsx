@@ -138,6 +138,23 @@ interface DepartmentConfig {
   is_active: boolean;
 }
 
+interface AssetFormState {
+  nom: string;
+  type: string;
+  statut: string;
+  numero_de_serie: string;
+  marque: string;
+  modele: string;
+  localisation: string;
+  departement: string;
+  assigned_to_user_id: string;
+  date_d_achat: string;
+  date_de_fin_garantie: string;
+  prix_d_achat: string;
+  fournisseur: string;
+  notes: string;
+}
+
 const assetStatusLabels: Record<string, string> = {
   in_service: "En service",
   en_maintenance: "En maintenance",
@@ -429,6 +446,25 @@ function SecretaryDashboard({ token }: SecretaryDashboardProps) {
   const [assetError, setAssetError] = useState<string | null>(null);
   const [assetTypes, setAssetTypes] = useState<AssetTypeConfig[]>([]);
   const [assetDepartments, setAssetDepartments] = useState<DepartmentConfig[]>([]);
+  const [showAssetModal, setShowAssetModal] = useState<boolean>(false);
+  const [assetModalMode, setAssetModalMode] = useState<"create" | "edit">("create");
+  const [editingAsset, setEditingAsset] = useState<Asset | null>(null);
+  const [assetForm, setAssetForm] = useState<AssetFormState>({
+    nom: "",
+    type: "desktop",
+    statut: "en_stock",
+    numero_de_serie: "",
+    marque: "",
+    modele: "",
+    localisation: "",
+    departement: "",
+    assigned_to_user_id: "",
+    date_d_achat: "",
+    date_de_fin_garantie: "",
+    prix_d_achat: "",
+    fournisseur: "",
+    notes: "",
+  });
   const [showOutputFormat, setShowOutputFormat] = useState<boolean>(false);
   const [outputFormat, setOutputFormat] = useState<string>("");
   const [recentReports, setRecentReports] = useState<any[]>([]);
@@ -6945,6 +6981,27 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                 </button>
                 <button
                   type="button"
+                  onClick={() => {
+                    setAssetModalMode("create");
+                    setEditingAsset(null);
+                    setAssetForm({
+                      nom: "",
+                      type: "desktop",
+                      statut: "en_stock",
+                      numero_de_serie: "",
+                      marque: "",
+                      modele: "",
+                      localisation: "",
+                      departement: "",
+                      assigned_to_user_id: "",
+                      date_d_achat: "",
+                      date_de_fin_garantie: "",
+                      prix_d_achat: "",
+                      fournisseur: "",
+                      notes: "",
+                    });
+                    setShowAssetModal(true);
+                  }}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -7492,6 +7549,194 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                   );
                 })}
               </div>
+
+              {/* Modal Nouvel actif / Modifier l'actif (Adjoint DSI) */}
+              {showAssetModal && (
+                <div
+                  style={{
+                    position: "fixed",
+                    inset: 0,
+                    backgroundColor: "rgba(0, 0, 0, 0.80)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 1200,
+                  }}
+                >
+                  <div
+                    style={{
+                      backgroundColor: "#ffffff",
+                      borderRadius: "16px",
+                      boxShadow: "0 24px 60px rgba(15,23,42,0.35)",
+                      width: "100%",
+                      maxWidth: "720px",
+                      maxHeight: "85vh",
+                      display: "flex",
+                      flexDirection: "column",
+                      overflow: "hidden",
+                      fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+                    }}
+                  >
+                    <div style={{ padding: "18px 22px 12px", borderBottom: "1px solid #e5e7eb", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                        <h2 style={{ margin: 0, fontSize: "18px", fontWeight: 600, color: "#111827" }}>
+                          {assetModalMode === "create" ? "Nouvel actif" : "Modifier l'actif"}
+                        </h2>
+                        <p style={{ margin: 0, fontSize: "13px", color: "#6b7280" }}>Renseignez les informations de l&apos;équipement informatique.</p>
+                      </div>
+                      <button type="button" onClick={() => setShowAssetModal(false)} style={{ border: "none", background: "transparent", borderRadius: "999px", width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#6b7280" }}>
+                        <X size={18} />
+                      </button>
+                    </div>
+                    <div style={{ padding: "18px 22px 16px", overflowY: "auto" }}>
+                      <div style={{ marginBottom: "18px" }}>
+                        <div style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.09em", textTransform: "uppercase", color: "#6b7280", marginBottom: "10px" }}>Informations générales</div>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px 16px" }}>
+                          <div style={{ gridColumn: "1 / -1" }}>
+                            <label style={{ display: "block", marginBottom: "4px", fontSize: "13px", fontWeight: 500, color: "#111827" }}>Nom de l&apos;actif *</label>
+                            <input type="text" value={assetForm.nom} onChange={(e) => setAssetForm((f) => ({ ...f, nom: e.target.value }))} placeholder="Ex: Dell OptiPlex 7090" style={{ width: "100%", padding: "9px 11px", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "14px", outline: "none" }} />
+                          </div>
+                          <div>
+                            <label style={{ display: "block", marginBottom: "4px", fontSize: "13px", fontWeight: 500, color: "#111827" }}>Type *</label>
+                            <select value={assetForm.type} onChange={(e) => setAssetForm((f) => ({ ...f, type: e.target.value }))} style={{ width: "100%", padding: "9px 11px", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "14px", backgroundColor: "#ffffff" }}>
+                              <option value="desktop">Ordinateur fixe</option>
+                              <option value="laptop">Ordinateur portable</option>
+                              <option value="printer">Imprimante</option>
+                              <option value="monitor">Écran</option>
+                              <option value="mobile">Mobile</option>
+                              <option value="tablet">Tablette</option>
+                              <option value="phone">Téléphone</option>
+                              <option value="network">Équipement réseau</option>
+                              <option value="other">Autre</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label style={{ display: "block", marginBottom: "4px", fontSize: "13px", fontWeight: 500, color: "#111827" }}>Statut *</label>
+                            <select value={assetForm.statut} onChange={(e) => setAssetForm((f) => ({ ...f, statut: e.target.value }))} style={{ width: "100%", padding: "9px 11px", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "14px", backgroundColor: "#ffffff" }}>
+                              <option value="en_stock">En stock</option>
+                              <option value="in_service">En service</option>
+                              <option value="en_maintenance">En maintenance</option>
+                              <option value="en_panne">En panne</option>
+                              <option value="reformes">Réformés</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label style={{ display: "block", marginBottom: "4px", fontSize: "13px", fontWeight: 500, color: "#111827" }}>N° de série *</label>
+                            <input type="text" value={assetForm.numero_de_serie} onChange={(e) => setAssetForm((f) => ({ ...f, numero_de_serie: e.target.value }))} placeholder="Ex: DELL-7090-001" style={{ width: "100%", padding: "9px 11px", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "14px", outline: "none" }} />
+                          </div>
+                          <div>
+                            <label style={{ display: "block", marginBottom: "4px", fontSize: "13px", fontWeight: 500, color: "#111827" }}>Marque *</label>
+                            <input type="text" value={assetForm.marque} onChange={(e) => setAssetForm((f) => ({ ...f, marque: e.target.value }))} placeholder="Ex: Dell" style={{ width: "100%", padding: "9px 11px", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "14px", outline: "none" }} />
+                          </div>
+                          <div style={{ gridColumn: "1 / -1" }}>
+                            <label style={{ display: "block", marginBottom: "4px", fontSize: "13px", fontWeight: 500, color: "#111827" }}>Modèle</label>
+                            <input type="text" value={assetForm.modele} onChange={(e) => setAssetForm((f) => ({ ...f, modele: e.target.value }))} placeholder="Ex: Dell OptiPlex 7090" style={{ width: "100%", padding: "9px 11px", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "14px", outline: "none" }} />
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ marginBottom: "18px" }}>
+                        <div style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.09em", textTransform: "uppercase", color: "#6b7280", marginBottom: "10px" }}>Localisation & attribution</div>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px 16px" }}>
+                          <div>
+                            <label style={{ display: "block", marginBottom: "4px", fontSize: "13px", fontWeight: 500, color: "#111827" }}>Localisation</label>
+                            <input type="text" value={assetForm.localisation} onChange={(e) => setAssetForm((f) => ({ ...f, localisation: e.target.value }))} placeholder="Ex: Bâtiment A - Étage 2" style={{ width: "100%", padding: "9px 11px", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "14px", outline: "none" }} />
+                          </div>
+                          <div>
+                            <label style={{ display: "block", marginBottom: "4px", fontSize: "13px", fontWeight: 500, color: "#111827" }}>Département</label>
+                            <input type="text" value={assetForm.departement} onChange={(e) => setAssetForm((f) => ({ ...f, departement: e.target.value }))} placeholder="Ex: Marketing" style={{ width: "100%", padding: "9px 11px", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "14px", outline: "none" }} />
+                          </div>
+                          <div style={{ gridColumn: "1 / -1" }}>
+                            <label style={{ display: "block", marginBottom: "4px", fontSize: "13px", fontWeight: 500, color: "#111827" }}>Assigné à</label>
+                            <select value={assetForm.assigned_to_user_id} onChange={(e) => setAssetForm((f) => ({ ...f, assigned_to_user_id: e.target.value }))} style={{ width: "100%", padding: "9px 11px", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "14px", backgroundColor: "#ffffff" }}>
+                              <option value="">Non assigné</option>
+                              {technicians.map((t) => (
+                                <option key={t.id} value={t.id}>{t.full_name}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ marginBottom: "18px" }}>
+                        <div style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.09em", textTransform: "uppercase", color: "#6b7280", marginBottom: "10px" }}>Achat & garantie</div>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px 16px" }}>
+                          <div>
+                            <label style={{ display: "block", marginBottom: "4px", fontSize: "13px", fontWeight: 500, color: "#111827" }}>Date d&apos;achat</label>
+                            <input type="date" value={assetForm.date_d_achat} onChange={(e) => setAssetForm((f) => ({ ...f, date_d_achat: e.target.value }))} style={{ width: "100%", padding: "9px 11px", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "14px" }} />
+                          </div>
+                          <div>
+                            <label style={{ display: "block", marginBottom: "4px", fontSize: "13px", fontWeight: 500, color: "#111827" }}>Fin de garantie</label>
+                            <input type="date" value={assetForm.date_de_fin_garantie} onChange={(e) => setAssetForm((f) => ({ ...f, date_de_fin_garantie: e.target.value }))} style={{ width: "100%", padding: "9px 11px", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "14px" }} />
+                          </div>
+                          <div>
+                            <label style={{ display: "block", marginBottom: "4px", fontSize: "13px", fontWeight: 500, color: "#111827" }}>Prix d&apos;achat (FCFA)</label>
+                            <input type="number" min="0" step="0.01" value={assetForm.prix_d_achat} onChange={(e) => setAssetForm((f) => ({ ...f, prix_d_achat: e.target.value }))} placeholder="Ex: 850" style={{ width: "100%", padding: "9px 11px", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "14px", outline: "none" }} />
+                          </div>
+                          <div>
+                            <label style={{ display: "block", marginBottom: "4px", fontSize: "13px", fontWeight: 500, color: "#111827" }}>Fournisseur</label>
+                            <input type="text" value={assetForm.fournisseur} onChange={(e) => setAssetForm((f) => ({ ...f, fournisseur: e.target.value }))} placeholder="Ex: Dell Technologies" style={{ width: "100%", padding: "9px 11px", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "14px", outline: "none" }} />
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.09em", textTransform: "uppercase", color: "#6b7280", marginBottom: "10px" }}>Notes</div>
+                        <label style={{ display: "block", marginBottom: "4px", fontSize: "13px", fontWeight: 500, color: "#111827" }}>Informations supplémentaires</label>
+                        <textarea rows={3} value={assetForm.notes} onChange={(e) => setAssetForm((f) => ({ ...f, notes: e.target.value }))} placeholder="Informations supplémentaires..." style={{ width: "100%", padding: "9px 11px", borderRadius: "10px", border: "1px solid #e5e7eb", fontSize: "14px", resize: "vertical", minHeight: "70px" }} />
+                      </div>
+                    </div>
+                    <div style={{ padding: "12px 22px 16px", borderTop: "1px solid #e5e7eb", display: "flex", justifyContent: "flex-end", gap: "10px", backgroundColor: "#f9fafb" }}>
+                      <button type="button" onClick={() => setShowAssetModal(false)} style={{ padding: "8px 16px", borderRadius: "6px", border: "1px solid #e5e7eb", backgroundColor: "#ffffff", fontSize: "14px", fontWeight: 500, color: "#111827", cursor: "pointer" }}>Annuler</button>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (!token) return;
+                          if (!assetForm.nom.trim() || !assetForm.type || !assetForm.statut || !assetForm.numero_de_serie.trim() || !assetForm.marque.trim() || !assetForm.localisation.trim() || !assetForm.departement.trim() || !assetForm.date_d_achat) {
+                            alert("Merci de renseigner tous les champs obligatoires.");
+                            return;
+                          }
+                          const assignedUserId = assetForm.assigned_to_user_id ? Number(assetForm.assigned_to_user_id) : null;
+                          const assignedUser = technicians.find((t) => String(t.id) === String(assignedUserId)) || null;
+                          const payload: any = {
+                            nom: assetForm.nom.trim(),
+                            type: assetForm.type,
+                            numero_de_serie: assetForm.numero_de_serie.trim(),
+                            marque: assetForm.marque.trim(),
+                            modele: assetForm.modele.trim(),
+                            statut: assetForm.statut,
+                            localisation: assetForm.localisation.trim(),
+                            departement: assetForm.departement.trim(),
+                            date_d_achat: assetForm.date_d_achat,
+                            date_de_fin_garantie: assetForm.date_de_fin_garantie || null,
+                            prix_d_achat: assetForm.prix_d_achat ? Number(assetForm.prix_d_achat) : null,
+                            fournisseur: assetForm.fournisseur || null,
+                            assigned_to_user_id: assignedUserId,
+                            assigned_to_name: assignedUser?.full_name || null,
+                            specifications: null,
+                            notes: assetForm.notes || null,
+                          };
+                          try {
+                            const endpoint = assetModalMode === "edit" && editingAsset ? `http://localhost:8000/assets/${editingAsset.id}` : "http://localhost:8000/assets/";
+                            const method = assetModalMode === "edit" && editingAsset ? "PUT" : "POST";
+                            const res = await fetch(endpoint, { method, headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify(payload) });
+                            if (!res.ok) {
+                              const error = await res.json().catch(() => null);
+                              alert(error?.detail || "Erreur lors de la création de l'actif.");
+                              return;
+                            }
+                            await loadAssets();
+                            setShowAssetModal(false);
+                          } catch (err) {
+                            console.error("Erreur création actif:", err);
+                            alert("Erreur réseau lors de la création de l'actif.");
+                          }
+                        }}
+                        style={{ padding: "8px 18px", borderRadius: "6px", border: "none", backgroundColor: "#111827", fontSize: "14px", fontWeight: 600, color: "#ffffff", cursor: "pointer" }}
+                      >
+                        {assetModalMode === "create" ? "Créer l'actif" : "Enregistrer"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
