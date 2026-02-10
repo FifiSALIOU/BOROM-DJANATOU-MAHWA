@@ -9925,14 +9925,9 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                           style={{
                             padding: "10px",
                             borderRadius: "14px",
-                            backgroundColor:
-                              asset.statut === "in_service"
-                                ? "rgba(37,99,235,0.08)"
-                                : "#f3f4f6",
-                            color:
-                              asset.statut === "in_service"
-                                ? "#1d4ed8"
-                                : "#6b7280",
+                            // Icône appareil toujours neutre (gris), comme sur les autres cartes
+                            backgroundColor: "#f3f4f6",
+                            color: "#6b7280",
                             display: "inline-flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -9940,11 +9935,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                         >
                           <AssetIcon
                             size={20}
-                            color={
-                              asset.statut === "in_service"
-                                ? "#1d4ed8"
-                                : "#4b5563"
-                            }
+                            color="#4b5563"
                           />
                         </div>
                         <div
