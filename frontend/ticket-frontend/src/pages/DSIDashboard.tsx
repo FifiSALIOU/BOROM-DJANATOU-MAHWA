@@ -9771,9 +9771,16 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
             <div
               style={{
                 marginTop: "24px",
+                // Conteneur global centré avec une largeur max (~ 3 cartes)
+                maxWidth: "1200px",
+                marginLeft: "auto",
+                marginRight: "auto",
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-                gap: "16px",
+                // Toujours 3 colonnes, les cartes s'ajustent à 1/3 de l'espace
+                gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                columnGap: "24px", // ≈ 1.5rem
+                rowGap: "24px",
+                alignItems: "stretch",
               }}
             >
               {assetError && (
@@ -9878,15 +9885,19 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                     style={{
                       backgroundColor: "#ffffff",
                       borderRadius: "16px",
-                      padding: "16px 16px 14px",
-                      border: "1px solid rgba(229,231,235,0.9)",
-                      boxShadow:
-                        "0 8px 24px rgba(15,23,42,0.04)",
+                      // Padding interne conforme aux specs (20px haut/bas, 24px gauche/droite)
+                      padding: "20px 24px",
+                      // Bordure gris très clair
+                      border: "1px solid #E5EAF1",
+                      // Ombre douce type carte flottante
+                      boxShadow: "0 8px 20px rgba(15,23,42,0.06)",
                       display: "flex",
                       flexDirection: "column",
-                      gap: "10px",
+                      gap: "12px",
                       cursor: "default",
                       transition: "all 0.3s ease",
+                      // Hauteur minimale pour garder une taille cohérente même avec plus de contenu
+                      minHeight: "300px",
                     }}
                     onMouseEnter={(e) => {
                       (e.currentTarget as HTMLDivElement).style.boxShadow =
@@ -9910,7 +9921,7 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                       style={{
                         display: "flex",
                         alignItems: "flex-start",
-                        justifyContent: "space-between",
+                        gap: "12px",
                         paddingBottom: "6px",
                       }}
                     >
@@ -9919,6 +9930,9 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                           display: "flex",
                           alignItems: "center",
                           gap: "10px",
+                          // Le bloc icône + textes prend tout l'espace restant
+                          flex: 1,
+                          minWidth: 0,
                         }}
                       >
                         <div
@@ -9943,7 +9957,9 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                             display: "flex",
                             flexDirection: "column",
                             gap: "2px",
-                            maxWidth: "210px",
+                            // Laisse le texte utiliser tout l'espace disponible
+                            // tout en conservant les ellipses si trop long
+                            minWidth: 0,
                           }}
                         >
                           <h3
@@ -9984,9 +10000,11 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                           color: statusConfig.badgeText,
                           // Garder le texte sur une seule ligne comme En panne / En stock
                           whiteSpace: "nowrap",
-                          // Empêcher le badge de se faire compresser et légèrement l'éloigner du bord droit
+                          // Empêcher le badge de se faire compresser et le garder bien dans la carte
                           flexShrink: 0,
+                          marginLeft: "auto",
                           marginRight: "4px",
+                          marginTop: "2px",
                           textAlign: "center",
                         }}
                       >
