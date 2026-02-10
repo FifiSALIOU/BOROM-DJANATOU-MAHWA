@@ -7540,7 +7540,31 @@ Les données détaillées seront disponibles dans une prochaine version.</pre>
                           <Eye size={16} />
                           <span>Détails</span>
                         </button>
-                        <button type="button" style={{ flex: 1, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px", padding: "7px 10px", borderRadius: "12px", border: "none", backgroundColor: "#111827", fontSize: "13px", fontWeight: 500, color: "#ffffff", cursor: "pointer" }} onClick={() => alert(`Modifier l'actif: ${asset.nom}`)}>
+                        <button
+                          type="button"
+                          style={{ flex: 1, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px", padding: "7px 10px", borderRadius: "12px", border: "none", backgroundColor: "#111827", fontSize: "13px", fontWeight: 500, color: "#ffffff", cursor: "pointer" }}
+                          onClick={() => {
+                            setAssetModalMode("edit");
+                            setEditingAsset(asset);
+                            setAssetForm({
+                              nom: asset.nom || "",
+                              type: asset.type || "desktop",
+                              statut: asset.statut || "en_stock",
+                              numero_de_serie: asset.numero_de_serie || "",
+                              marque: asset.marque || "",
+                              modele: asset.modele || "",
+                              localisation: asset.localisation || "",
+                              departement: asset.departement || "",
+                              assigned_to_user_id: asset.assigned_to_user_id ? String(asset.assigned_to_user_id) : "",
+                              date_d_achat: asset.date_d_achat?.slice(0, 10) || "",
+                              date_de_fin_garantie: asset.date_de_fin_garantie?.slice(0, 10) || "",
+                              prix_d_achat: asset.prix_d_achat != null ? String(asset.prix_d_achat) : "",
+                              fournisseur: asset.fournisseur || "",
+                              notes: asset.notes || "",
+                            });
+                            setShowAssetModal(true);
+                          }}
+                        >
                           <Pencil size={16} />
                           <span>Modifier</span>
                         </button>
