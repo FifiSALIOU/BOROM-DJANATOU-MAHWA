@@ -4701,7 +4701,7 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                                       if (button) {
                                         const rect = button.getBoundingClientRect();
                                         const viewportHeight = window.innerHeight;
-                                        const menuHeight = 60;
+                                        const menuHeight = 90;
                                         const spaceBelow = viewportHeight - rect.bottom;
                                         const spaceAbove = rect.top;
                                         
@@ -4743,7 +4743,32 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                                     }}
                                   >
                                     Voir le ticket
-                              </button>
+                                  </button>
+                                  <button
+                                    onClick={() => { setSelectedTicket(t.id); setOpenActionsMenuFor(null); }}
+                                    disabled={loading}
+                                    style={{ 
+                                      width: "100%", 
+                                      padding: "10px 12px", 
+                                      background: "transparent", 
+                                      border: "none", 
+                                      borderTop: "1px solid #e5e7eb",
+                                      textAlign: "left", 
+                                      cursor: "pointer",
+                                      color: "#111827",
+                                      fontSize: "14px",
+                                      display: "block",
+                                      whiteSpace: "nowrap"
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      e.currentTarget.style.backgroundColor = "#f3f4f6";
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      e.currentTarget.style.backgroundColor = "transparent";
+                                    }}
+                                  >
+                                    Ajouter commentaire
+                                  </button>
                                 </div>
                               )}
                             </div>
