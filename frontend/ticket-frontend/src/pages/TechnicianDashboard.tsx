@@ -547,9 +547,11 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
       status.includes("valide") ||
       status.includes("validé") ||
       status.includes("cloture") ||
-      status.includes("clôture")
+      status.includes("clôture") ||
+      status.includes("retraite") ||
+      status.includes("retraité")
     ) {
-      // Résolution / validation
+      // Résolution / validation / retraite : coche verte
       Icon = CheckCircle2;
       iconBg = "#ECFDF3";
       iconBorder = "#BBF7D0";
