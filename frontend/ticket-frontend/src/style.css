@@ -260,6 +260,11 @@ p[style*="color: red"] {
 /* Listes déroulantes personnalisées DSI : option au survol uniquement = orange */
 .dsi-orange-select-dropdown {
   min-width: max-content !important;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.dsi-orange-select-dropdown::-webkit-scrollbar {
+  display: none;
 }
 .dsi-orange-select-option {
   white-space: nowrap;
