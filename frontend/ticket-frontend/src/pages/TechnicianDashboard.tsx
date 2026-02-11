@@ -534,11 +534,10 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
       // Délégation (autres cas)
       Icon = Users;
     } else if (
-      // Détecter rejet de résolution (resolu → rejete avec Validation utilisateur: Rejeté)
+      // Détecter rejet de résolution / relance (resolu ou retraite → rejete)
       entry.old_status &&
-      (oldStatus.includes("resolu") || oldStatus.includes("résolu")) &&
-      (status.includes("rejete") || status.includes("rejeté")) &&
-      reason.includes("validation utilisateur: rejeté")
+      (oldStatus.includes("resolu") || oldStatus.includes("résolu") || oldStatus.includes("retraite") || oldStatus.includes("retraité")) &&
+      (status.includes("rejete") || status.includes("rejeté"))
     ) {
       // Ticket relancé (rejet de résolution)
       Icon = RefreshCcw;
