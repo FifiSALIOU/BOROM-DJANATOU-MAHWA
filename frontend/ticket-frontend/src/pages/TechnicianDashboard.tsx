@@ -479,6 +479,7 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
       case "moyenne": return "Moyenne";
       case "haute": return "Haute";
       case "critique": return "Critique";
+      case "non_definie": return "Non définie";
       default: return priority;
     }
   }
@@ -2093,8 +2094,8 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                     borderRadius: "4px",
                     fontSize: "12px",
                     fontWeight: "500",
-                    background: ticketDetails.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : ticketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : ticketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : ticketDetails.priority === "faible" ? "#E5E7EB" : "#9e9e9e",
-                    color: ticketDetails.priority === "critique" ? "#E53E3E" : ticketDetails.priority === "haute" ? "#F59E0B" : ticketDetails.priority === "moyenne" ? "#0DADDB" : ticketDetails.priority === "faible" ? "#6B7280" : "white"
+                    background: ticketDetails.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : ticketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : ticketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : ticketDetails.priority === "faible" ? "#E5E7EB" : ticketDetails.priority === "non_definie" ? "#E5E7EB" : "#9e9e9e",
+                    color: ticketDetails.priority === "critique" ? "#E53E3E" : ticketDetails.priority === "haute" ? "#F59E0B" : ticketDetails.priority === "moyenne" ? "#0DADDB" : ticketDetails.priority === "faible" ? "#6B7280" : ticketDetails.priority === "non_definie" ? "#6B7280" : "white"
                   }}>
                     {getPriorityLabel(ticketDetails.priority)}
                   </span>
@@ -2107,8 +2108,8 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                     borderRadius: "4px",
                     fontSize: "12px",
                     fontWeight: "500",
-                    background: ticketDetails.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : ticketDetails.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : ticketDetails.status === "en_cours" ? "rgba(15, 31, 61, 0.1)" : ticketDetails.status === "retraite" ? "#EDE7F6" : ticketDetails.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : ticketDetails.status === "rejete" ? "#fee2e2" : ticketDetails.status === "cloture" ? "#e5e7eb" : "#9e9e9e",
-                    color: ticketDetails.status === "en_attente_analyse" ? "#0DADDB" : ticketDetails.status === "assigne_technicien" ? "#FF7A1B" : ticketDetails.status === "en_cours" ? "#0F1F3D" : ticketDetails.status === "retraite" ? "#4A148C" : ticketDetails.status === "resolu" ? "#2F9E44" : ticketDetails.status === "rejete" ? "#991b1b" : ticketDetails.status === "cloture" ? "#6B7280" : "white"
+                    background: ticketDetails.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : ticketDetails.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : (ticketDetails.status === "en_traitement" || ticketDetails.status === "en_cours") ? "rgba(15, 31, 61, 0.1)" : ticketDetails.status === "retraite" ? "#EDE7F6" : ticketDetails.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : ticketDetails.status === "rejete" ? "#fee2e2" : ticketDetails.status === "cloture" ? "#E5E7EB" : "#f3f4f6",
+                    color: ticketDetails.status === "en_attente_analyse" ? "#0DADDB" : ticketDetails.status === "assigne_technicien" ? "#FF7A1B" : (ticketDetails.status === "en_traitement" || ticketDetails.status === "en_cours") ? "#0F1F3D" : ticketDetails.status === "retraite" ? "#4A148C" : ticketDetails.status === "resolu" ? "#2F9E44" : ticketDetails.status === "rejete" ? "#991b1b" : ticketDetails.status === "cloture" ? "#374151" : "#6b7280"
                   }}>
                     {getStatusLabel(ticketDetails.status)}
                   </span>
@@ -2121,7 +2122,7 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                 </div>
                 <div>
                   <strong>Type :</strong>
-                  <span style={{ marginLeft: "8px", padding: "4px 8px", background: "#e3f2fd", borderRadius: "4px" }}>
+                  <span style={{ marginLeft: "8px", padding: "4px 8px", borderRadius: "4px" }}>
                     {ticketDetails.type === "materiel" ? "Matériel" : "Applicatif"}
                   </span>
                 </div>
@@ -5388,7 +5389,7 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                         <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap" }}>
                           <div>
                             <strong>Type :</strong>
-                            <span style={{ marginLeft: "8px", padding: "4px 8px", background: "#e3f2fd", borderRadius: "4px" }}>
+                            <span style={{ marginLeft: "8px", padding: "4px 8px", borderRadius: "4px" }}>
                               {selectedNotificationTicketDetails.type === "materiel" ? "Matériel" : "Applicatif"}
                             </span>
                           </div>
@@ -5400,16 +5401,24 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                               borderRadius: "12px",
                               fontSize: "12px",
                               fontWeight: "500",
-                              background: selectedNotificationTicketDetails.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : selectedNotificationTicketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : selectedNotificationTicketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
-                              color: selectedNotificationTicketDetails.priority === "critique" ? "#E53E3E" : selectedNotificationTicketDetails.priority === "haute" ? "#F59E0B" : selectedNotificationTicketDetails.priority === "moyenne" ? "#0DADDB" : "white"
+                              background: selectedNotificationTicketDetails.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : selectedNotificationTicketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : selectedNotificationTicketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : selectedNotificationTicketDetails.priority === "faible" ? "#E5E7EB" : selectedNotificationTicketDetails.priority === "non_definie" ? "#E5E7EB" : "#9e9e9e",
+                              color: selectedNotificationTicketDetails.priority === "critique" ? "#E53E3E" : selectedNotificationTicketDetails.priority === "haute" ? "#F59E0B" : selectedNotificationTicketDetails.priority === "moyenne" ? "#0DADDB" : selectedNotificationTicketDetails.priority === "faible" ? "#6B7280" : selectedNotificationTicketDetails.priority === "non_definie" ? "#6B7280" : "white"
                             }}>
-                              {getPriorityLabel(selectedNotificationTicketDetails.priority)}
+                              {getPriorityLabel(selectedNotificationTicketDetails.priority ?? "non_definie")}
                             </span>
                           </div>
                           <div>
                             <strong>Statut :</strong>
-                            <span style={{ marginLeft: "8px", padding: "4px 8px", background: "#f3e5f5", borderRadius: "4px" }}>
-                              {selectedNotificationTicketDetails.status}
+                            <span style={{
+                              marginLeft: "8px",
+                              padding: "4px 8px",
+                              borderRadius: "4px",
+                              fontSize: "12px",
+                              fontWeight: "500",
+                              background: selectedNotificationTicketDetails.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : selectedNotificationTicketDetails.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : (selectedNotificationTicketDetails.status === "en_traitement" || selectedNotificationTicketDetails.status === "en_cours") ? "rgba(15, 31, 61, 0.1)" : selectedNotificationTicketDetails.status === "retraite" ? "#EDE7F6" : selectedNotificationTicketDetails.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : selectedNotificationTicketDetails.status === "rejete" ? "#fee2e2" : selectedNotificationTicketDetails.status === "cloture" ? "#E5E7EB" : "#f3f4f6",
+                              color: selectedNotificationTicketDetails.status === "en_attente_analyse" ? "#0DADDB" : selectedNotificationTicketDetails.status === "assigne_technicien" ? "#FF7A1B" : (selectedNotificationTicketDetails.status === "en_traitement" || selectedNotificationTicketDetails.status === "en_cours") ? "#0F1F3D" : selectedNotificationTicketDetails.status === "retraite" ? "#4A148C" : selectedNotificationTicketDetails.status === "resolu" ? "#2F9E44" : selectedNotificationTicketDetails.status === "rejete" ? "#991b1b" : selectedNotificationTicketDetails.status === "cloture" ? "#374151" : "#6b7280"
+                            }}>
+                              {getStatusLabel(selectedNotificationTicketDetails.status)}
                             </span>
                           </div>
                           {selectedNotificationTicketDetails.category && (
@@ -5640,7 +5649,7 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
             <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap" }}>
               <div>
                 <strong>Type :</strong>
-                <span style={{ marginLeft: "8px", padding: "4px 8px", background: "#e3f2fd", borderRadius: "4px" }}>
+                <span style={{ marginLeft: "8px", padding: "4px 8px", borderRadius: "4px" }}>
                   {ticketDetails.type === "materiel" ? "Matériel" : "Applicatif"}
                 </span>
               </div>
@@ -5652,10 +5661,24 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                   borderRadius: "12px",
                   fontSize: "12px",
                   fontWeight: "500",
-                  background: ticketDetails.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : ticketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : ticketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : "#9e9e9e",
-                  color: ticketDetails.priority === "critique" ? "#E53E3E" : ticketDetails.priority === "haute" ? "#F59E0B" : ticketDetails.priority === "moyenne" ? "#0DADDB" : "white"
+                  background: ticketDetails.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : ticketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : ticketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : ticketDetails.priority === "faible" ? "#E5E7EB" : ticketDetails.priority === "non_definie" ? "#E5E7EB" : "#9e9e9e",
+                  color: ticketDetails.priority === "critique" ? "#E53E3E" : ticketDetails.priority === "haute" ? "#F59E0B" : ticketDetails.priority === "moyenne" ? "#0DADDB" : ticketDetails.priority === "faible" ? "#6B7280" : ticketDetails.priority === "non_definie" ? "#6B7280" : "white"
                 }}>
-                  {getPriorityLabel(ticketDetails.priority)}
+                  {getPriorityLabel(ticketDetails.priority ?? "non_definie")}
+                </span>
+              </div>
+              <div>
+                <strong>Statut :</strong>
+                <span style={{
+                  marginLeft: "8px",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  fontSize: "12px",
+                  fontWeight: "500",
+                  background: ticketDetails.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : ticketDetails.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : (ticketDetails.status === "en_traitement" || ticketDetails.status === "en_cours") ? "rgba(15, 31, 61, 0.1)" : ticketDetails.status === "retraite" ? "#EDE7F6" : ticketDetails.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : ticketDetails.status === "rejete" ? "#fee2e2" : ticketDetails.status === "cloture" ? "#E5E7EB" : "#f3f4f6",
+                  color: ticketDetails.status === "en_attente_analyse" ? "#0DADDB" : ticketDetails.status === "assigne_technicien" ? "#FF7A1B" : (ticketDetails.status === "en_traitement" || ticketDetails.status === "en_cours") ? "#0F1F3D" : ticketDetails.status === "retraite" ? "#4A148C" : ticketDetails.status === "resolu" ? "#2F9E44" : ticketDetails.status === "rejete" ? "#991b1b" : ticketDetails.status === "cloture" ? "#374151" : "#6b7280"
+                }}>
+                  {getStatusLabel(ticketDetails.status)}
                 </span>
               </div>
               <div>
@@ -6247,7 +6270,7 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                     <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap" }}>
                       <div>
                         <strong>Type :</strong>
-                        <span style={{ marginLeft: "8px", padding: "4px 8px", background: "#e3f2fd", borderRadius: "4px" }}>
+                        <span style={{ marginLeft: "8px", padding: "4px 8px", borderRadius: "4px" }}>
                           {selectedNotificationTicketDetails.type === "materiel" ? "Matériel" : "Applicatif"}
                         </span>
                       </div>
@@ -6259,16 +6282,24 @@ function TechnicianDashboard({ token }: TechnicianDashboardProps) {
                           borderRadius: "12px",
                           fontSize: "12px",
                           fontWeight: "500",
-                          background: selectedNotificationTicketDetails.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : selectedNotificationTicketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : selectedNotificationTicketDetails.priority === "moyenne" ? "#dbeafe" : "#9e9e9e",
-                          color: selectedNotificationTicketDetails.priority === "critique" ? "#E53E3E" : selectedNotificationTicketDetails.priority === "haute" ? "#F59E0B" : selectedNotificationTicketDetails.priority === "moyenne" ? "#1e40af" : "white"
+                          background: selectedNotificationTicketDetails.priority === "critique" ? "rgba(229, 62, 62, 0.1)" : selectedNotificationTicketDetails.priority === "haute" ? "rgba(245, 158, 11, 0.1)" : selectedNotificationTicketDetails.priority === "moyenne" ? "rgba(13, 173, 219, 0.1)" : selectedNotificationTicketDetails.priority === "faible" ? "#E5E7EB" : selectedNotificationTicketDetails.priority === "non_definie" ? "#E5E7EB" : "#9e9e9e",
+                          color: selectedNotificationTicketDetails.priority === "critique" ? "#E53E3E" : selectedNotificationTicketDetails.priority === "haute" ? "#F59E0B" : selectedNotificationTicketDetails.priority === "moyenne" ? "#0DADDB" : selectedNotificationTicketDetails.priority === "faible" ? "#6B7280" : selectedNotificationTicketDetails.priority === "non_definie" ? "#6B7280" : "white"
                         }}>
-                          {selectedNotificationTicketDetails.priority}
+                          {getPriorityLabel(selectedNotificationTicketDetails.priority ?? "non_definie")}
                         </span>
                       </div>
                       <div>
                         <strong>Statut :</strong>
-                        <span style={{ marginLeft: "8px", padding: "4px 8px", background: "#f3e5f5", borderRadius: "4px" }}>
-                          {selectedNotificationTicketDetails.status}
+                        <span style={{
+                          marginLeft: "8px",
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                          fontSize: "12px",
+                          fontWeight: "500",
+                          background: selectedNotificationTicketDetails.status === "en_attente_analyse" ? "rgba(13, 173, 219, 0.1)" : selectedNotificationTicketDetails.status === "assigne_technicien" ? "rgba(255, 122, 27, 0.1)" : (selectedNotificationTicketDetails.status === "en_traitement" || selectedNotificationTicketDetails.status === "en_cours") ? "rgba(15, 31, 61, 0.1)" : selectedNotificationTicketDetails.status === "retraite" ? "#EDE7F6" : selectedNotificationTicketDetails.status === "resolu" ? "rgba(47, 158, 68, 0.1)" : selectedNotificationTicketDetails.status === "rejete" ? "#fee2e2" : selectedNotificationTicketDetails.status === "cloture" ? "#E5E7EB" : "#f3f4f6",
+                          color: selectedNotificationTicketDetails.status === "en_attente_analyse" ? "#0DADDB" : selectedNotificationTicketDetails.status === "assigne_technicien" ? "#FF7A1B" : (selectedNotificationTicketDetails.status === "en_traitement" || selectedNotificationTicketDetails.status === "en_cours") ? "#0F1F3D" : selectedNotificationTicketDetails.status === "retraite" ? "#4A148C" : selectedNotificationTicketDetails.status === "resolu" ? "#2F9E44" : selectedNotificationTicketDetails.status === "rejete" ? "#991b1b" : selectedNotificationTicketDetails.status === "cloture" ? "#374151" : "#6b7280"
+                        }}>
+                          {getStatusLabel(selectedNotificationTicketDetails.status)}
                         </span>
                       </div>
                     </div>
